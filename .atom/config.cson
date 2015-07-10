@@ -1,0 +1,33 @@
+"*":
+  "exception-reporting":
+    userId: "ed688a6d-8a26-e669-dd1f-bcb5d09b3884"
+  welcome:
+    showOnStartup: false
+  editor:
+    fontSize: 12
+    invisibles: {}
+    fontFamily: "Source Code Pro"
+    showIndentGuide: true
+    showInvisibles: true
+  core:
+    themes: [
+      "solarized-dark-ui"
+      "solarized-dark-syntax"
+    ]
+  "file-icons":
+    forceShow: true
+  linter: {}
+  "file-types":
+    eafxml: "text.xml"
+  "tree-view": {}
+  "highlight-line": {}
+  minimap:
+    plugins:
+      "git-diff": true
+  "vim-mode": {}
+  "linter-pep8":
+    maxLineLength: 999
+  Repl: {}
+  "autocomplete-python": {}
+  "omnisharp-atom":
+    enhancedHighlighting: true
