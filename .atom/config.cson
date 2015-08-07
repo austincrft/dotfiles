@@ -4,11 +4,12 @@
   welcome:
     showOnStartup: false
   editor:
-    fontSize: 12
     invisibles: {}
     fontFamily: "Source Code Pro"
     showIndentGuide: true
     showInvisibles: true
+    fontSize: 12
+    softWrap: true
   core:
     themes: [
       "solarized-dark-ui"
@@ -31,3 +32,8 @@
   "autocomplete-python": {}
   "omnisharp-atom":
     enhancedHighlighting: true
+  whitespace:
+    ensureSingleTrailingNewline: false
+  "linter-xmllint": {}
+  "atom-beautify":
+    _analyticsUserId: "fe53c5da-b2a3-42fe-a373-6beff25ff167"

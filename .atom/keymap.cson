@@ -16,8 +16,5 @@
   'ctrl-s': 'find-and-replace:select-skip'
   'ctrl-z': 'find-and-replace:select-undo'
 
-'atom-text-editor.vim-mode.insert-mode':
-  'j': 'custom:wait-key-press'
-
-'.vim-mode.insert-mode:not(.mini)':
-  'j j': 'vim-mode:activate-command-mode'
+'atom-text-editor.vim-mode:not(.normal-mode)':
+  'j j': 'vim-mode:activate-normal-mode'
