@@ -34,6 +34,5 @@
     enhancedHighlighting: true
   whitespace:
     ensureSingleTrailingNewline: false
-  "linter-xmllint": {}
   "atom-beautify":
     _analyticsUserId: "fe53c5da-b2a3-42fe-a373-6beff25ff167"
