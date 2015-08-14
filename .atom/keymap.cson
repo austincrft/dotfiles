@@ -15,6 +15,5 @@
   'ctrl-f': 'find-and-replace:select-next'
   'ctrl-s': 'find-and-replace:select-skip'
   'ctrl-z': 'find-and-replace:select-undo'
-
-'atom-text-editor.vim-mode:not(.normal-mode)':
+'atom-text-editor.vim-mode.insert-mode':
   'j j': 'vim-mode:activate-normal-mode'
