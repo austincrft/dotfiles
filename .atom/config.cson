@@ -20,7 +20,8 @@
   linter: {}
   "file-types":
     eafxml: "text.xml"
-  "tree-view": {}
+  "tree-view":
+    hideIgnoredNames: true
   "highlight-line": {}
   minimap:
     plugins:
@@ -29,10 +30,12 @@
   "linter-pep8":
     maxLineLength: 999
   Repl: {}
-  "autocomplete-python": {}
+  "autocomplete-python":
+    extraPaths: "$PROJECT/venv/lib/python3.4/site-packages"
   "omnisharp-atom":
     enhancedHighlighting: true
-  whitespace:
-    ensureSingleTrailingNewline: false
+  whitespace: {}
   "atom-beautify":
     _analyticsUserId: "fe53c5da-b2a3-42fe-a373-6beff25ff167"
+  "advanced-new-file": {}
+  "close-tags": {}
