@@ -12,12 +12,13 @@
     softWrap: true
   core:
     themes: [
-      "solarized-dark-ui"
+      "atom-solarized-dark-ui"
       "solarized-dark-syntax"
     ]
   "file-icons":
     forceShow: true
-  linter: {}
+  linter:
+    lintOnFly: false
   "file-types":
     eafxml: "text.xml"
   "tree-view":

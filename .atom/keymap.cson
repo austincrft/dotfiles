@@ -1,12 +1,12 @@
 # OSX Bindings
 '.platform-darwin':
   'cmd-;': 'tree-view:toggle'
-  'cmd-n': 'advanced-new-file:toggle'
+  'cmd-n': 'advanced-open-file:toggle'
 
 # Windows/Linux Bindings
 '.platform-win32, .platform-linux':
   'ctrl-;': 'tree-view:toggle'
-  'ctrl-n': 'advanced-new-file:toggle'
+  'ctrl-n': 'advanced-open-file:toggle'
 
 # Vim Bindings
 'atom-text-editor.vim-mode:not(.insert-mode)':
