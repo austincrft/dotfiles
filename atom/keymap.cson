@@ -1,0 +1,21 @@
+# OSX Bindings
+'.platform-darwin':
+  'cmd-;': 'tree-view:toggle'
+  'cmd-n': 'advanced-open-file:toggle'
+
+# Windows/Linux Bindings
+'.platform-win32, .platform-linux':
+  'ctrl-;': 'tree-view:toggle'
+  'ctrl-n': 'advanced-open-file:toggle'
+
+# Vim Bindings
+'atom-text-editor.vim-mode:not(.insert-mode)':
+  'ctrl-h': 'window:focus-pane-on-left'
+  'ctrl-l': 'window:focus-pane-on-right'
+  'ctrl-j': 'window:focus-pane-below'
+  'ctrl-k': 'window:focus-pane-above'
+  'ctrl-f': 'find-and-replace:select-next'
+  'ctrl-s': 'find-and-replace:select-skip'
+  'ctrl-z': 'find-and-replace:select-undo'
+'atom-text-editor.vim-mode.insert-mode':
+  'j j': 'vim-mode:activate-normal-mode'
