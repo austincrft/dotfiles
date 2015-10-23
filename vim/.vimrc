@@ -82,7 +82,7 @@ Bundle 'jiangmiao/auto-pairs'
 Bundle 'scrooloose/syntastic'
 Bundle 'vim-scripts/CursorLineCurrentWindow'
 Bundle 'Valloric/YouCompleteMe'
-Plugin 'bling/vim-airline'
+Bundle 'bling/vim-airline'
 
 " Visuals
 Bundle 'altercation/vim-colors-solarized'
