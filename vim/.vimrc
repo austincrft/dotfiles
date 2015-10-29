@@ -147,7 +147,6 @@ if has("autocmd")
 endif
 
 autocmd FocusLost * silent! wa " Automatically save file
-set scrolloff=5 " Keep 5 lines below and above the cursor
 set cursorline
 set laststatus=2
 let mapleader = ','
