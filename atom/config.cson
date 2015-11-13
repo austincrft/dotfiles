@@ -20,24 +20,25 @@
   linter:
     lintOnFly: false
     showErrorPanel: false
-  "file-types":
-    eafxml: "text.xml"
   "tree-view":
     hideIgnoredNames: true
+    hideVcsIgnoredFiles: true
   "highlight-line": {}
   minimap:
     plugins:
       "git-diff": true
+      pigments: true
   "vim-mode": {}
   "linter-pep8":
     maxLineLength: 999
   Repl: {}
   "autocomplete-python":
     extraPaths: "$PROJECT/venv/lib/python3.4/site-packages"
-  "omnisharp-atom":
-    enhancedHighlighting: true
+    fuzzyMatcher: false
+    useSnippets: "all"
   whitespace: {}
   "atom-beautify":
     _analyticsUserId: "fe53c5da-b2a3-42fe-a373-6beff25ff167"
   "advanced-new-file":
     createFileInstantly: true
+  pigments: {}
