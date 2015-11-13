@@ -21,5 +21,7 @@
   'ctrl-w ctrl-l': 'pane:split-right'
   'ctrl-w ctrl-j': 'pane:split-down'
   'ctrl-w ctrl-k': 'pane:split-up'
+'atom-text-editor[data-grammar="source python"].vim-mode:not(.insert-mode)':
+  'ctrl-]': 'autocomplete-python:go-to-definition'
 'atom-text-editor.vim-mode.insert-mode':
   'j j': 'vim-mode:activate-normal-mode'
