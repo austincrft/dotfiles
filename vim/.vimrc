@@ -56,10 +56,6 @@ set softtabstop=2
 set tabstop=2
 set expandtab
 
-" Auto indent pasted text
-nnoremap p p=`]<C-o>
-nnoremap P P=`]<C-o>
-
 set nowrap       "Don't wrap lines
 set linebreak    "Wrap lines at convenient points
 
