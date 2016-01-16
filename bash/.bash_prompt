@@ -127,7 +127,6 @@ set_prompts() {
     # set the terminal title to the current working directory
     PS1="\[\033]0;\w\007\]"
 
-    PS1+="\n" # newline
     PS1+="\[$userStyle\]\u" # username
     PS1+="\[$reset$white\]@"
     PS1+="\[$hostStyle\]\h" # host
