@@ -1,0 +1,149 @@
+{
+  ;; This is your main proton configuration file
+  ;; While using proton, all atom related configuration has to go inside here
+  ;; Everything that is not set up through this file will get wiped on start
+  ;; We gave you some cool defaults below but if you don't like it, feel free to change :)
+
+  ;; Layers you wish to have active
+  ;; To get a list of all available layers, check github.com/dvcrn/proton/layers/
+  :layers
+  [
+    ;; -----------------------------------
+    ;; core layer. Dont remove.
+    ;; -----------------------------------
+    :core
+
+
+    ;; -----------------------------------
+    ;; tools
+    ;; Get more at github.com/dvcrn/proton/tree/master/src/proton/layers/tools
+    ;; -----------------------------------
+    :tools/git
+    :tools/linter
+    ;; :tools/build
+    :tools/minimap
+
+
+    ;; -----------------------------------
+    ;; Languages
+    ;; Get more at github.com/dvcrn/proton/tree/master/src/proton/layers/lang
+    ;; -----------------------------------
+    :lang/clojure
+    :lang/python
+    ;; :lang/julia
+    ;; :lang/latex
+    ;; :lang/elixir
+    :lang/markdown
+    ;; :lang/rust
+    ;; :lang/javascript
+
+    ;; -----------------------------------
+    ;; Frameworks
+    ;; Get more at github.com/dvcrn/proton/tree/master/src/proton/layers/frameworks
+    ;; -----------------------------------
+    ;; :frameworks/django
+
+    ;; -----------------------------------
+    ;; etc
+    ;; Get more at github.com/dvcrn/proton/tree/master/src/proton/layers/fun
+    ;; -----------------------------------
+    ;; :fun/power_mode
+  ]
+
+  ;; Packages that are not part of a layer. List them here as keyword
+  ;; All packages will be ensured to be installed. Stuff that is not listed here
+  ;; Will get uninstalled so choose wisely!
+  :additional-packages
+  [
+    :advanced-open-file
+    :atom-jinja2
+    :color-picker
+    :ex-mode
+    :file-icons
+    :file-types
+    :highlight-line
+    :highlight-selected
+    :language-powershell
+    :language-vbscript
+    :MagicPython
+    :minimap-git-diff
+    :minimap-pigments
+    :open-recent
+    :pigments
+    :project-manager
+    :set-syntax
+    :solarized-dark-ui
+    :sort-lines
+  ]
+
+  ;; Proton takes over your atom configuration. All settings that are not listed here will get wiped
+  ;; Configurations are denoted as 2 element vector consisting of k/v
+  ;; sub-vectors inside v will get treated like javascript arrays
+  :configuration
+  [
+    ;; appearance
+    ["editor.fontFamily" "Source Code Pro"]
+    ["editor.showIndentGuide" true]
+    ["editor.showInvisibles" true]
+    ["editor.fontSize" 12]
+    ["editor.softWrap" true]
+
+    ;; theme
+    ["core.themes" ["solarized-dark-ui" "solarized-dark-syntax"]]
+
+    ;; proton configuration
+    ["proton.core.showTabBar" true]
+    ["proton.core.relativeLineNumbers" true]
+
+    ;; prefer classic vim mode over vim-mode-plus? Change this to :vim-mode
+    ["proton.core.vim-provider" :vim-mode-plus]
+
+    ;; prefer facebooks nuclide quick open instead of the normal atom one?
+    ;; Change the following to :nuclide
+    ["proton.core.quickOpenProvider" :normal]
+
+    ;; linter
+    ["linter.lintOnFly" false]
+    ["linter.showErrorPanel" false]
+
+    ;; linter-pep8
+    ["linter-pep8.maxLineLength" 999]
+
+    ;; minimap
+    ["minimap.plugins" [["git-diff" true] ["pigments" true]]]
+
+    ;; tree-view
+    ["tree-view.hideIgnoredNames" true]
+    ["tree-view.hideVcsIgnoredFiles" true]
+  ]
+
+  ;; Dont like a keybinding or want to add something yourself? Do it here
+  :keybindings {}
+
+  ;; Want some custom behavior inside a certain window?
+  ;; Add your own nifty things here!
+  :keymaps
+  [
+    ;; windows/linux
+    {:selector ".platform-win32, .platform-linux"
+     :keymap [["ctrl-;" "tree-view:toggle"]
+              ["ctrl-n" "advanced-open-file:toggle"]]}
+
+    ;; osx
+    {:selector ".platform-darwin"
+     :keymap [["cmd-;" "tree-view:toggle"]
+              ["cmd-n" "advanced-open-file:toggle"]]}
+
+    ;; vim escape
+    {:selector "atom-text-editor.vim-mode-plus.insert-mode"
+     :keymap [["j j" "vim-mode-plus:activate-normal-mode"]]}
+
+    ;; ex-mode
+    {:selector "atom-text-editor.vim-mode-plus:not(.insert-mode)"
+     :keymap [[":" "ex-mode:open"]]}
+
+    ;; python go-to
+    {:selector "atom-text-editor[data-grammar=\"source python\"].vim-mode:not(.insert-mode)"
+     :keymap [["ctrl-]" "autocomplete-python:go-to-definition"]]}
+  ]
+}
