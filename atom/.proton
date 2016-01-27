@@ -29,6 +29,7 @@
     ;; Get more at github.com/dvcrn/proton/tree/master/src/proton/layers/lang
     ;; -----------------------------------
     :lang/clojure
+    :lang/csharp
     :lang/css
     ;; :lang/elixir
     :lang/html
@@ -59,11 +60,8 @@
   ;; Will get uninstalled so choose wisely!
   :additional-packages
   [
-    ; :advanced-open-file
     :atom-jinja2
     :color-picker
-    :ex-mode
-    :file-icons
     :file-types
     :highlight-line
     :highlight-selected
@@ -74,11 +72,9 @@
     :minimap-pigments
     :open-recent
     :pigments
-    :project-manager
     :set-syntax
     :solarized-dark-ui
     :sort-lines
-    :travis-ci-status
   ]
 
   ;; Proton takes over your atom configuration. All settings that are not listed here will get wiped
@@ -116,6 +112,13 @@
 
     ;; minimap
     ["minimap.plugins" [["git-diff" true] ["pigments" true]]]
+
+    ;; omnisharp
+    ["omnisharp-atom.codeFormat" false]
+    ["omnisharp-atom.intellisense" false]
+    ["omnisharp-atom.enhancedHighlighting" true]
+    ["omnisharp-atom.featureButtons" false]
+    ["omnisharp-atom.topMenu" false]
 
     ;; tree-view
     ["tree-view.hideIgnoredNames" true]
