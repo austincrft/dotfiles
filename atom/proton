@@ -29,13 +29,17 @@
     ;; Get more at github.com/dvcrn/proton/tree/master/src/proton/layers/lang
     ;; -----------------------------------
     :lang/clojure
-    :lang/python
+    :lang/css
+    ;; :lang/elixir
+    :lang/html
+    :lang/javascript
+    :lang/json
     ;; :lang/julia
     ;; :lang/latex
-    ;; :lang/elixir
     :lang/markdown
+    :lang/python
     ;; :lang/rust
-    ;; :lang/javascript
+
 
     ;; -----------------------------------
     ;; Frameworks
@@ -55,7 +59,7 @@
   ;; Will get uninstalled so choose wisely!
   :additional-packages
   [
-    :advanced-open-file
+    ; :advanced-open-file
     :atom-jinja2
     :color-picker
     :ex-mode
@@ -75,6 +79,7 @@
     :set-syntax
     :solarized-dark-ui
     :sort-lines
+    :travis-ci-status
   ]
 
   ;; Proton takes over your atom configuration. All settings that are not listed here will get wiped
@@ -125,16 +130,6 @@
   ;; Add your own nifty things here!
   :keymaps
   [
-    ;; windows/linux
-    {:selector ".platform-win32, .platform-linux"
-     :keymap [["ctrl-;" "tree-view:toggle"]
-              ["ctrl-n" "advanced-open-file:toggle"]]}
-
-    ;; osx
-    {:selector ".platform-darwin"
-     :keymap [["cmd-;" "tree-view:toggle"]
-              ["cmd-n" "advanced-open-file:toggle"]]}
-
     ;; vim escape
     {:selector "atom-text-editor.vim-mode-plus.insert-mode"
      :keymap [["j j" "vim-mode-plus:activate-normal-mode"]]}
@@ -142,9 +137,5 @@
     ;; ex-mode
     {:selector "atom-text-editor.vim-mode-plus:not(.insert-mode)"
      :keymap [[":" "ex-mode:open"]]}
-
-    ;; python go-to
-    {:selector "atom-text-editor[data-grammar=\"source python\"].vim-mode:not(.insert-mode)"
-     :keymap [["ctrl-]" "autocomplete-python:go-to-definition"]]}
   ]
 }
