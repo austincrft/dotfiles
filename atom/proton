@@ -65,6 +65,7 @@
     :file-types
     :highlight-line
     :highlight-selected
+    :language-gherkin
     :language-powershell
     :language-vbscript
     :MagicPython
