@@ -20,6 +20,7 @@
     ;; -----------------------------------
     :tools/git
     :tools/linter
+    :tools/bookmarks
     ;; :tools/build
     :tools/minimap
 
@@ -29,7 +30,7 @@
     ;; Get more at github.com/dvcrn/proton/tree/master/src/proton/layers/lang
     ;; -----------------------------------
     :lang/clojure
-    :lang/csharp
+    ; :lang/csharp
     :lang/css
     ;; :lang/elixir
     :lang/html
@@ -71,6 +72,7 @@
     :MagicPython
     :minimap-git-diff
     :minimap-pigments
+    :multi-cursor
     :open-recent
     :pigments
     :set-syntax
@@ -140,5 +142,10 @@
     ;; ex-mode
     {:selector "atom-text-editor.vim-mode-plus:not(.insert-mode)"
      :keymap [[":" "ex-mode:open"]]}
+
+    ;; multi-cursor
+    {:selector "atom-text-editor:not(mini)"
+     :keymap [["ctrl-j" "multi-cursor:expandDown"]
+              ["ctrl-k" "multi-cursor:expandUp"]]}
   ]
 }
