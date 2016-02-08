@@ -114,7 +114,8 @@
     ["linter-pep8.maxLineLength" 999]
 
     ;; minimap
-    ["minimap.plugins" [["git-diff" true] ["pigments" true]]]
+    ["minimap.plugins.git-diff" true]
+    ["minimap.plugins.pigments" true]
 
     ;; omnisharp
     ["omnisharp-atom.codeFormat" false]
