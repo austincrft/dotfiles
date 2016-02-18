@@ -64,8 +64,7 @@
     :atom-jinja2
     :color-picker
     :file-types
-    :highlight-line
-    :highlight-selected
+    :language-batch
     :language-gherkin
     :language-powershell
     :language-vbscript
@@ -77,7 +76,6 @@
     :pigments
     :set-syntax
     :solarized-dark-ui
-    :sort-lines
   ]
 
   ;; Proton takes over your atom configuration. All settings that are not listed here will get wiped
@@ -106,6 +104,11 @@
     ;; Change the following to :nuclide
     ["proton.core.quickOpenProvider" :normal]
 
+    ;; file-types
+    ["file-types.imssql" "text.xml"]
+    ["file-types.imspre" "text.xml"]
+    ["file-types.imspkg" "text.xml"]
+
     ;; linter
     ["linter.lintOnFly" false]
     ["linter.showErrorPanel" false]
@@ -124,6 +127,10 @@
     ["omnisharp-atom.featureButtons" false]
     ["omnisharp-atom.topMenu" false]
 
+    ;; proto-repl
+    ["proto-repl.leinPath" "C:\\ProgramData\\chocolatey\\bin\\lein.bat"]
+    ["proto-repl.displayHelpText" false]
+
     ;; tree-view
     ["tree-view.hideIgnoredNames" true]
     ["tree-view.hideVcsIgnoredFiles" true]
@@ -136,9 +143,16 @@
   ;; Add your own nifty things here!
   :keymaps
   [
+
     ;; vim escape
     {:selector "atom-text-editor.vim-mode-plus.insert-mode"
      :keymap [["j j" "vim-mode-plus:activate-normal-mode"]]}
+
+    ;; vim surround
+    {:selector "atom-workspace atom-text-editor.vim-mode-plus.visual-mode"
+     :keymap [["s" ["vim-mode-plus:surround"]]
+              ["c s" ["vim-mode-plus:change-surround"]]
+              ["d s" ["vim-mode-plus:delete-surround"]]]}
 
     ;; ex-mode
     {:selector "atom-text-editor.vim-mode-plus:not(.insert-mode)"
