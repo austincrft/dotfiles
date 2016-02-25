@@ -128,12 +128,15 @@
     ["omnisharp-atom.topMenu" false]
 
     ;; proto-repl
-    ["proto-repl.leinPath" "C:\\ProgramData\\chocolatey\\bin\\lein.bat"]
     ["proto-repl.displayHelpText" false]
 
     ;; tree-view
     ["tree-view.hideIgnoredNames" true]
     ["tree-view.hideVcsIgnoredFiles" true]
+
+    ;; vim-mode-plus
+    ["vim-mode-plus.useClipboardAsDefaultRegister" false]
+    ["vim-mode-plus.highlightSearch" true]
   ]
 
   ;; Dont like a keybinding or want to add something yourself? Do it here
@@ -159,7 +162,7 @@
      :keymap [[":" "ex-mode:open"]]}
 
     ;; multi-cursor
-    {:selector "atom-text-editor:not(mini)"
+    {:selector "atom-workspace atom-text-editor:not([mini])"
      :keymap [["ctrl-j" "multi-cursor:expandDown"]
               ["ctrl-k" "multi-cursor:expandUp"]]}
   ]
