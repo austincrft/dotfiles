@@ -40,18 +40,12 @@ set linebreak
 " --------------------------------------------------------------------------------
 set hlsearch
 set incsearch
-
-" --------------------------------------------------------------------------------
-" Solarized theme
-" --------------------------------------------------------------------------------
-let g:solarized_termtrans = 1
-set background=dark
-" colorscheme solarized
+set smartcase
 
 " --------------------------------------------------------------------------------
 " Automatically save file
 " --------------------------------------------------------------------------------
-autocmd FocusLost * silent! wa 
+autocmd FocusLost * silent! wa
 
 " --------------------------------------------------------------------------------
 " Activate  Airline smarter tab line
@@ -88,16 +82,16 @@ if has('persistent_undo')
 endif
 
 " --------------------------------------------------------------------------------
-" The Silver Searcher
+" Ctrl-P
 " --------------------------------------------------------------------------------
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-  " Ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif
+" if executable('ag')
+"   " Use ag over grep
+"   set grepprg=ag\ --nogroup\ --nocolor
+"   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+"   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+"   " Ag is fast enough that CtrlP doesn't need to cache
+"   let g:ctrlp_use_caching = 0
+" endif
 
 " --------------------------------------------------------------------------------
 " Move normally between wrapped lines
@@ -149,6 +143,20 @@ endfunction
 " Space Based Keybindings
 " --------------------------------------------------------------------------------
 
+" Buffer
+nnoremap <leader><Tab> :e#<CR>        " Switch to last buffer
+nnoremap <leader>bb :CtrlPBuffer<CR>  " List
+nnoremap <leader>bn :bnext<CR>        " Next
+nnoremap <leader>bp :bprevious<CR>    " Previous
+nnoremap <leader>bd :bdelete<CR>
+nnoremap <leader>b/ :Lines<CR>
+nnoremap <leader>bl :BLines<CR>
+
+" Linting
+nnoremap <leader>ln :SyntasticCheck<CR>         " Lint now
+nnoremap <leader>le :Errors<CR>                 " List errors
+nnoremap <leader>lt :SyntasticToggleMode<CR>    " List errors
+
 " Meta
 nnoremap <leader>_d :e $MYVIMRC<CR>
 nnoremap <leader>_r :so $MYVIMRC<CR>
@@ -163,53 +171,51 @@ nnoremap <leader>wv <C-w>v<C-w>l   " Split vertically
 nnoremap <leader>wh <C-w>s<C-w>j   " Split horizontally
 
 " Window navigation
-nnoremap <leader>h <C-w>h<CR>
-nnoremap <leader>l <C-w>l<CR>
-nnoremap <leader>j <C-w>j<CR>
-nnoremap <leader>k <C-w>k<CR>
+nnoremap <leader>h <C-w>h<CR>      " Navigate left
+nnoremap <leader>j <C-w>j<CR>      " Navigate down
+nnoremap <leader>k <C-w>k<CR>      " Navigate up
+nnoremap <leader>l <C-w>l<CR>      " Navigate right
 
-" Buffer
-nnoremap <leader><Tab> :e#<CR> " Switch to last buffer
-nnoremap <leader>bb :Buffers<CR>
-nnoremap <leader>bn :bnext<CR>
-nnoremap <leader>bp :bprevious<CR>
-nnoremap <leader>bd :bdelete<CR>
-nnoremap <leader>b/ :Lines<CR>
-nnoremap <leader>bl :BLines<CR>
+" --------------------------------------------------------------------------------
+" ConEmu Config
+" --------------------------------------------------------------------------------
+if !empty($CONEMUBUILD)
+    set term=xterm
+    set termencoding=utf8
+    set t_Co=256
+    let &t_AB="\e[48;5;%dm"
+    let &t_AF="\e[38;5;%dm"
+
+endif
+
 
 " --------------------------------------------------------------------------------
 " Vundle Config
 " --------------------------------------------------------------------------------
 filetype off
 
-" Vundle location is different on Windows
-if has('win32')
-  set rtp+=~/vimfiles/bundle/Vundle.vim
-else
-  set rtp+=~/.vim/bundle/Vundle.vim
-endif
-
 " Install Vundle
+set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " Let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+Bundle 'gmarik/Vundle.vim'
 
 " Cool plugins
 Bundle 'scrooloose/nerdtree'
 Bundle 'Xuyuanp/nerdtree-git-plugin'
 Bundle 'ctrlpvim/ctrlp.vim'
-Bundle 'tommcdo/vim-exchange.git'
 Bundle 'ntpeters/vim-better-whitespace'
 Bundle 'tpope/vim-surround'
 Bundle 'jiangmiao/auto-pairs'
 Bundle 'scrooloose/syntastic'
-Bundle 'vim-scripts/CursorLineCurrentWindow'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'bling/vim-airline'
+Bundle 'godlygeek/tabular'
 
 " Visuals
 Bundle 'altercation/vim-colors-solarized'
+Bundle 'vim-airline/vim-airline-themes'
 
 " Commenting
 Bundle "tomtom/tlib_vim.git"
@@ -221,3 +227,10 @@ Bundle "othree/javascript-libraries-syntax.vim"
 
 call vundle#end()            " Required
 filetype plugin indent on    " Required
+
+" --------------------------------------------------------------------------------
+" Solarized Theme (Must be set after Vundle)
+" --------------------------------------------------------------------------------
+set background=dark
+colorscheme solarized
+let g:solarized_underline=0
