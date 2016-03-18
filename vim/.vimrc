@@ -5,22 +5,22 @@ set nocompatible
 " --------------------------------------------------------------------------------
 " General Config
 " --------------------------------------------------------------------------------
-set relativenumber              " Relative numbering
-set number                      " Line numbers are good
-set backspace=indent,eol,start  " Allow backspace in insert mode
-set history=1000                " Store lots of :cmdline history
-set showcmd                     " Show incomplete cmds down the bottom
-set showmode                    " Show current mode down the bottom
-set visualbell                  " No sounds
-set autoread                    " Reload files changed outside vim
-set hidden                      " Allow buffers to exist in background
-set noswapfile                  " No swap file
-set nobackup                    " No backup
-set nowb                        " No write-backup
-set laststatus=2                " Always show statusline
-syntax on                       " Turn on syntax
-syntax enable                   " Enable syntax
-:let mapleader = ' '            " Space for leader
+set number                     " Line numbers
+set relativenumber             " Relative numbering
+set backspace=indent,eol,start " Allow backspace in insert mode
+set history=1000               " Store lots of :cmdline history
+set showcmd                    " Show incomplete cmds down the bottom
+set showmode                   " Show current mode down the bottom
+set visualbell                 " No sounds
+set autoread                   " Reload files changed outside vim
+set hidden                     " Allow buffers to exist in background
+set noswapfile                 " No swap file
+set nobackup                   " No backup
+set nowb                       " No write-backup
+set laststatus=2               " Always show statusline
+syntax on                      " Turn on syntax
+syntax enable                  " Enable syntax
+:let mapleader = ' '           " Space for leader
 
 " --------------------------------------------------------------------------------
 " Indentation and Linebreaks
@@ -68,7 +68,7 @@ map <c-h> <c-w>h
 " --------------------------------------------------------------------------------
 "  Set 256 colors for gvim
 " --------------------------------------------------------------------------------
-if has("gui_running")
+if has('gui_running')
   set t_Co=256
 end
 
@@ -80,18 +80,6 @@ if has('persistent_undo')
   set undodir=~/.vim/backups
   set undofile
 endif
-
-" --------------------------------------------------------------------------------
-" Ctrl-P
-" --------------------------------------------------------------------------------
-" if executable('ag')
-"   " Use ag over grep
-"   set grepprg=ag\ --nogroup\ --nocolor
-"   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-"   let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-"   " Ag is fast enough that CtrlP doesn't need to cache
-"   let g:ctrlp_use_caching = 0
-" endif
 
 " --------------------------------------------------------------------------------
 " Move normally between wrapped lines
@@ -144,37 +132,35 @@ endfunction
 " --------------------------------------------------------------------------------
 
 " Buffer
-nnoremap <leader><Tab> :e#<CR>        " Switch to last buffer
-nnoremap <leader>bb :CtrlPBuffer<CR>  " List
-nnoremap <leader>bn :bnext<CR>        " Next
-nnoremap <leader>bp :bprevious<CR>    " Previous
-nnoremap <leader>bd :bdelete<CR>
-nnoremap <leader>b/ :Lines<CR>
-nnoremap <leader>bl :BLines<CR>
+nnoremap <leader><Tab> :e#<CR>                   " Switch to last buffer
+nnoremap <leader>bb :CtrlPBuffer<CR>             " List
+nnoremap <leader>bn :bnext<CR>                   " Next
+nnoremap <leader>bp :bprevious<CR>               " Previous
+nnoremap <leader>bd :bdelete<CR>                 " Delete
 
 " Linting
-nnoremap <leader>ln :SyntasticCheck<CR>         " Lint now
-nnoremap <leader>le :Errors<CR>                 " List errors
-nnoremap <leader>lt :SyntasticToggleMode<CR>    " List errors
+nnoremap <leader>ln :SyntasticCheck<CR>          " Lint now
+nnoremap <leader>le :Errors<CR>                  " List errors
+nnoremap <leader>lt :SyntasticToggleMode<CR>     " List errors
 
 " Meta
-nnoremap <leader>_d :e $MYVIMRC<CR>
-nnoremap <leader>_r :so $MYVIMRC<CR>
+nnoremap <leader>_d :e $MYVIMRC<CR>              " Edit .vimrc
+nnoremap <leader>_r :so $MYVIMRC<CR>             " Reload .vimrc
 
 " Project
-nnoremap <silent> <leader>pt :NERDTreeToggle<CR>   " Open a horizontal split and switch to it (,h)
-nnoremap <silent> <leader>pF :NERDTreeFind<CR>     " Open a horizontal split and switch to it (,h)
+nnoremap <silent> <leader>pt :NERDTreeToggle<CR> " Open a horizontal split and switch to it (,h)
+nnoremap <silent> <leader>pF :NERDTreeFind<CR>   " Open a horizontal split and switch to it (,h)
 nnoremap <leader>pf :CtrlP<CR>
 
 " Window splits
-nnoremap <leader>wv <C-w>v<C-w>l   " Split vertically
-nnoremap <leader>wh <C-w>s<C-w>j   " Split horizontally
+nnoremap <leader>wv <C-w>v<C-w>l                 " Split vertically
+nnoremap <leader>wh <C-w>s<C-w>j                 " Split horizontally
 
 " Window navigation
-nnoremap <leader>h <C-w>h<CR>      " Navigate left
-nnoremap <leader>j <C-w>j<CR>      " Navigate down
-nnoremap <leader>k <C-w>k<CR>      " Navigate up
-nnoremap <leader>l <C-w>l<CR>      " Navigate right
+nnoremap <leader>h <C-w>h<CR>                    " Navigate left
+nnoremap <leader>j <C-w>j<CR>                    " Navigate down
+nnoremap <leader>k <C-w>k<CR>                    " Navigate up
+nnoremap <leader>l <C-w>l<CR>                    " Navigate right
 
 " --------------------------------------------------------------------------------
 " ConEmu Config
@@ -182,10 +168,9 @@ nnoremap <leader>l <C-w>l<CR>      " Navigate right
 if !empty($CONEMUBUILD)
     set term=xterm
     set termencoding=utf8
-    set t_Co=256
-    let &t_AB="\e[48;5;%dm"
-    let &t_AF="\e[38;5;%dm"
-
+    set t_Co=16
+    let &t_AB='\e[48;5;%dm'
+    let &t_AF='\e[38;5;%dm'
 endif
 
 
@@ -218,12 +203,12 @@ Bundle 'altercation/vim-colors-solarized'
 Bundle 'vim-airline/vim-airline-themes'
 
 " Commenting
-Bundle "tomtom/tlib_vim.git"
-Bundle "tomtom/tcomment_vim.git"
+Bundle 'tomtom/tlib_vim.git'
+Bundle 'tomtom/tcomment_vim.git'
 
 " Javascript
-Bundle "othree/yajs.vim"
-Bundle "othree/javascript-libraries-syntax.vim"
+Bundle 'othree/yajs.vim'
+Bundle 'othree/javascript-libraries-syntax.vim'
 
 call vundle#end()            " Required
 filetype plugin indent on    " Required
@@ -233,4 +218,3 @@ filetype plugin indent on    " Required
 " --------------------------------------------------------------------------------
 set background=dark
 colorscheme solarized
-let g:solarized_underline=0
