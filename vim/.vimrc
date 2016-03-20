@@ -2,9 +2,9 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " General Config
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 set number                     " Line numbers
 set relativenumber             " Relative numbering
 set backspace=indent,eol,start " Allow backspace in insert mode
@@ -18,13 +18,26 @@ set noswapfile                 " No swap file
 set nobackup                   " No backup
 set nowb                       " No write-backup
 set laststatus=2               " Always show statusline
+set t_Co=16                    " Set terminal color to 16
+set colorcolumn=80             " Highlight column 80
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
-:let mapleader = ' '           " Space for leader
 
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
+"  Set ESC and Leader
+" ------------------------------------------------------------------------------
+:imap jj <Esc>
+:let mapleader = ' '
+
+" ------------------------------------------------------------------------------
+" Move normally between wrapped lines
+" ------------------------------------------------------------------------------
+nmap j gj
+nmap k gk
+
+" ------------------------------------------------------------------------------
 " Indentation and Linebreaks
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 set autoindent
 set smartindent
 set smarttab
@@ -35,101 +48,40 @@ set expandtab
 set nowrap
 set linebreak
 
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Search Config
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 set hlsearch
 set incsearch
 set smartcase
 
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Automatically save file
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 autocmd FocusLost * silent! wa
 
-" --------------------------------------------------------------------------------
-" Activate  Airline smarter tab line
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
+" Activate Airline smarter tab line
+" ------------------------------------------------------------------------------
 let g:airline#extensions#tabline#enabled = 1
 
-" --------------------------------------------------------------------------------
-" Map Esc key to jj
-" --------------------------------------------------------------------------------
-:imap jj <Esc>
+" ------------------------------------------------------------------------------
+" Multi-Cursor Config
+" ------------------------------------------------------------------------------
+let g:multi_cursor_quit_key = jj
 
-" --------------------------------------------------------------------------------
-" Bind Ctrl+<movement> keys to move around the windows
-" --------------------------------------------------------------------------------
-map <c-j> <c-w>j
-map <c-k> <c-w>k
-map <c-l> <c-w>l
-map <c-h> <c-w>h
-
-" --------------------------------------------------------------------------------
-"  Set 256 colors for gvim
-" --------------------------------------------------------------------------------
-if has('gui_running')
-  set t_Co=256
-end
-
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Persistent Undo -- " Keep undo history across sessions, by storing in file.
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 if has('persistent_undo')
   silent !mkdir ~/.vim/backups > /dev/null 2>&1
   set undodir=~/.vim/backups
   set undofile
 endif
 
-" --------------------------------------------------------------------------------
-" Move normally between wrapped lines
-" --------------------------------------------------------------------------------
-nmap j gj
-nmap k gk
-
-" --------------------------------------------------------------------------------
-" Custom Helper Functions
-" --------------------------------------------------------------------------------
-function! Pad(s,amt,...)
-" Desc: Pads string to amount with optional pad char (default: space)
-" Params:
-"   s:   string to be padded
-"   amt: amount to be padded
-"   ...: optional padding character (defaults to space)
-" Examples:
-"   Pad('abc', 5) == 'abc  '
-"   Pad('ab', 5) ==  'ab   '
-"
-    if a:0 > 0
-        let char = a:1
-    else
-        let char = ' '
-    endif
-    echom a:s . repeat(char,a:amt - len(a:s))
-endfunction
-
-function! PrePad(s,amt,...)
-" Desc: Pads begininning of string to amount with optional pad char (default: space)
-" Params:
-"   s:   string to be padded
-"   amt: amount to be padded
-"   ...: optional padding character (defaults to space)
-" Examples:
-"   PrePad('832', 4)      == ' 823'
-"   PrePad('832', 4, '0') == '0823'
-"
-    if a:0 > 0
-        let char = a:1
-    else
-        let char = ' '
-    endif
-    return repeat(char,a:amt - len(a:s)) . a:s
-endfunction
-
-
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Space Based Keybindings
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 
 " Buffer
 nnoremap <leader><Tab> :e#<CR>                   " Switch to last buffer
@@ -139,9 +91,9 @@ nnoremap <leader>bp :bprevious<CR>               " Previous
 nnoremap <leader>bd :bdelete<CR>                 " Delete
 
 " Linting
-nnoremap <leader>ln :SyntasticCheck<CR>          " Lint now
-nnoremap <leader>le :Errors<CR>                  " List errors
-nnoremap <leader>lt :SyntasticToggleMode<CR>     " List errors
+nnoremap <leader>en :SyntasticCheck<CR>          " Lint now
+nnoremap <leader>ee :Errors<CR>                  " List errors
+nnoremap <leader>et :SyntasticToggleMode<CR>     " List errors
 
 " Meta
 nnoremap <leader>_d :e $MYVIMRC<CR>              " Edit .vimrc
@@ -162,9 +114,9 @@ nnoremap <leader>j <C-w>j<CR>                    " Navigate down
 nnoremap <leader>k <C-w>k<CR>                    " Navigate up
 nnoremap <leader>l <C-w>l<CR>                    " Navigate right
 
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " ConEmu Config
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 if !empty($CONEMUBUILD)
     set term=xterm
     set termencoding=utf8
@@ -173,10 +125,9 @@ if !empty($CONEMUBUILD)
     let &t_AF='\e[38;5;%dm'
 endif
 
-
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Vundle Config
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 filetype off
 
 " Install Vundle
@@ -197,6 +148,7 @@ Bundle 'scrooloose/syntastic'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'bling/vim-airline'
 Bundle 'godlygeek/tabular'
+Bundle 'terryma/vim-multiple-cursors'
 
 " Visuals
 Bundle 'altercation/vim-colors-solarized'
@@ -213,8 +165,8 @@ Bundle 'othree/javascript-libraries-syntax.vim'
 call vundle#end()            " Required
 filetype plugin indent on    " Required
 
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " Solarized Theme (Must be set after Vundle)
-" --------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 set background=dark
 colorscheme solarized
