@@ -121,8 +121,8 @@ if !empty($CONEMUBUILD)
     set term=xterm
     set termencoding=utf8
     set t_Co=16
-    let &t_AB='\e[48;5;%dm'
-    let &t_AF='\e[38;5;%dm'
+    let &t_AB="\e[48;5;%dm"
+    let &t_AF="\e[38;5;%dm"
 endif
 
 " ------------------------------------------------------------------------------
