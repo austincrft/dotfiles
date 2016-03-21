@@ -68,7 +68,7 @@ let g:airline#extensions#tabline#enabled = 1
 " ------------------------------------------------------------------------------
 " Multi-Cursor Config
 " ------------------------------------------------------------------------------
-let g:multi_cursor_quit_key = jj
+let g:multi_cursor_quit_key='jj'
 
 " ------------------------------------------------------------------------------
 " Persistent Undo -- " Keep undo history across sessions, by storing in file.
