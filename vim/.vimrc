@@ -1,5 +1,5 @@
-" Use Vim settings, rather then Vi settings (much better!).
-" This must be first, because it changes other options as a side effect.
+" Use Vim settings, rather then Vi settings
+" This must be first, because it changes other options as a side effect
 set nocompatible
 
 " ------------------------------------------------------------------------------
@@ -121,6 +121,7 @@ if !empty($CONEMUBUILD)
     set term=xterm
     set termencoding=utf8
     set t_Co=16
+    " The lines below must use double-quotes -- not sure why
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
 endif
