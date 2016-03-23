@@ -20,6 +20,7 @@ set nowb                       " No write-backup
 set laststatus=2               " Always show statusline
 set t_Co=16                    " Set terminal color to 16
 set colorcolumn=80             " Highlight column 80
+set cursorline                 " Highlight current line
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 
@@ -61,7 +62,7 @@ set smartcase
 autocmd FocusLost * silent! wa
 
 " ------------------------------------------------------------------------------
-" Activate Airline smarter tab line
+" Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#tabline#enabled = 1
 
@@ -71,7 +72,25 @@ let g:airline#extensions#tabline#enabled = 1
 let g:multi_cursor_quit_key='jj'
 
 " ------------------------------------------------------------------------------
-" Persistent Undo -- " Keep undo history across sessions, by storing in file.
+" TComment Config
+" ------------------------------------------------------------------------------
+let g:tcommentMaps=0                          " Disable keymappings
+nmap gcc :TComment<CR>                        " Comment visual block
+vmap gc :TComment<CR>                         " Comment visual block
+call tcomment#DefineType('dosbatch', ':: %s') " Prefer :: for DOS Batch files
+
+" ------------------------------------------------------------------------------
+" GitGutter Config
+" ------------------------------------------------------------------------------
+let g:gitgutter_map_keys=0 " Disable keymappings
+
+" ------------------------------------------------------------------------------
+" GitGutter Config
+" ------------------------------------------------------------------------------
+let g:ctrlp_working_path_mode='a'
+
+" ------------------------------------------------------------------------------
+" Persistent Undo -- Keep undo history across sessions by storing in file.
 " ------------------------------------------------------------------------------
 if has('persistent_undo')
   silent !mkdir ~/.vim/backups > /dev/null 2>&1
@@ -90,19 +109,23 @@ nnoremap <leader>bn :bnext<CR>                   " Next
 nnoremap <leader>bp :bprevious<CR>               " Previous
 nnoremap <leader>bd :bdelete<CR>                 " Delete
 
+" Git
+nnoremap <leader>gdn :GitGutterNextHunk<CR>      " Jump to next git diff
+nnoremap <leader>gdp :GitGutterPrevHunk<CR>      " Jump to previous git diff
+
 " Linting
-nnoremap <leader>en :SyntasticCheck<CR>          " Lint now
+nnoremap <leader>ec :SyntasticCheck<CR>          " Error check
 nnoremap <leader>ee :Errors<CR>                  " List errors
-nnoremap <leader>et :SyntasticToggleMode<CR>     " List errors
+nnoremap <leader>et :SyntasticToggleMode<CR>     " Toggle syntastic
 
 " Meta
 nnoremap <leader>_d :e $MYVIMRC<CR>              " Edit .vimrc
-nnoremap <leader>_r :so $MYVIMRC<CR>             " Reload .vimrc
+nnoremap <leader>_r :source $MYVIMRC<CR>         " Reload .vimrc
 
 " Project
 nnoremap <silent> <leader>pt :NERDTreeToggle<CR> " Open a horizontal split and switch to it (,h)
 nnoremap <silent> <leader>pF :NERDTreeFind<CR>   " Open a horizontal split and switch to it (,h)
-nnoremap <leader>pf :CtrlP<CR>
+nnoremap <leader>pf :CtrlP<CR>                   " Fuzzy-search through files
 
 " Window splits
 nnoremap <leader>wv <C-w>v<C-w>l                 " Split vertically
@@ -131,6 +154,12 @@ endif
 " ------------------------------------------------------------------------------
 filetype off
 
+" ------------------------------------------------------------------------------
+" YouCompleteMe Config
+" ------------------------------------------------------------------------------
+let g:ycm_server_keep_logfiles = 1
+let g:ycm_server_log_level = 'debug'
+
 " Install Vundle
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -150,6 +179,7 @@ Bundle 'Valloric/YouCompleteMe'
 Bundle 'bling/vim-airline'
 Bundle 'godlygeek/tabular'
 Bundle 'terryma/vim-multiple-cursors'
+Bundle 'airblade/vim-gitgutter'
 
 " Visuals
 Bundle 'altercation/vim-colors-solarized'
