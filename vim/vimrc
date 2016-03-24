@@ -62,14 +62,18 @@ set smartcase
 autocmd FocusLost * silent! wa
 
 " ------------------------------------------------------------------------------
+" Persistent Undo -- Keep undo history across sessions by storing in file
+" ------------------------------------------------------------------------------
+if has('persistent_undo')
+  silent !mkdir ~/.vim/backups > /dev/null 2>&1
+  set undodir=~/.vim/backups
+  set undofile
+endif
+
+" ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#tabline#enabled = 1
-
-" ------------------------------------------------------------------------------
-" Multi-Cursor Config
-" ------------------------------------------------------------------------------
-let g:multi_cursor_quit_key='jj'
 
 " ------------------------------------------------------------------------------
 " TComment Config
@@ -85,18 +89,20 @@ call tcomment#DefineType('dosbatch', ':: %s') " Prefer :: for DOS Batch files
 let g:gitgutter_map_keys=0 " Disable keymappings
 
 " ------------------------------------------------------------------------------
-" GitGutter Config
+" CtrlP Config
 " ------------------------------------------------------------------------------
 let g:ctrlp_working_path_mode='a'
 
 " ------------------------------------------------------------------------------
-" Persistent Undo -- Keep undo history across sessions by storing in file.
+" YouCompleteMe Config
 " ------------------------------------------------------------------------------
-if has('persistent_undo')
-  silent !mkdir ~/.vim/backups > /dev/null 2>&1
-  set undodir=~/.vim/backups
-  set undofile
-endif
+let g:ycm_server_keep_logfiles = 1
+let g:ycm_server_log_level = 'debug'
+
+" ------------------------------------------------------------------------------
+" Notes Config
+" ------------------------------------------------------------------------------
+:let g:notes_directories = ['~/Dropbox/vim-notes']
 
 " ------------------------------------------------------------------------------
 " Space Based Keybindings
@@ -154,12 +160,6 @@ endif
 " ------------------------------------------------------------------------------
 filetype off
 
-" ------------------------------------------------------------------------------
-" YouCompleteMe Config
-" ------------------------------------------------------------------------------
-let g:ycm_server_keep_logfiles = 1
-let g:ycm_server_log_level = 'debug'
-
 " Install Vundle
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -167,31 +167,37 @@ call vundle#begin()
 " Let Vundle manage Vundle, required
 Bundle 'gmarik/Vundle.vim'
 
-" Cool plugins
+" Editor features
+Bundle 'tpope/vim-surround'
+Bundle 'jiangmiao/auto-pairs'
+Bundle 'tomtom/tcomment_vim.git'
+
+" File browsing
 Bundle 'scrooloose/nerdtree'
 Bundle 'Xuyuanp/nerdtree-git-plugin'
 Bundle 'ctrlpvim/ctrlp.vim'
+
+" Formatting
 Bundle 'ntpeters/vim-better-whitespace'
-Bundle 'tpope/vim-surround'
-Bundle 'jiangmiao/auto-pairs'
-Bundle 'scrooloose/syntastic'
-Bundle 'Valloric/YouCompleteMe'
-Bundle 'bling/vim-airline'
 Bundle 'godlygeek/tabular'
-Bundle 'terryma/vim-multiple-cursors'
+
+" Linting
+Bundle 'scrooloose/syntastic'
+
+" Git
 Bundle 'airblade/vim-gitgutter'
 
+" Auto-Complete
+Bundle 'Valloric/YouCompleteMe'
+
+" Tools
+Bundle 'xolox/vim-misc'
+Bundle 'xolox/vim-notes'
+
 " Visuals
-Bundle 'altercation/vim-colors-solarized'
+Bundle 'bling/vim-airline'
 Bundle 'vim-airline/vim-airline-themes'
-
-" Commenting
-Bundle 'tomtom/tlib_vim.git'
-Bundle 'tomtom/tcomment_vim.git'
-
-" Javascript
-Bundle 'othree/yajs.vim'
-Bundle 'othree/javascript-libraries-syntax.vim'
+Bundle 'altercation/vim-colors-solarized'
 
 call vundle#end()            " Required
 filetype plugin indent on    " Required
