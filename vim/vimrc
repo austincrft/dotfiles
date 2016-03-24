@@ -105,8 +105,20 @@ let g:ycm_server_log_level = 'debug'
 :let g:notes_directories = ['~/Dropbox/vim-notes']
 
 " ------------------------------------------------------------------------------
+" Bookmarks Config
+" ------------------------------------------------------------------------------
+let g:bookmark_no_default_key_mappings = 1
+
+" ------------------------------------------------------------------------------
 " Space Based Keybindings
 " ------------------------------------------------------------------------------
+
+" Bookmarks
+nnoremap <leader>Bb :BookmarkToggle<CR>          " Toggle on current line
+nnoremap <leader>Bn :BookmarkNext<CR>            " Next
+nnoremap <leader>Bp :BookmarkPrev<CR>            " Previous
+nnoremap <leader>Ba :BookmarkShowAll<CR>         " Show All
+nnoremap <leader>Bc :BookmarkClear<CR>           " Clear in current buffer
 
 " Buffer
 nnoremap <leader><Tab> :e#<CR>                   " Switch to last buffer
@@ -118,6 +130,7 @@ nnoremap <leader>bd :bdelete<CR>                 " Delete
 " Git
 nnoremap <leader>gdn :GitGutterNextHunk<CR>      " Jump to next git diff
 nnoremap <leader>gdp :GitGutterPrevHunk<CR>      " Jump to previous git diff
+nnoremap <leader>gdt :GitGutterToggle<CR>        " Toggle git-gutter
 
 " Linting
 nnoremap <leader>ec :SyntasticCheck<CR>          " Error check
@@ -193,6 +206,7 @@ Bundle 'Valloric/YouCompleteMe'
 " Tools
 Bundle 'xolox/vim-misc'
 Bundle 'xolox/vim-notes'
+Bundle 'MattesGroeger/vim-bookmarks'
 
 " Visuals
 Bundle 'bling/vim-airline'
