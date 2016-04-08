@@ -18,6 +18,8 @@ set noswapfile                 " No swap file
 set nobackup                   " No backup
 set nowb                       " No write-backup
 set laststatus=2               " Always show statusline
+set foldmethod=syntax          " Enable syntax folding
+set foldlevelstart=20          " Set starting fold high so file starts unfolded
 set t_Co=16                    " Set terminal color to 16
 set colorcolumn=80             " Highlight column 80
 set cursorline                 " Highlight current line
@@ -81,7 +83,6 @@ let g:airline#extensions#tabline#enabled = 1
 let g:tcommentMaps=0                          " Disable keymappings
 nmap gcc :TComment<CR>                        " Comment visual block
 vmap gc :TComment<CR>                         " Comment visual block
-call tcomment#DefineType('dosbatch', ':: %s') " Prefer :: for DOS Batch files
 
 " ------------------------------------------------------------------------------
 " GitGutter Config
@@ -98,6 +99,14 @@ let g:ctrlp_working_path_mode='a'
 " ------------------------------------------------------------------------------
 let g:ycm_server_keep_logfiles = 1
 let g:ycm_server_log_level = 'debug'
+if has('win32')
+  let ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
+end
+
+" ------------------------------------------------------------------------------
+" OmniSharp Config
+" ------------------------------------------------------------------------------
+" let g:OmniSharp_server_type = 'roslyn'
 
 " ------------------------------------------------------------------------------
 " Notes Config
@@ -114,47 +123,54 @@ let g:bookmark_no_default_key_mappings = 1
 " ------------------------------------------------------------------------------
 
 " Bookmarks
-nnoremap <leader>Bb :BookmarkToggle<CR>          " Toggle on current line
-nnoremap <leader>Bn :BookmarkNext<CR>            " Next
-nnoremap <leader>Bp :BookmarkPrev<CR>            " Previous
-nnoremap <leader>Ba :BookmarkShowAll<CR>         " Show All
-nnoremap <leader>Bc :BookmarkClear<CR>           " Clear in current buffer
+nnoremap <leader>Bb :BookmarkToggle<CR>            " Toggle on current line
+nnoremap <leader>Bn :BookmarkNext<CR>              " Next
+nnoremap <leader>Bp :BookmarkPrev<CR>              " Previous
+nnoremap <leader>Ba :BookmarkShowAll<CR>           " Show All
+nnoremap <leader>Bc :BookmarkClear<CR>             " Clear in current buffer
 
 " Buffer
-nnoremap <leader><Tab> :e#<CR>                   " Switch to last buffer
-nnoremap <leader>bb :CtrlPBuffer<CR>             " List
-nnoremap <leader>bn :bnext<CR>                   " Next
-nnoremap <leader>bp :bprevious<CR>               " Previous
-nnoremap <leader>bd :bdelete<CR>                 " Delete
+nnoremap <leader><Tab> :e#<CR>                     " Switch to last buffer
+nnoremap <leader>bb :CtrlPBuffer<CR>               " List
+nnoremap <leader>bn :bnext<CR>                     " Next
+nnoremap <leader>bp :bprevious<CR>                 " Previous
+nnoremap <leader>bd :bdelete<CR>                   " Delete
+
+" Folding
+nnoremap <leader>ff za                             " Toggle current fold
+nnoremap <leader>fo zR                             " Open all folds
+nnoremap <leader>fc zM                             " Close all folds
+nnoremap <leader>fv zv                             " View cursor line
 
 " Git
-nnoremap <leader>gdn :GitGutterNextHunk<CR>      " Jump to next git diff
-nnoremap <leader>gdp :GitGutterPrevHunk<CR>      " Jump to previous git diff
-nnoremap <leader>gdt :GitGutterToggle<CR>        " Toggle git-gutter
+nnoremap <leader>gdn :GitGutterNextHunk<CR>        " Jump to next diff
+nnoremap <leader>gdp :GitGutterPrevHunk<CR>        " Jump to previous diff
+nnoremap <leader>gdt :GitGutterToggle<CR>          " Toggle git-gutter
 
 " Linting
-nnoremap <leader>ec :SyntasticCheck<CR>          " Error check
-nnoremap <leader>ee :Errors<CR>                  " List errors
-nnoremap <leader>et :SyntasticToggleMode<CR>     " Toggle syntastic
+nnoremap <leader>ec :SyntasticCheck<CR>            " Error check
+nnoremap <leader>ee :Errors<CR>                    " List errors
+nnoremap <leader>et :SyntasticToggleMode<CR>       " Toggle syntastic
 
 " Meta
-nnoremap <leader>_d :e $MYVIMRC<CR>              " Edit .vimrc
-nnoremap <leader>_r :source $MYVIMRC<CR>         " Reload .vimrc
+nnoremap <leader>_d :e $MYVIMRC<CR>                " Edit .vimrc
+nnoremap <leader>_r :source $MYVIMRC<CR>           " Reload .vimrc
+nnoremap <leader>_p : ~/.vim/work/projects.vim<CR> " Edit work projects file
 
 " Project
-nnoremap <silent> <leader>pt :NERDTreeToggle<CR> " Open a horizontal split and switch to it (,h)
-nnoremap <silent> <leader>pF :NERDTreeFind<CR>   " Open a horizontal split and switch to it (,h)
-nnoremap <leader>pf :CtrlP<CR>                   " Fuzzy-search through files
+nnoremap <silent> <leader>pt :NERDTreeToggle<CR>   " Open a horizontal split and switch to it (,h)
+nnoremap <silent> <leader>pF :NERDTreeFind<CR>     " Open a horizontal split and switch to it (,h)
+nnoremap <leader>pf :CtrlP<CR>                     " Fuzzy-search through files
 
 " Window splits
-nnoremap <leader>wv <C-w>v<C-w>l                 " Split vertically
-nnoremap <leader>wh <C-w>s<C-w>j                 " Split horizontally
+nnoremap <leader>wv <C-w>v<C-w>l                   " Split vertically
+nnoremap <leader>wh <C-w>s<C-w>j                   " Split horizontally
 
 " Window navigation
-nnoremap <leader>h <C-w>h<CR>                    " Navigate left
-nnoremap <leader>j <C-w>j<CR>                    " Navigate down
-nnoremap <leader>k <C-w>k<CR>                    " Navigate up
-nnoremap <leader>l <C-w>l<CR>                    " Navigate right
+nnoremap <leader>h <C-w>h<CR>                      " Navigate left
+nnoremap <leader>j <C-w>j<CR>                      " Navigate down
+nnoremap <leader>k <C-w>k<CR>                      " Navigate up
+nnoremap <leader>l <C-w>l<CR>                      " Navigate right
 
 " ------------------------------------------------------------------------------
 " ConEmu Config
@@ -163,7 +179,6 @@ if !empty($CONEMUBUILD)
     set term=xterm
     set termencoding=utf8
     set t_Co=16
-    " The lines below must use double-quotes -- not sure why
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
 endif
@@ -187,7 +202,6 @@ Bundle 'tomtom/tcomment_vim.git'
 
 " File browsing
 Bundle 'scrooloose/nerdtree'
-Bundle 'Xuyuanp/nerdtree-git-plugin'
 Bundle 'ctrlpvim/ctrlp.vim'
 
 " Formatting
@@ -203,10 +217,22 @@ Bundle 'airblade/vim-gitgutter'
 " Auto-Complete
 Bundle 'Valloric/YouCompleteMe'
 
+" CSharp
+Bundle 'OmniSharp/omnisharp-vim'
+
+" Python
+Bundle 'Bogdanp/pyrepl.vim'
+
 " Tools
 Bundle 'xolox/vim-misc'
 Bundle 'xolox/vim-notes'
 Bundle 'MattesGroeger/vim-bookmarks'
+Bundle 'tpope/vim-dispatch'
+Bundle 'junegunn/vader.vim'
+Bundle 'amiorin/vim-project'
+
+" Syntax
+Bundle 'OrangeT/vim-csharp'
 
 " Visuals
 Bundle 'bling/vim-airline'
@@ -221,3 +247,18 @@ filetype plugin indent on    " Required
 " ------------------------------------------------------------------------------
 set background=dark
 colorscheme solarized
+
+" ------------------------------------------------------------------------------
+" Project Config
+" ------------------------------------------------------------------------------
+let g:project_use_nerdtree = 1
+set rtp+=~/.vim/bundle/vim-project/
+call project#rc('/src')
+
+Project 'dotfiles'
+Project 'sublime-gherkin-auto-complete-plus'
+
+" Get work projects if the file exists
+if filereadable($HOME . "/.vim/work/projects.vim")
+  source $HOME/.vim/work/projects.vim
+end
