@@ -77,6 +77,7 @@ endif
 " Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#hunks#enabled = 0
 let g:airline_powerline_fonts = 1
 
 " ------------------------------------------------------------------------------
@@ -166,12 +167,12 @@ nnoremap <leader>_p : ~/.vim/work/projects.vim<CR> " Edit work projects file
 
 " Project
 nnoremap <leader>pt :FileBeagle<CR>                " Opens cwd
-nnoremap <leader>pF :FileBeagleBufferDir<CR>       " Opens directory of current file
+nnoremap <leader>pF :FileBeagleBufferDir<CR>       " Open buffer directory
 nnoremap <leader>pf :CtrlP<CR>                     " Fuzzy-search through files
 
 " Window splits
-nnoremap <leader>wv <C-w>v<C-w>l                   " Split vertically
-nnoremap <leader>wh <C-w>s<C-w>j                   " Split horizontally
+nnoremap <leader>wv :vsplit<CR>                    " Split vertically
+nnoremap <leader>wh :split<CR>                     " Split horizontally
 
 " Window navigation
 nnoremap <leader>h <C-w>h<CR>                      " Navigate left
@@ -240,6 +241,7 @@ Bundle 'MattesGroeger/vim-bookmarks'
 Bundle 'tpope/vim-dispatch'
 Bundle 'junegunn/vader.vim'
 Bundle 'amiorin/vim-project'
+Bundle 'tpope/vim-fugitive'
 
 " Syntax
 Bundle 'OrangeT/vim-csharp'
