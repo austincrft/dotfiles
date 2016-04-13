@@ -119,6 +119,11 @@ end
 let g:bookmark_no_default_key_mappings = 1
 
 " ------------------------------------------------------------------------------
+" Paredit Config
+" ------------------------------------------------------------------------------
+:let g:paredit_electric_return=0
+
+" ------------------------------------------------------------------------------
 " Space Based Keybindings
 " ------------------------------------------------------------------------------
 
@@ -217,6 +222,9 @@ Bundle 'airblade/vim-gitgutter'
 " Auto-Complete
 Bundle 'Valloric/YouCompleteMe'
 
+" Clojure
+Bundle 'vim-scripts/paredit.vim'
+
 " CSharp
 Bundle 'OmniSharp/omnisharp-vim'
 
@@ -257,6 +265,7 @@ call project#rc('/src')
 
 Project 'dotfiles'
 Project 'sublime-gherkin-auto-complete-plus'
+Project 'clojure-calculator'
 
 " Get work projects if the file exists
 if filereadable($HOME . "/.vim/work/projects.vim")
