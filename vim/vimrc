@@ -77,6 +77,7 @@ endif
 " Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#hunks#enabled = 0
 let g:airline_powerline_fonts = 1
 
 " ------------------------------------------------------------------------------
@@ -126,6 +127,11 @@ let g:bookmark_no_default_key_mappings = 1
 let g:filebeagle_suppress_keymaps = 1
 
 " ------------------------------------------------------------------------------
+" Paredit Config
+" ------------------------------------------------------------------------------
+:let g:paredit_electric_return=0
+
+" ------------------------------------------------------------------------------
 " Space Based Keybindings
 " ------------------------------------------------------------------------------
 
@@ -170,13 +176,13 @@ nnoremap <leader>nD :DeleteNote<CR>|                " Delete note
 nnoremap <leader>ns :SearchNotes<space>|            " Delete note
 
 " Project
-nnoremap <leader>pt :FileBeagle<CR>|                " Opens cwd
-nnoremap <leader>pF :FileBeagleBufferDir<CR>|       " Opens directory of current file
-nnoremap <leader>pf :CtrlP<CR>|                     " Fuzzy-search through files
+nnoremap <leader>pt :FileBeagle<CR>                " Opens cwd
+nnoremap <leader>pF :FileBeagleBufferDir<CR>       " Open buffer directory
+nnoremap <leader>pf :CtrlP<CR>                     " Fuzzy-search through files
 
 " Window splits
-nnoremap <leader>wv <C-w>v<C-w>l|                   " Split vertically
-nnoremap <leader>wh <C-w>s<C-w>j|                   " Split horizontally
+nnoremap <leader>wv :vsplit<CR>                    " Split vertically
+nnoremap <leader>wh :split<CR>                     " Split horizontally
 
 " Window navigation
 nnoremap <leader>h <C-w>h<CR>|                      " Navigate left
@@ -229,6 +235,9 @@ Bundle 'airblade/vim-gitgutter'
 " Auto-Complete
 Bundle 'Valloric/YouCompleteMe'
 
+" Clojure
+Bundle 'vim-scripts/paredit.vim'
+
 " CSharp
 Bundle 'OmniSharp/omnisharp-vim'
 
@@ -242,6 +251,7 @@ Bundle 'MattesGroeger/vim-bookmarks'
 Bundle 'tpope/vim-dispatch'
 Bundle 'junegunn/vader.vim'
 Bundle 'amiorin/vim-project'
+Bundle 'tpope/vim-fugitive'
 
 " Syntax
 Bundle 'OrangeT/vim-csharp'
@@ -268,6 +278,7 @@ call project#rc('/src')
 
 Project 'dotfiles'
 Project 'sublime-gherkin-auto-complete-plus'
+Project 'clojure-calculator'
 
 " Get work projects if the file exists
 if filereadable($HOME . "/.vim/work/projects.vim")
