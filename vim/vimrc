@@ -176,13 +176,13 @@ nnoremap <leader>nD :DeleteNote<CR>|                " Delete note
 nnoremap <leader>ns :SearchNotes<space>|            " Delete note
 
 " Project
-nnoremap <leader>pt :FileBeagle<CR>                " Opens cwd
-nnoremap <leader>pF :FileBeagleBufferDir<CR>       " Open buffer directory
-nnoremap <leader>pf :CtrlP<CR>                     " Fuzzy-search through files
+nnoremap <leader>pt :FileBeagle<CR>|                " Opens cwd
+nnoremap <leader>pF :FileBeagleBufferDir<CR>|       " Open buffer directory
+nnoremap <leader>pf :CtrlP<CR>|                     " Fuzzy-search through files
 
 " Window splits
-nnoremap <leader>wv :vsplit<CR>                    " Split vertically
-nnoremap <leader>wh :split<CR>                     " Split horizontally
+nnoremap <leader>wv :vsplit<CR>|                    " Split vertically
+nnoremap <leader>wh :split<CR>|                     " Split horizontally
 
 " Window navigation
 nnoremap <leader>h <C-w>h<CR>|                      " Navigate left
