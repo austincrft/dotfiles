@@ -121,58 +121,68 @@ let g:notes_directories = ['~/Dropbox/vim-notes']
 let g:bookmark_no_default_key_mappings = 1
 
 " ------------------------------------------------------------------------------
+" FileBeagle Config
+" ------------------------------------------------------------------------------
+let g:filebeagle_suppress_keymaps = 1
+
+" ------------------------------------------------------------------------------
 " Space Based Keybindings
 " ------------------------------------------------------------------------------
 
 " Bookmarks
-nnoremap <leader>Bb :BookmarkToggle<CR>            " Toggle on current line
-nnoremap <leader>Bn :BookmarkNext<CR>              " Next
-nnoremap <leader>Bp :BookmarkPrev<CR>              " Previous
-nnoremap <leader>Ba :BookmarkShowAll<CR>           " Show All
-nnoremap <leader>Bc :BookmarkClear<CR>             " Clear in current buffer
+nnoremap <leader>Bb :BookmarkToggle<CR>|            " Toggle on current line
+nnoremap <leader>Bn :BookmarkNext<CR>|              " Next
+nnoremap <leader>Bp :BookmarkPrev<CR>|              " Previous
+nnoremap <leader>Ba :BookmarkShowAll<CR>|           " Show All
+nnoremap <leader>Bc :BookmarkClear<CR>|             " Clear in current buffer
 
 " Buffer
-nnoremap <leader><Tab> :e#<CR>                     " Switch to last buffer
-nnoremap <leader>bb :CtrlPBuffer<CR>               " List
-nnoremap <leader>bn :bnext<CR>                     " Next
-nnoremap <leader>bp :bprevious<CR>                 " Previous
-nnoremap <leader>bd :bdelete<CR>                   " Delete
+nnoremap <leader><Tab> :e#<CR>|                     " Switch to last buffer
+nnoremap <leader>bb :CtrlPBuffer<CR>|               " List
+nnoremap <leader>bn :bnext<CR>|                     " Next
+nnoremap <leader>bp :bprevious<CR>|                 " Previous
+nnoremap <leader>bd :bdelete<CR>|                   " Delete
 
 " Folding
-nnoremap <leader>ff za                             " Toggle current fold
-nnoremap <leader>fo zR                             " Open all folds
-nnoremap <leader>fc zM                             " Close all folds
-nnoremap <leader>fv zv                             " View cursor line
+nnoremap <leader>ff za|                             " Toggle current fold
+nnoremap <leader>fo zR|                             " Open all folds
+nnoremap <leader>fc zM|                             " Close all folds
+nnoremap <leader>fv zv|                             " View cursor line
 
 " Git
-nnoremap <leader>gdn :GitGutterNextHunk<CR>        " Jump to next diff
-nnoremap <leader>gdp :GitGutterPrevHunk<CR>        " Jump to previous diff
-nnoremap <leader>gdt :GitGutterToggle<CR>          " Toggle git-gutter
+nnoremap <leader>gdn :GitGutterNextHunk<CR>|        " Jump to next diff
+nnoremap <leader>gdp :GitGutterPrevHunk<CR>|        " Jump to previous diff
+nnoremap <leader>gdt :GitGutterToggle<CR>|          " Toggle git-gutter
 
 " Linting (Errors)
-nnoremap <leader>ec :SyntasticCheck<CR>            " Error check
-nnoremap <leader>ee :Errors<CR>                    " List errors
-nnoremap <leader>et :SyntasticToggleMode<CR>       " Toggle syntastic
+nnoremap <leader>ec :SyntasticCheck<CR>|            " Error check
+nnoremap <leader>ee :Errors<CR>|                    " List errors
+nnoremap <leader>et :SyntasticToggleMode<CR>|       " Toggle syntastic
 
 " Meta
-nnoremap <leader>_d :e $MYVIMRC<CR>                " Edit .vimrc
-nnoremap <leader>_r :source $MYVIMRC<CR>           " Reload .vimrc
-nnoremap <leader>_p : ~/.vim/work/projects.vim<CR> " Edit work projects file
+nnoremap <leader>_d :e $MYVIMRC<CR>|                " Edit .vimrc
+nnoremap <leader>_r :source $MYVIMRC<CR>|           " Reload .vimrc
+nnoremap <leader>_p : ~/.vim/work/projects.vim<CR>| " Edit work projects file
+
+" Notes
+nnoremap <leader>nn :Notes<space>|                  " Open note
+nnoremap <leader>nD :DeleteNote<CR>|                " Delete note
+nnoremap <leader>ns :SearchNotes<space>|            " Delete note
 
 " Project
-nnoremap <leader>pt :FileBeagle<CR>                " Opens cwd
-nnoremap <leader>pF :FileBeagleBufferDir<CR>       " Opens directory of current file
-nnoremap <leader>pf :CtrlP<CR>                     " Fuzzy-search through files
+nnoremap <leader>pt :FileBeagle<CR>|                " Opens cwd
+nnoremap <leader>pF :FileBeagleBufferDir<CR>|       " Opens directory of current file
+nnoremap <leader>pf :CtrlP<CR>|                     " Fuzzy-search through files
 
 " Window splits
-nnoremap <leader>wv <C-w>v<C-w>l                   " Split vertically
-nnoremap <leader>wh <C-w>s<C-w>j                   " Split horizontally
+nnoremap <leader>wv <C-w>v<C-w>l|                   " Split vertically
+nnoremap <leader>wh <C-w>s<C-w>j|                   " Split horizontally
 
 " Window navigation
-nnoremap <leader>h <C-w>h<CR>                      " Navigate left
-nnoremap <leader>j <C-w>j<CR>                      " Navigate down
-nnoremap <leader>k <C-w>k<CR>                      " Navigate up
-nnoremap <leader>l <C-w>l<CR>                      " Navigate right
+nnoremap <leader>h <C-w>h<CR>|                      " Navigate left
+nnoremap <leader>j <C-w>j<CR>|                      " Navigate down
+nnoremap <leader>k <C-w>k<CR>|                      " Navigate up
+nnoremap <leader>l <C-w>l<CR>|                      " Navigate right
 
 " ------------------------------------------------------------------------------
 " ConEmu Config
