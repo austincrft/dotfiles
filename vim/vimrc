@@ -33,12 +33,6 @@ imap jj <Esc>
 let mapleader = ' '
 
 " ------------------------------------------------------------------------------
-" Move normally between wrapped lines
-" ------------------------------------------------------------------------------
-nmap j gj
-nmap k gk
-
-" ------------------------------------------------------------------------------
 " Indentation and Linebreaks
 " ------------------------------------------------------------------------------
 set autoindent
@@ -74,6 +68,85 @@ if has('persistent_undo')
 endif
 
 " ------------------------------------------------------------------------------
+" ConEmu Config
+" ------------------------------------------------------------------------------
+if !empty($CONEMUBUILD)
+    set term=xterm
+    set termencoding=utf8
+    set t_Co=16
+    let &t_AB="\e[48;5;%dm"
+    let &t_AF="\e[38;5;%dm"
+endif
+
+" ------------------------------------------------------------------------------
+" Vundle Config
+" ------------------------------------------------------------------------------
+filetype off
+
+" Install Vundle
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" Let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+
+" Editor features
+Plugin 'tpope/vim-surround'
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'tomtom/tcomment_vim.git'
+
+" File browsing
+Plugin 'jeetsukumaran/vim-filebeagle'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'rking/ag.vim'
+
+" Formatting
+Plugin 'ntpeters/vim-better-whitespace'
+Plugin 'godlygeek/tabular'
+
+" Linting
+Plugin 'scrooloose/syntastic'
+
+" Git
+Plugin 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-fugitive'
+
+" Auto-Complete
+Plugin 'Valloric/YouCompleteMe'
+
+" Clojure
+Plugin 'vim-scripts/paredit.vim'
+
+" CSharp
+Plugin 'OmniSharp/omnisharp-vim'
+
+" Python
+Plugin 'Bogdanp/pyrepl.vim'
+
+" Tools
+Plugin 'xolox/vim-misc'
+Plugin 'xolox/vim-notes'
+Plugin 'MattesGroeger/vim-bookmarks'
+Plugin 'tpope/vim-dispatch'
+Plugin 'amiorin/vim-project'
+
+" Syntax
+Plugin 'OrangeT/vim-csharp'
+
+" Visuals
+Plugin 'bling/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'altercation/vim-colors-solarized'
+
+call vundle#end()            " Required
+filetype plugin indent on    " Required
+
+" ------------------------------------------------------------------------------
+" Ag Config
+" ------------------------------------------------------------------------------
+let g:ag_prg="ag --vimgrep --ignore tags"
+
+" ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#tabline#enabled = 1
@@ -81,11 +154,19 @@ let g:airline#extensions#hunks#enabled = 0
 let g:airline_powerline_fonts = 1
 
 " ------------------------------------------------------------------------------
-" TComment Config
+" Bookmarks Config
 " ------------------------------------------------------------------------------
-let g:tcommentMaps=0                          " Disable keymappings
-nmap gcc :TComment<CR>                        " Comment visual block
-vmap gc :TComment<CR>                         " Comment visual block
+let g:bookmark_no_default_key_mappings = 1
+
+" ------------------------------------------------------------------------------
+" CtrlP Config
+" ------------------------------------------------------------------------------
+let g:ctrlp_working_path_mode='a'
+
+" ------------------------------------------------------------------------------
+" FileBeagle Config
+" ------------------------------------------------------------------------------
+let g:filebeagle_suppress_keymaps = 1
 
 " ------------------------------------------------------------------------------
 " GitGutter Config
@@ -93,9 +174,32 @@ vmap gc :TComment<CR>                         " Comment visual block
 let g:gitgutter_map_keys=0 " Disable keymappings
 
 " ------------------------------------------------------------------------------
-" CtrlP Config
+" Notes Config
 " ------------------------------------------------------------------------------
-let g:ctrlp_working_path_mode='a'
+let g:notes_directories = ['~/Dropbox/vim-notes']
+
+" ------------------------------------------------------------------------------
+" OmniSharp Config
+" ------------------------------------------------------------------------------
+let g:OmniSharp_server_type = 'roslyn'
+
+" ------------------------------------------------------------------------------
+" Paredit Config
+" ------------------------------------------------------------------------------
+let g:paredit_electric_return=0
+
+" ------------------------------------------------------------------------------
+" Solarized Theme
+" ------------------------------------------------------------------------------
+set background=dark
+colorscheme solarized
+
+"  ------------------------------------------------------------------------------
+" TComment Config
+" ------------------------------------------------------------------------------
+let g:tcommentMaps=0                          " Disable keymappings
+nmap gcc :TComment<CR>|                       " Comment line
+vmap gc :TComment<CR>|                        " Comment selection
 
 " ------------------------------------------------------------------------------
 " YouCompleteMe Config
@@ -107,32 +211,7 @@ if has('win32')
 end
 
 " ------------------------------------------------------------------------------
-" OmniSharp Config
-" ------------------------------------------------------------------------------
-" let g:OmniSharp_server_type = 'roslyn'
-
-" ------------------------------------------------------------------------------
-" Notes Config
-" ------------------------------------------------------------------------------
-let g:notes_directories = ['~/Dropbox/vim-notes']
-
-" ------------------------------------------------------------------------------
-" Bookmarks Config
-" ------------------------------------------------------------------------------
-let g:bookmark_no_default_key_mappings = 1
-
-" ------------------------------------------------------------------------------
-" FileBeagle Config
-" ------------------------------------------------------------------------------
-let g:filebeagle_suppress_keymaps = 1
-
-" ------------------------------------------------------------------------------
-" Paredit Config
-" ------------------------------------------------------------------------------
-:let g:paredit_electric_return=0
-
-" ------------------------------------------------------------------------------
-" Space Based Keybindings
+" Leader Keybindings
 " ------------------------------------------------------------------------------
 
 " Bookmarks
@@ -168,7 +247,6 @@ nnoremap <leader>et :SyntasticToggleMode<CR>|       " Toggle syntastic
 " Meta
 nnoremap <leader>_d :e $MYVIMRC<CR>|                " Edit .vimrc
 nnoremap <leader>_r :source $MYVIMRC<CR>|           " Reload .vimrc
-nnoremap <leader>_p : ~/.vim/work/projects.vim<CR>| " Edit work projects file
 
 " Notes
 nnoremap <leader>nn :Notes<space>|                  " Open note
@@ -176,9 +254,24 @@ nnoremap <leader>nD :DeleteNote<CR>|                " Delete note
 nnoremap <leader>ns :SearchNotes<space>|            " Delete note
 
 " Project
-nnoremap <leader>pt :FileBeagle<CR>|                " Opens cwd
+nnoremap <leader>pt :FileBeagle<CR>|                " Open cwd
 nnoremap <leader>pF :FileBeagleBufferDir<CR>|       " Open buffer directory
-nnoremap <leader>pf :CtrlP<CR>|                     " Fuzzy-search through files
+nnoremap <leader>pf :CtrlP<CR>|                     " Fuzzy-search filenames
+nnoremap <leader>ps :Ag<space>|                     " Grep project
+
+" Quickfix
+nnoremap <leader>co :copen<CR>|                     " Open
+nnoremap <leader>cc :cclose<CR>|                    " Close
+nnoremap <leader>cn :cnext<CR>|                     " Next
+nnoremap <leader>cp :cprevious<CR>|                 " Previous
+
+" Tags
+nnoremap <leader>tt :CtrlPTag<CR>|                  " Fuzzy-search tags
+nnoremap <leader>ts :tselect<CR>|                   " View list
+nnoremap <leader>tn :tnext<CR>|                     " Next
+nnoremap <leader>tp :tprev<CR>|                     " Previous
+nnoremap <leader>tf :tfirst<CR>|                    " First
+nnoremap <leader>tl :tlast<CR>|                     " Last
 
 " Window splits
 nnoremap <leader>wv :vsplit<CR>|                    " Split vertically
@@ -189,86 +282,6 @@ nnoremap <leader>h <C-w>h<CR>|                      " Navigate left
 nnoremap <leader>j <C-w>j<CR>|                      " Navigate down
 nnoremap <leader>k <C-w>k<CR>|                      " Navigate up
 nnoremap <leader>l <C-w>l<CR>|                      " Navigate right
-
-" ------------------------------------------------------------------------------
-" ConEmu Config
-" ------------------------------------------------------------------------------
-if !empty($CONEMUBUILD)
-    set term=xterm
-    set termencoding=utf8
-    set t_Co=16
-    let &t_AB="\e[48;5;%dm"
-    let &t_AF="\e[38;5;%dm"
-endif
-
-" ------------------------------------------------------------------------------
-" Vundle Config
-" ------------------------------------------------------------------------------
-filetype off
-
-" Install Vundle
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-
-" Let Vundle manage Vundle, required
-Bundle 'gmarik/Vundle.vim'
-
-" Editor features
-Bundle 'tpope/vim-surround'
-Bundle 'jiangmiao/auto-pairs'
-Bundle 'tomtom/tcomment_vim.git'
-
-" File browsing
-Bundle 'jeetsukumaran/vim-filebeagle'
-Bundle 'ctrlpvim/ctrlp.vim'
-
-" Formatting
-Bundle 'ntpeters/vim-better-whitespace'
-Bundle 'godlygeek/tabular'
-
-" Linting
-Bundle 'scrooloose/syntastic'
-
-" Git
-Bundle 'airblade/vim-gitgutter'
-
-" Auto-Complete
-Bundle 'Valloric/YouCompleteMe'
-
-" Clojure
-Bundle 'vim-scripts/paredit.vim'
-
-" CSharp
-Bundle 'OmniSharp/omnisharp-vim'
-
-" Python
-Bundle 'Bogdanp/pyrepl.vim'
-
-" Tools
-Bundle 'xolox/vim-misc'
-Bundle 'xolox/vim-notes'
-Bundle 'MattesGroeger/vim-bookmarks'
-Bundle 'tpope/vim-dispatch'
-Bundle 'junegunn/vader.vim'
-Bundle 'amiorin/vim-project'
-Bundle 'tpope/vim-fugitive'
-
-" Syntax
-Bundle 'OrangeT/vim-csharp'
-
-" Visuals
-Bundle 'bling/vim-airline'
-Bundle 'vim-airline/vim-airline-themes'
-Bundle 'altercation/vim-colors-solarized'
-
-call vundle#end()            " Required
-filetype plugin indent on    " Required
-
-" ------------------------------------------------------------------------------
-" Solarized Theme (Must be set after Vundle)
-" ------------------------------------------------------------------------------
-set background=dark
-colorscheme solarized
 
 " ------------------------------------------------------------------------------
 " Project Config
@@ -282,5 +295,5 @@ Project 'clojure-calculator'
 
 " Get work projects if the file exists
 if filereadable($HOME . "/.vim/work/projects.vim")
-  source $HOME/.vim/work/projects.vim
+  source ~/.vim/work/projects.vim
 end
