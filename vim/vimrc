@@ -226,7 +226,7 @@ nnoremap <leader><Tab> :e#<CR>|                     " Switch to last buffer
 nnoremap <leader>bb :CtrlPBuffer<CR>|               " List
 nnoremap <leader>bn :bnext<CR>|                     " Next
 nnoremap <leader>bp :bprevious<CR>|                 " Previous
-nnoremap <leader>bd :bdelete<CR>|                   " Delete
+nnoremap <leader>bd :bprevious\|bdelete#<CR>|       " Delete (but keep split)
 
 " Folding
 nnoremap <leader>ff za|                             " Toggle current fold
@@ -249,7 +249,7 @@ nnoremap <leader>_d :e $MYVIMRC<CR>|                " Edit .vimrc
 nnoremap <leader>_r :source $MYVIMRC<CR>|           " Reload .vimrc
 
 " Notes
-nnoremap <leader>nn :Notes<space>|                  " Open note
+nnoremap <leader>nn :Note<space>|                   " Open note
 nnoremap <leader>nD :DeleteNote<CR>|                " Delete note
 nnoremap <leader>ns :SearchNotes<space>|            " Delete note
 
@@ -257,10 +257,11 @@ nnoremap <leader>ns :SearchNotes<space>|            " Delete note
 nnoremap <leader>pt :FileBeagle<CR>|                " Open cwd
 nnoremap <leader>pF :FileBeagleBufferDir<CR>|       " Open buffer directory
 nnoremap <leader>pf :CtrlP<CR>|                     " Fuzzy-search filenames
-nnoremap <leader>ps :Ag<space>|                     " Grep project
+nnoremap <leader>ps :Ag<space>|                     " Pattern-search files
+nnoremap <leader>pc :pclose<CR>|                    " Close preview-window
 
 " Quickfix
-nnoremap <leader>co :copen<CR>|                     " Open
+nnoremap <leader>co :botright copen<CR>|            " Open (full width)
 nnoremap <leader>cc :cclose<CR>|                    " Close
 nnoremap <leader>cn :cnext<CR>|                     " Next
 nnoremap <leader>cp :cprevious<CR>|                 " Previous
