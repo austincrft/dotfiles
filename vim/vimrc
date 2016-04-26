@@ -276,26 +276,26 @@ nnoremap <leader>tp :tprev<CR>|                      " Previous
 nnoremap <leader>tf :tfirst<CR>|                     " First
 nnoremap <leader>tl :tlast<CR>|                      " Last
 
-" Window splits
+" Windows
 nnoremap <leader>wv :vsplit<CR>|                     " Split vertically
 nnoremap <leader>wh :split<CR>|                      " Split horizontally
-
-" Window navigation
-nnoremap <leader>h <C-w>h<CR>|                       " Navigate left
-nnoremap <leader>j <C-w>j<CR>|                       " Navigate down
-nnoremap <leader>k <C-w>k<CR>|                       " Navigate up
-nnoremap <leader>l <C-w>l<CR>|                       " Navigate right
+nnoremap <leader>wq <C-w>q|                          " Quit
+nnoremap <leader>h <C-w>h|                           " Navigate left
+nnoremap <leader>j <C-w>j|                           " Navigate down
+nnoremap <leader>k <C-w>k|                           " Navigate up
+nnoremap <leader>l <C-w>l|                           " Navigate right
 
 " ------------------------------------------------------------------------------
 " Filetype-specific keybindings
 " ------------------------------------------------------------------------------
 let filetypes = [
       \ 'clojure',
+      \ 'cs',
 \]
 for ft in filetypes
     let filename = ft . '.vim'
-    if filereadable($HOME . '/.vim/ftplugin/' . ft . '.vim')
-        au FileType ft source ~/.vim/scripts/
+    if filereadable($HOME . '/.vim/ftplugin/' . filename)
+        au FileType ft source '~/.vim/ftplugin/' . filename
     endif
 endfor
 
