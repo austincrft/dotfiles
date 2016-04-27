@@ -208,7 +208,9 @@ vmap gc :TComment<CR>|                        " Comment selection
 let g:ycm_server_keep_logfiles = 1
 let g:ycm_server_log_level = 'debug'
 if has('win32')
-  let ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
+  let g:ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
+else
+  let g:ycm_path_to_python_interpreter = '/usr/bin/python3'
 end
 
 " ------------------------------------------------------------------------------
