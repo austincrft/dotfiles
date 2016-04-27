@@ -6,29 +6,36 @@ URxvt.font: xft:Sauce Code Powerline:size=12
 ! Commenting out until I fix borders
 ! URxvt.scrollBar: false
 
-URxvt.keysym.C-C: perl:clipboard:copy
-URxvt.keysym.C-V: perl:clipboard:paste
-URxvt.keysym.C-A-V: perl:clipboard:paste_escaped
-URxvt.iso14755: False
+! Disable ISO 14755 mode for copy-paste bindings
+URxvt.iso14755: false
+
+! Copy-Paste
+URxvt.keysym.C-c:   perl:clipboard:copy
+URxvt.keysym.C-v:   perl:clipboard:paste
+URxvt.keysym.M-C-v: perl:clipboard:paste_escaped
+URxvt.clipboard.autocopy: true
+
+! Move by words
+URxvt.keysym.C-Up:    \033[1;5A
+URxvt.keysym.C-Down:  \033[1;5B
+URxvt.keysym.C-Left:  \033[1;5D
+URxvt.keysym.C-Right: \033[1;5C
 
 ! Plugins
 URxvt.perl-ext-common: default,clipboard
 !
 ! ------------------------------------------------------------------------------
-! ROFI Color theme
+! ROFI Theme
 ! ------------------------------------------------------------------------------
 ! Use extended color scheme
 rofi.color-enabled:                  true
-! Color scheme for normal row
-rofi.color-normal:                   #ffffff,#525d76,#f5f5f5,#5294e2,#ffffff
-! Color scheme for urgent row
-rofi.color-urgent:                   #ffffff,#dc322f,#f5f5f5,#5294e2,#dc322f
-! Color scheme for active row
-rofi.color-active:                   #ffffff,#c2cad0,#f5f5f5,#5294e2,#c2cad0
-! Color scheme window
-rofi.color-window:                   #ffffff,#f5f5f5
 ! Separator style (none, dash, solid)
 rofi.separator-style:                solid
+
+rofi.color-normal:                   #ffffff,#525d76,#f5f5f5,#5294e2,#ffffff
+rofi.color-urgent:                   #ffffff,#dc322f,#f5f5f5,#5294e2,#dc322f
+rofi.color-active:                   #ffffff,#c2cad0,#f5f5f5,#5294e2,#c2cad0
+rofi.color-window:                   #ffffff,#f5f5f5
 
 ! ------------------------------------------------------------------------------
 ! Solarized Colors
