@@ -83,16 +83,33 @@ font pango:System San Francisco Display 12
   bindsym $mod+Shift+9 move container to workspace 9
   bindsym $mod+Shift+0 move container to workspace $workspace10
 
+# Volume & Media Bindings
+  bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5%
+  bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 1 +5%
+
+  bindsym XF86AudioMute exec --no-startup-id pulseaudio-ctl mute
+  bindsym XF86AudioPlay exec playerctl play-pause
+  bindsym XF86AudioPause exec playerctl pause
+  bindsym XF86AudioNext exec playerctl next
+  bindsym XF86AudioPrev exec playerctl previous Volume & Media
+
+# Sreen Brightness
+  bindsym XF86MonBrightnessUp exec xbacklight -inc 20
+  bindsym XF86MonBrightnessDown exec xbacklight -dec 20
+
+# Scripts
+  bindsym $mod+t exec ~/.config/i3/scripts/toggle_touchpad.sh
+  bindsym $mod+Shift+semicolon exec ~/.config/i3/scripts/pretty-i3lock.sh
+
+# Exit binding
+  bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
 # Reload Bindings
   bindsym $mod+Shift+c reload
   bindsym $mod+Shift+r restart
   bindsym $mod+Shift+x exec --no-startup-id xrdb ~/.Xresources
 
-# Exit
-  bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
+# Bar
   bar {
           status_command i3blocks
           position top
@@ -109,28 +126,11 @@ font pango:System San Francisco Display 12
           }
   }
 
-# Visual
-  exec_always feh --bg-scale ~/Pictures/wallpaper.jpg
-
 # Widow Colours
   client.focused          $base01 $base01    $base07 $base0F
   client.focused_inactive $base02 $base02    $base03 $base0F
   client.unfocused        $base02 $base02    $base03 $base0F
   client.urgent           $base02 $base08    $base00 $base0F
 
-# Volume & Media Bindings
-  bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5%
-  bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 1 +5%
-
-  bindsym XF86AudioMute exec --no-startup-id pulseaudio-ctl mute
-  bindsym XF86AudioPlay exec playerctl play-pause
-  bindsym XF86AudioPause exec playerctl pause
-  bindsym XF86AudioNext exec playerctl next
-  bindsym XF86AudioPrev exec playerctl previous Volume & Media
-
-# Sreen Brightness
-  bindsym XF86MonBrightnessUp exec xbacklight -inc 20
-  bindsym XF86MonBrightnessDown exec xbacklight -dec 20
-
-# Touchpad Toggle
-  bindsym $mod+t exec ~/.config/i3/scripts/toggle_touchpad.sh
+# Background
+  exec_always feh --bg-scale ~/Pictures/wallpaper.jpg
