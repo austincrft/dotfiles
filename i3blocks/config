@@ -1,0 +1,47 @@
+# i3blocks config file
+
+command=/usr/lib/i3blocks/$BLOCK_NAME
+separator_block_width=15
+markup=none
+
+[wifi]
+command=iwgetid -r
+instance=wlp3s0
+label=
+interval=5
+
+[separator]
+
+[disk]
+label=
+interval=30
+
+[separator]
+
+# Volume indicator
+[volume]
+label=VOL
+label=
+instance=Master
+interval=1
+signal=2
+
+[separator]
+
+[battery]
+command=~/.config/i3blocks/scripts/battery.sh
+interval=15
+
+[separator]
+
+[date]
+command=echo "`date +'%d %b'`"
+interval=1
+label=
+
+[separator]
+
+[time]
+command=echo "`date +'%H:%M'`"
+interval=1
+label=
