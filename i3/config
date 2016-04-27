@@ -1,0 +1,136 @@
+#Constants
+  set $mod Mod4
+
+  set $base00 #101218
+  set $base01 #1f222d
+  set $base02 #252936
+  set $base03 #7780a1
+  set $base04 #C0C5CE
+  set $base05 #d1d4e0
+  set $base06 #C9CCDB
+  set $base07 #ffffff
+  set $base08 #ee829f
+  set $base09 #f99170
+  set $base0A #ffefcc
+  set $base0B #a5ffe1
+  set $base0C #97e0ff
+  set $base0D #97bbf7
+  set $base0E #c0b7f9
+  set $base0F #fcc09e
+
+  set $workspace1 "1: "
+  set $workspace2 "2:  "
+  set $workspace3 "3:  "
+  set $workspace10 "10:  "
+
+# General Config
+font pango:System San Francisco Display 12
+
+# Window-Related Bindings
+  bindsym $mod+Shift+q kill
+  bindsym $mod+h focus left
+  bindsym $mod+j focus down
+  bindsym $mod+k focus up
+  bindsym $mod+l focus right
+  bindsym $mod+Shift+h move left
+  bindsym $mod+Shift+j move down
+  bindsym $mod+Shift+k move up
+  bindsym $mod+Shift+l move right
+  bindsym $mod+v split v
+  bindsym $mod+semicolon split h
+  bindsym $mod+f fullscreen toggle
+  bindsym $mod+space focus mode_toggle
+  bindsym $mod+s layout stacking
+  bindsym $mod+w layout tabbed
+  bindsym $mod+e layout toggle split
+  bindsym $mod+Shift+space floating toggle
+  bindsym $mod+r mode "  "
+  mode "  " {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+    bindsym Escape mode "default"
+  }
+
+# Program Bindings
+  bindsym $mod+d exec rofi -font "System San Francisco 28" -show run
+  bindsym $mod+Return exec i3-sensible-terminal
+
+# Program Config
+  assign [class="google-chrome"] $workspace2
+
+# Workspace Bindings
+  bindsym $mod+1 workspace $workspace1
+  bindsym $mod+2 workspace $workspace2
+  bindsym $mod+3 workspace $workspace3
+  bindsym $mod+4 workspace 4
+  bindsym $mod+5 workspace 5
+  bindsym $mod+6 workspace 6
+  bindsym $mod+7 workspace 7
+  bindsym $mod+8 workspace 8
+  bindsym $mod+9 workspace 9
+  bindsym $mod+0 workspace $workspace10
+
+  bindsym $mod+Shift+1 move container to workspace $workspace1
+  bindsym $mod+Shift+2 move container to workspace $workspace2
+  bindsym $mod+Shift+3 move container to workspace $workspace3
+  bindsym $mod+Shift+4 move container to workspace 4
+  bindsym $mod+Shift+5 move container to workspace 5
+  bindsym $mod+Shift+6 move container to workspace 6
+  bindsym $mod+Shift+7 move container to workspace 7
+  bindsym $mod+Shift+8 move container to workspace 8
+  bindsym $mod+Shift+9 move container to workspace 9
+  bindsym $mod+Shift+0 move container to workspace $workspace10
+
+# Reload Bindings
+  bindsym $mod+Shift+c reload
+  bindsym $mod+Shift+r restart
+  bindsym $mod+Shift+x exec --no-startup-id xrdb ~/.Xresources
+
+# Exit
+  bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+  bar {
+          status_command i3blocks
+          position top
+          tray_output none
+          colors {
+            separator $base03
+            background $base01
+            statusline $base05
+            #                  border  background text
+            focused_workspace  $base01 $base01    $base07
+            active_workspace   $base01 $base02    $base03
+            inactive_workspace $base01 $base01    $base03
+            urgent_workspace   $base01 $base01    $base08
+          }
+  }
+
+# Visual
+  exec_always feh --bg-scale ~/Pictures/wallpaper.jpg
+
+# Widow Colours
+  client.focused          $base01 $base01    $base07 $base0F
+  client.focused_inactive $base02 $base02    $base03 $base0F
+  client.unfocused        $base02 $base02    $base03 $base0F
+  client.urgent           $base02 $base08    $base00 $base0F
+
+# Volume & Media Bindings
+  bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5%
+  bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 1 +5%
+
+  bindsym XF86AudioMute exec --no-startup-id pulseaudio-ctl mute
+  bindsym XF86AudioPlay exec playerctl play-pause
+  bindsym XF86AudioPause exec playerctl pause
+  bindsym XF86AudioNext exec playerctl next
+  bindsym XF86AudioPrev exec playerctl previous Volume & Media
+
+# Sreen Brightness
+  bindsym XF86MonBrightnessUp exec xbacklight -inc 20
+  bindsym XF86MonBrightnessDown exec xbacklight -dec 20
+
+# Touchpad Toggle
+  bindsym $mod+t exec ~/.config/i3/scripts/toggle_touchpad.sh
