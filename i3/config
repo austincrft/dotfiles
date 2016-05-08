@@ -60,7 +60,7 @@ font pango:System San Francisco Display 12
   }
 
 # Program Bindings
-  bindsym $mod+d exec rofi -font "System San Francisco 28" -show run
+  bindsym $mod+d exec rofi -font "System San Francisco 28" -show drun -modi drun
   bindsym $mod+Return exec i3-sensible-terminal
 
 # Program Config
