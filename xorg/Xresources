@@ -2,9 +2,7 @@
 ! URxvt Config
 ! ------------------------------------------------------------------------------
 URxvt.font: xft:Sauce Code Powerline:size=12
-
-! Commenting out until I fix borders
-! URxvt.scrollBar: false
+URxvt.scrollBar: false
 
 ! Disable ISO 14755 mode for copy-paste bindings
 URxvt.iso14755: false
