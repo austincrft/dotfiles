@@ -229,7 +229,7 @@ nnoremap <leader><Tab> :e#<CR>|                      " Switch to last buffer
 nnoremap <leader>bb :CtrlPBuffer<CR>|                " List
 nnoremap <leader>bn :bnext<CR>|                      " Next
 nnoremap <leader>bp :bprevious<CR>|                  " Previous
-nnoremap <leader>bd :bprevious\|bdelete#<CR>|        " Delete (but keep split)
+nnoremap <leader>bd :bdelete<CR>|                    " Delete
 
 " Folding
 nnoremap <leader>ff za|                              " Toggle current fold
