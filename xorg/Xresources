@@ -10,10 +10,9 @@ URxvt.font: xft:Sauce Code Powerline:size=12
 URxvt.iso14755: false
 
 ! Copy-Paste
-URxvt.keysym.C-c:   perl:clipboard:copy
-URxvt.keysym.C-v:   perl:clipboard:paste
-URxvt.keysym.M-C-v: perl:clipboard:paste_escaped
-URxvt.clipboard.autocopy: true
+URxvt.keysym.Control-Shift-C:   perl:clipboard:copy
+URxvt.keysym.Control-Shift-V:   perl:clipboard:paste
+URxvt.clipboard.autocopy: false
 
 ! Move by words
 URxvt.keysym.C-Up:    \033[1;5A
