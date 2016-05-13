@@ -1,0 +1,136 @@
+#Constants
+  set $mod Mod4
+
+  set $light_gray  #586e75
+  set $medium_gray #002b36
+  set $dark_gray   #073642
+  set $red         #dc322f
+  set $blue        #268bd2
+  set $bright_text #ffffff
+  set $dull_text   #7780a1
+
+  set $workspace1 "1: "
+  set $workspace2 "2:  "
+  set $workspace3 "3:  "
+  set $workspace4 "4: "
+  set $workspace5 "5: "
+  set $workspace6 "6: "
+  set $workspace7 "7: "
+  set $workspace8 "8: "
+  set $workspace9 "9: "
+  set $workspace10 "10:  "
+
+# General Config
+font pango:System San Francisco Display 12
+
+# Window-Related Bindings
+  bindsym $mod+Shift+q kill
+  bindsym $mod+h focus left
+  bindsym $mod+j focus down
+  bindsym $mod+k focus up
+  bindsym $mod+l focus right
+  bindsym $mod+Shift+h move left
+  bindsym $mod+Shift+j move down
+  bindsym $mod+Shift+k move up
+  bindsym $mod+Shift+l move right
+  bindsym $mod+v split v
+  bindsym $mod+semicolon split h
+  bindsym $mod+f fullscreen toggle
+  bindsym $mod+space focus mode_toggle
+  bindsym $mod+s layout stacking
+  bindsym $mod+w layout tabbed
+  bindsym $mod+e layout toggle split
+  bindsym $mod+Shift+space floating toggle
+  bindsym $mod+r mode "  "
+  mode "  " {
+    bindsym h resize shrink width 10 px or 10 ppt
+    bindsym j resize grow height 10 px or 10 ppt
+    bindsym k resize shrink height 10 px or 10 ppt
+    bindsym l resize grow width 10 px or 10 ppt
+    bindsym Escape mode "default"
+  }
+
+# Program Bindings
+  bindsym $mod+d exec rofi -font "System San Francisco 28" -show drun -modi drun
+  bindsym $mod+Return exec i3-sensible-terminal
+
+# Program Config
+  assign [class="google-chrome"] $workspace2
+  assign [class="google play music desktop player"] $workspace10
+
+# Workspace Bindings
+  bindsym $mod+1 workspace $workspace1
+  bindsym $mod+2 workspace $workspace2
+  bindsym $mod+3 workspace $workspace3
+  bindsym $mod+4 workspace $workspace4
+  bindsym $mod+5 workspace $workspace5
+  bindsym $mod+6 workspace $workspace6
+  bindsym $mod+7 workspace $workspace7
+  bindsym $mod+8 workspace $workspace8
+  bindsym $mod+9 workspace $workspace9
+  bindsym $mod+0 workspace $workspace10
+
+  bindsym $mod+Shift+1 move container to workspace $workspace1
+  bindsym $mod+Shift+2 move container to workspace $workspace2
+  bindsym $mod+Shift+3 move container to workspace $workspace3
+  bindsym $mod+Shift+4 move container to workspace $workspace4
+  bindsym $mod+Shift+5 move container to workspace $workspace5
+  bindsym $mod+Shift+6 move container to workspace $workspace6
+  bindsym $mod+Shift+7 move container to workspace $workspace7
+  bindsym $mod+Shift+8 move container to workspace $workspace8
+  bindsym $mod+Shift+9 move container to workspace $workspace9
+  bindsym $mod+Shift+0 move container to workspace $workspace10
+
+# Volume & Media Bindings
+  bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5%
+  bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 1 +5%
+
+  bindsym XF86AudioMute exec --no-startup-id pulseaudio-ctl mute
+  bindsym XF86AudioPlay exec playerctl play-pause
+  bindsym XF86AudioPause exec playerctl pause
+  bindsym XF86AudioNext exec playerctl next
+  bindsym XF86AudioPrev exec playerctl previous Volume & Media
+
+# Sreen Brightness
+  bindsym XF86MonBrightnessUp exec xbacklight -inc 20
+  bindsym XF86MonBrightnessDown exec xbacklight -dec 20
+
+# Scripts
+  bindsym $mod+t exec ~/.config/i3/scripts/toggle_touchpad.sh
+  bindsym $mod+Shift+semicolon exec ~/.config/i3/scripts/pretty-i3lock.sh
+
+# Exit binding
+  bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# Reload Bindings
+  bindsym $mod+Shift+c reload
+  bindsym $mod+Shift+r restart
+  bindsym $mod+Shift+x exec --no-startup-id xrdb ~/.Xresources
+
+# Bar
+  bar {
+          status_command i3blocks
+          position top
+          tray_output none
+          colors {
+            separator $bright_text
+            background $dark_gray
+            statusline $bright_text
+            #                  border       background   text
+            focused_workspace  $light_gray  $light_gray  $bright_text
+            active_workspace   $light_gray  $light_gray  $bright_text
+            inactive_workspace $dark_gray   $dark_gray   $dull_text
+            urgent_workspace   $red         $red         $bright_text
+          }
+  }
+
+# Window
+#                       border        background    text          indicator
+client.focused          $light_gray   $light_gray   $bright_text  $blue
+client.focused_inactive $dark_gray    $dark_gray    $dull_text    $medium_gray
+client.unfocused        $dark_gray    $dark_gray    $dull_text    $medium_gray
+client.urgent           $red          $red          $bright_text  $red
+
+# Background
+  exec_always feh --bg-scale ~/Pictures/wallpaper.jpg
+
