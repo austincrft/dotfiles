@@ -206,7 +206,7 @@ vmap gc :TComment<CR>|                        " Comment selection
 " YouCompleteMe Config
 " ------------------------------------------------------------------------------
 let g:ycm_server_keep_logfiles = 1
-let g:ycm_server_log_level = 'debug'
+let g:ycm_csharp_server_port = 2000
 if has('win32')
   let ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
 end
@@ -267,6 +267,9 @@ nnoremap <leader>co :botright copen<CR>|             " Open (full width)
 nnoremap <leader>cc :cclose<CR>|                     " Close
 nnoremap <leader>cn :cnext<CR>|                      " Next
 nnoremap <leader>cp :cprevious<CR>|                  " Previous
+
+" Substitute
+nnoremap <leader>ss :%s/|                            " Substitute command
 
 " Tags
 nnoremap <leader>tt :CtrlPTag<CR>|                   " Fuzzy-search tags
