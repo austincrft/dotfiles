@@ -1,0 +1,8 @@
+# Load Xresources
+xrdb ~/.Xresources
+
+# DPI fix
+xrandr --dpi 160
+
+# Execute i3
+exec i3

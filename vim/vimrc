@@ -208,7 +208,9 @@ vmap gc :TComment<CR>|                        " Comment selection
 let g:ycm_server_keep_logfiles = 1
 let g:ycm_csharp_server_port = 2000
 if has('win32')
-  let ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
+  let g:ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
+else
+  let g:ycm_path_to_python_interpreter = '/usr/bin/python3'
 end
 
 " ------------------------------------------------------------------------------
@@ -227,7 +229,7 @@ nnoremap <leader><Tab> :e#<CR>|                      " Switch to last buffer
 nnoremap <leader>bb :CtrlPBuffer<CR>|                " List
 nnoremap <leader>bn :bnext<CR>|                      " Next
 nnoremap <leader>bp :bprevious<CR>|                  " Previous
-nnoremap <leader>bd :bprevious\|bdelete#<CR>|        " Delete (but keep split)
+nnoremap <leader>bd :bdelete<CR>|                    " Delete
 
 " Folding
 nnoremap <leader>ff za|                              " Toggle current fold
