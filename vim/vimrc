@@ -23,6 +23,7 @@ set foldlevelstart=20          " Set starting fold high so file starts unfolded
 set t_Co=16                    " Set terminal color to 16
 set colorcolumn=80             " Highlight column 80
 set cursorline                 " Highlight current line
+set completeopt=menuone        " Complete option (don't show preview)
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 
@@ -57,6 +58,12 @@ set smartcase
 " Automatically save file
 " ------------------------------------------------------------------------------
 autocmd FocusLost * silent! wa
+
+" ------------------------------------------------------------------------------
+" Core Mappings
+" ------------------------------------------------------------------------------
+nnoremap <S-Tab> :bnext<CR>| " Fast buffer navigation
+vnoremap * "zy/<C-R>z<CR>|   " Search for visual selection using z-register
 
 " ------------------------------------------------------------------------------
 " Persistent Undo -- Keep undo history across sessions by storing in file
@@ -119,10 +126,7 @@ Plugin 'vim-scripts/paredit.vim'
 Plugin 'tpope/vim-fireplace'
 
 " CSharp
-Plugin 'OmniSharp/omnisharp-vim'
-
-" Python
-Plugin 'Bogdanp/pyrepl.vim'
+Plugin 'OrangeT/vim-csharp'
 
 " Tools
 Plugin 'xolox/vim-misc'
@@ -130,9 +134,6 @@ Plugin 'xolox/vim-notes'
 Plugin 'MattesGroeger/vim-bookmarks'
 Plugin 'tpope/vim-dispatch'
 Plugin 'amiorin/vim-project'
-
-" Syntax
-Plugin 'OrangeT/vim-csharp'
 
 " Visuals
 Plugin 'bling/vim-airline'
@@ -180,11 +181,6 @@ let g:gitgutter_map_keys=0 " Disable keymappings
 let g:notes_directories = ['~/Dropbox/vim-notes']
 
 " ------------------------------------------------------------------------------
-" OmniSharp Config
-" ------------------------------------------------------------------------------
-let g:OmniSharp_server_type = 'roslyn'
-
-" ------------------------------------------------------------------------------
 " Paredit Config
 " ------------------------------------------------------------------------------
 let g:paredit_electric_return=0
@@ -206,7 +202,6 @@ vmap gc :TComment<CR>|                        " Comment selection
 " YouCompleteMe Config
 " ------------------------------------------------------------------------------
 let g:ycm_server_keep_logfiles = 1
-let g:ycm_csharp_server_port = 2000
 if has('win32')
   let g:ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
 else
@@ -214,7 +209,7 @@ else
 end
 
 " ------------------------------------------------------------------------------
-" Leader Keybindings
+" Leader Mappings
 " ------------------------------------------------------------------------------
 
 " Bookmarks
@@ -263,6 +258,7 @@ nnoremap <leader>pF :FileBeagleBufferDir<CR>|        " Open buffer directory
 nnoremap <leader>pf :CtrlP<CR>|                      " Fuzzy-search filenames
 nnoremap <leader>ps :Ag<space>|                      " Pattern-search files
 nnoremap <leader>pc :pclose<CR>|                     " Close preview-window
+nnoremap <leader>pT :Start! ctags -R<CR>|            " Async ctags generate
 
 " Quickfix
 nnoremap <leader>co :botright copen<CR>|             " Open (full width)
@@ -271,7 +267,9 @@ nnoremap <leader>cn :cnext<CR>|                      " Next
 nnoremap <leader>cp :cprevious<CR>|                  " Previous
 
 " Substitute
-nnoremap <leader>ss :%s/|                            " Substitute command
+nnoremap <leader>ss :%s/|                            " Substitute
+nnoremap <leader>st :%s/\t/|                         " Substitite tabs
+nnoremap <leader>sw :StripWhitespace<CR>|            " Strip Whitespace
 
 " Tags
 nnoremap <leader>tt :CtrlPTag<CR>|                   " Fuzzy-search tags
@@ -293,16 +291,8 @@ nnoremap <leader>l <C-w>l|                           " Navigate right
 " ------------------------------------------------------------------------------
 " Filetype-specific keybindings
 " ------------------------------------------------------------------------------
-let filetypes = [
-      \ 'clojure',
-      \ 'cs',
-\]
-for ft in filetypes
-    let filename = ft . '.vim'
-    if filereadable($HOME . '/.vim/ftplugin/' . filename)
-        au FileType ft source '~/.vim/ftplugin/' . filename
-    endif
-endfor
+" au FileType cs source ~/.vim/ftplugin/cs.vim
+" au FileType python source ~/.vim/ftplugin/python.vim
 
 " ------------------------------------------------------------------------------
 " Project Config
@@ -312,7 +302,6 @@ call project#rc('/src')
 
 Project 'dotfiles'
 Project 'sublime-gherkin-auto-complete-plus'
-Project 'clojure-calculator'
 
 " Get work projects if the file exists
 if filereadable($HOME . "/.vim/work/projects.vim")
