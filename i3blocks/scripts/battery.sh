@@ -7,7 +7,7 @@ then
     # Charging
     status=$(cat /sys/class/power_supply/$BATTERY/status)
     if [ "$status" == "Charging" ]; then
-        charging=''
+        charging=' '
     fi
 
     # Capacity
@@ -34,5 +34,5 @@ then
     fi
 
     # Full text
-    echo "$symbol $capacity% $charging"
+    echo "$symbol $capacity%$charging"
 fi
