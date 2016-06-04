@@ -98,18 +98,18 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
 " Editor features
-Plugin 'tpope/vim-surround'
 Plugin 'jiangmiao/auto-pairs'
 Plugin 'tomtom/tcomment_vim.git'
+Plugin 'tpope/vim-surround'
 
 " File browsing
-Plugin 'jeetsukumaran/vim-filebeagle'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'jeetsukumaran/vim-filebeagle'
 Plugin 'rking/ag.vim'
 
 " Formatting
-Plugin 'ntpeters/vim-better-whitespace'
 Plugin 'godlygeek/tabular'
+Plugin 'ntpeters/vim-better-whitespace'
 
 " Linting
 Plugin 'scrooloose/syntastic'
@@ -122,23 +122,24 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'Valloric/YouCompleteMe'
 
 " Clojure
-Plugin 'vim-scripts/paredit.vim'
 Plugin 'tpope/vim-fireplace'
+Plugin 'vim-scripts/paredit.vim'
 
 " CSharp
 Plugin 'OrangeT/vim-csharp'
 
 " Tools
+Plugin 'KabbAmine/zeavim.vim'
+Plugin 'MattesGroeger/vim-bookmarks'
+Plugin 'amiorin/vim-project'
+Plugin 'tpope/vim-dispatch'
 Plugin 'xolox/vim-misc'
 Plugin 'xolox/vim-notes'
-Plugin 'MattesGroeger/vim-bookmarks'
-Plugin 'tpope/vim-dispatch'
-Plugin 'amiorin/vim-project'
 
 " Visuals
+Plugin 'altercation/vim-colors-solarized'
 Plugin 'bling/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'altercation/vim-colors-solarized'
 
 call vundle#end()            " Required
 filetype plugin indent on    " Required
@@ -213,80 +214,91 @@ end
 " ------------------------------------------------------------------------------
 
 " Bookmarks
-nnoremap <leader>Bb :BookmarkToggle<CR>|             " Toggle on current line
-nnoremap <leader>Bn :BookmarkNext<CR>|               " Next
-nnoremap <leader>Bp :BookmarkPrev<CR>|               " Previous
-nnoremap <leader>Ba :BookmarkShowAll<CR>|            " Show All
-nnoremap <leader>Bc :BookmarkClear<CR>|              " Clear in current buffer
+nnoremap <leader>Bb :BookmarkToggle<CR>|                 " Toggle on current line
+nnoremap <leader>Bn :BookmarkNext<CR>|                   " Next
+nnoremap <leader>Bp :BookmarkPrev<CR>|                   " Previous
+nnoremap <leader>Ba :BookmarkShowAll<CR>|                " Show All
+nnoremap <leader>Bc :BookmarkClear<CR>|                  " Clear in current buffer
 
 " Buffer
-nnoremap <leader><Tab> :e#<CR>|                      " Switch to last buffer
-nnoremap <leader>bb :CtrlPBuffer<CR>|                " List
-nnoremap <leader>bn :bnext<CR>|                      " Next
-nnoremap <leader>bp :bprevious<CR>|                  " Previous
-nnoremap <leader>bd :bdelete<CR>|                    " Delete
+nnoremap <leader><Tab> :e#<CR>|                          " Switch to last buffer
+nnoremap <leader>bb :CtrlPBuffer<CR>|                    " List
+nnoremap <leader>bn :bnext<CR>|                          " Next
+nnoremap <leader>bp :bprevious<CR>|                      " Previous
+nnoremap <leader>bd :bdelete<CR>|                        " Delete
 
 " Folding
-nnoremap <leader>ff za|                              " Toggle current fold
-nnoremap <leader>fo zR|                              " Open all folds
-nnoremap <leader>fc zM|                              " Close all folds
-nnoremap <leader>fv zv|                              " View cursor line
+nnoremap <leader>ff za|                                  " Toggle current fold
+nnoremap <leader>fo zR|                                  " Open all folds
+nnoremap <leader>fc zM|                                  " Close all folds
+nnoremap <leader>fv zv|                                  " View cursor line
+
+" Formatting
+nnoremap <leader>Fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
+nnoremap <leader>FA :setlocal formatoptions-=a<CR>|      " Disable auto-format
+nnoremap <leader>Fu yyp<C-V>$r-|                         " Undlerline line
+vnoremap <leader>Fs :'<,'>sort<CR>|                      " Sort lines
 
 " Git
-nnoremap <leader>gdn :GitGutterNextHunk<CR>|         " Jump to next diff
-nnoremap <leader>gdp :GitGutterPrevHunk<CR>|         " Jump to previous diff
-nnoremap <leader>gdt :GitGutterToggle<CR>|           " Toggle git-gutter
+nnoremap <leader>gdn :GitGutterNextHunk<CR>|             " Jump to next diff
+nnoremap <leader>gdp :GitGutterPrevHunk<CR>|             " Jump to previous diff
+nnoremap <leader>gdt :GitGutterToggle<CR>|               " Toggle git-gutter
 
 " Linting (Errors)
-nnoremap <leader>ec :SyntasticCheck<CR>|             " Error check
-nnoremap <leader>ee :Errors<CR>|                     " List errors
-nnoremap <leader>et :SyntasticToggleMode<CR>|        " Toggle syntastic
+nnoremap <leader>ec :SyntasticCheck<CR>|                 " Error check
+nnoremap <leader>ee :Errors<CR>|                         " List errors
+nnoremap <leader>et :SyntasticToggleMode<CR>|            " Toggle syntastic
 
 " Meta
-nnoremap <leader>_d :e $MYVIMRC<CR>|                 " Edit .vimrc
-nnoremap <leader>_r :source $MYVIMRC<CR>|            " Reload .vimrc
-nnoremap <leader>_f :FileBeagle ~/.vim/ftplugin<CR>| " Open ftplugins
+nnoremap <leader>_d :e $MYVIMRC<CR>|                     " Edit .vimrc
+nnoremap <leader>_r :source $MYVIMRC<CR>|                " Reload .vimrc
+nnoremap <leader>_f :FileBeagle ~/.vim/ftplugin<CR>|     " Open ftplugins
 
 " Notes
-nnoremap <leader>nn :Note<space>|                    " Open note
-nnoremap <leader>nD :DeleteNote<CR>|                 " Delete note
-nnoremap <leader>ns :SearchNotes<space>|             " Delete note
+nnoremap <leader>nn :Note<space>|                        " Open note
+nnoremap <leader>nD :DeleteNote<CR>|                     " Delete note
+nnoremap <leader>ns :SearchNotes<space>|                 " Delete note
 
 " Project
-nnoremap <leader>pt :FileBeagle<CR>|                 " Open cwd
-nnoremap <leader>pF :FileBeagleBufferDir<CR>|        " Open buffer directory
-nnoremap <leader>pf :CtrlP<CR>|                      " Fuzzy-search filenames
-nnoremap <leader>ps :Ag<space>|                      " Pattern-search files
-nnoremap <leader>pc :pclose<CR>|                     " Close preview-window
-nnoremap <leader>pT :Start! ctags -R<CR>|            " Async ctags generate
+nnoremap <leader>pt :FileBeagle<CR>|                     " Open cwd
+nnoremap <leader>pF :FileBeagleBufferDir<CR>|            " Open buffer directory
+nnoremap <leader>pf :CtrlP<CR>|                          " Fuzzy-search files
+nnoremap <leader>ps :Ag<space>|                          " Pattern-search files
+nnoremap <leader>pc :pclose<CR>|                         " Close preview-window
+nnoremap <leader>pT :Start! ctags -R<CR>|                " Async ctags generate
 
 " Quickfix
-nnoremap <leader>co :botright copen<CR>|             " Open (full width)
-nnoremap <leader>cc :cclose<CR>|                     " Close
-nnoremap <leader>cn :cnext<CR>|                      " Next
-nnoremap <leader>cp :cprevious<CR>|                  " Previous
+nnoremap <leader>co :botright copen<CR>|                 " Open (full width)
+nnoremap <leader>cc :cclose<CR>|                         " Close
+nnoremap <leader>cn :cnext<CR>|                          " Next
+nnoremap <leader>cp :cprevious<CR>|                      " Previous
 
 " Substitute
-nnoremap <leader>ss :%s/|                            " Substitute
-nnoremap <leader>st :%s/\t/|                         " Substitite tabs
-nnoremap <leader>sw :StripWhitespace<CR>|            " Strip Whitespace
+nnoremap <leader>ss :%s/|                                " Substitute
+nnoremap <leader>st :%s/\t/|                             " Substitite tabs
+nnoremap <leader>sw :StripWhitespace<CR>|                " Strip Whitespace
+
+" Spelling
+nnoremap <leader>Ss :setlocal spell spelllang=en_us<CR>| " Activate spelling
+nnoremap <leader>SS :setlocal nospell<CR>|               " Disable spelling
+nnoremap <leader>Sf z=|                                  " Fix word
 
 " Tags
-nnoremap <leader>tt :CtrlPTag<CR>|                   " Fuzzy-search tags
-nnoremap <leader>ts :tselect<CR>|                    " View list
-nnoremap <leader>tn :tnext<CR>|                      " Next
-nnoremap <leader>tp :tprev<CR>|                      " Previous
-nnoremap <leader>tf :tfirst<CR>|                     " First
-nnoremap <leader>tl :tlast<CR>|                      " Last
+nnoremap <leader>tt :CtrlPTag<CR>|                       " Fuzzy-search tags
+nnoremap <leader>ts :tselect<CR>|                        " View list
+nnoremap <leader>tn :tnext<CR>|                          " Next
+nnoremap <leader>tp :tprev<CR>|                          " Previous
+nnoremap <leader>tf :tfirst<CR>|                         " First
+nnoremap <leader>tl :tlast<CR>|                          " Last
 
 " Windows
-nnoremap <leader>wv :vsplit<CR>|                     " Split vertically
-nnoremap <leader>wh :split<CR>|                      " Split horizontally
-nnoremap <leader>wq <C-w>q|                          " Quit
-nnoremap <leader>h <C-w>h|                           " Navigate left
-nnoremap <leader>j <C-w>j|                           " Navigate down
-nnoremap <leader>k <C-w>k|                           " Navigate up
-nnoremap <leader>l <C-w>l|                           " Navigate right
+nnoremap <leader>wv :vsplit<CR>|                         " Split vertically
+nnoremap <leader>wh :split<CR>|                          " Split horizontally
+nnoremap <leader>wq <C-w>q|                              " Quit
+nnoremap <leader>h <C-w>h|                               " Navigate left
+nnoremap <leader>j <C-w>j|                               " Navigate down
+nnoremap <leader>k <C-w>k|                               " Navigate up
+nnoremap <leader>l <C-w>l|                               " Navigate right
 
 " ------------------------------------------------------------------------------
 " Filetype-specific keybindings
@@ -299,9 +311,6 @@ nnoremap <leader>l <C-w>l|                           " Navigate right
 " ------------------------------------------------------------------------------
 set rtp+=~/.vim/bundle/vim-project/
 call project#rc('/src')
-
-Project 'dotfiles'
-Project 'sublime-gherkin-auto-complete-plus'
 
 " Get work projects if the file exists
 if filereadable($HOME . "/.vim/work/projects.vim")
