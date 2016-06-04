@@ -1,27 +1,32 @@
 # i3blocks config file
 
+full_text=
+align=center
+color=#FFFFFF
+
+separator=false
+
 command=/usr/lib/i3blocks/$BLOCK_NAME
-separator_block_width=15
-markup=none
+separator_block_width=30
+markup=pango
 
 [wifi]
-command=iwgetid -r
+command=echo "<span color='#859900'></span>  `iwgetid -r`"
 instance=wlp3s0
-label=
 interval=5
 
 [separator]
 
 [disk]
-label=
+command=echo "<span color='#cb4b16'></span>  `/usr/lib/i3blocks/disk`"
+label=
 interval=30
 
 [separator]
 
-# Volume indicator
 [volume]
-label=VOL
-label=
+command=echo "<span color='#2aa198'></span>  `/usr/lib/i3blocks/volume`"
+label=
 instance=Master
 interval=1
 signal=2
@@ -35,13 +40,13 @@ interval=15
 [separator]
 
 [date]
-command=echo "`date +'%d %b'`"
+command=echo "<span color='#dc322f'></span>  `date +'%a %m.%d.%y'`"
+label=
 interval=1
-label=
 
 [separator]
 
 [time]
-command=echo "`date +'%H:%M'`"
+label=
+command=echo "<span color='#268bd2'></span>  `date +'%H:%M'`"
 interval=1
-label=
