@@ -4,24 +4,34 @@
   set $light_gray  #586e75
   set $medium_gray #002b36
   set $dark_gray   #073642
-  set $red         #dc322f
   set $blue        #268bd2
   set $bright_text #ffffff
   set $dull_text   #7780a1
+  set $yellow      #b58900
+  set $orange      #cb4b16
+  set $red         #dc322f
+  set $magenta     #d33682
+  set $violet      #6c71c4
+  set $blue        #268bd2
+  set $cyan        #2aa198
+  set $green       #859900
 
-  set $workspace1 "1: "
-  set $workspace2 "2:  "
-  set $workspace3 "3:  "
-  set $workspace4 "4: "
-  set $workspace5 "5: "
-  set $workspace6 "6: "
-  set $workspace7 "7: "
-  set $workspace8 "8: "
-  set $workspace9 "9: "
-  set $workspace10 "10:  "
+  set $workspace1 "1 "
+  set $workspace2 "2 "
+  set $workspace3 "3 "
+  set $workspace4 "4 "
+  set $workspace5 "5 "
+  set $workspace6 "6 "
+  set $workspace7 "7 "
+  set $workspace8 "8 "
+  set $workspace9 "9 "
+  set $workspace10 "10 "
+
+  set $messenger "crx_bhegnkaaijcaiebmmlbhpcagoaiaacho"
+  set $hangouts "crx_knipolnnllmklapflnccelgolnpehhpl"
 
 # General Config
-font pango:System San Francisco Display 12
+font pango:Sauce Code Powerline 10
 
 # Window-Related Bindings
   bindsym $mod+Shift+q kill
@@ -51,12 +61,16 @@ font pango:System San Francisco Display 12
   }
 
 # Program Bindings
-  bindsym $mod+d exec rofi -font "System San Francisco 28" -show drun -modi drun
+  bindsym $mod+d exec rofi -font "Sauce Code Powerline 26" -show drun -modi drun
   bindsym $mod+Return exec i3-sensible-terminal
 
 # Program Config
+  for_window [window_role="app"] floating disabled
+  assign [instance=$messenger class="google-chrome"] $workspace3
+  assign [instance=$hangouts class="google-chrome"] $workspace3
   assign [class="google-chrome"] $workspace2
-  assign [class="google play music desktop player"] $workspace10
+  assign [class="Google Play Music Desktop Player"] $workspace10
+  assign [class="Slack"] $workspace3
 
 # Workspace Bindings
   bindsym $mod+1 workspace $workspace1
@@ -133,4 +147,3 @@ client.urgent           $red          $red          $bright_text  $red
 
 # Background
   exec_always feh --bg-scale ~/Pictures/wallpaper.jpg
-
