@@ -21,6 +21,7 @@ set laststatus=2               " Always show statusline
 set foldmethod=syntax          " Enable syntax folding
 set foldlevelstart=20          " Set starting fold high so file starts unfolded
 set t_Co=16                    " Set terminal color to 16
+set textwidth=80               " Text-width to 80 columns
 set colorcolumn=80             " Highlight column 80
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
@@ -130,9 +131,9 @@ Plugin 'OrangeT/vim-csharp'
 
 " Tools
 Plugin 'KabbAmine/zeavim.vim'
-Plugin 'MattesGroeger/vim-bookmarks'
 Plugin 'amiorin/vim-project'
 Plugin 'tpope/vim-dispatch'
+Plugin 'vim-scripts/BufOnly.vim'
 Plugin 'xolox/vim-misc'
 Plugin 'xolox/vim-notes'
 
@@ -155,11 +156,6 @@ let g:ag_prg="ag --vimgrep --ignore tags"
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#hunks#enabled = 0
 let g:airline_powerline_fonts = 1
-
-" ------------------------------------------------------------------------------
-" Bookmarks Config
-" ------------------------------------------------------------------------------
-let g:bookmark_no_default_key_mappings = 1
 
 " ------------------------------------------------------------------------------
 " CtrlP Config
@@ -213,19 +209,13 @@ end
 " Leader Mappings
 " ------------------------------------------------------------------------------
 
-" Bookmarks
-nnoremap <leader>Bb :BookmarkToggle<CR>|                 " Toggle on current line
-nnoremap <leader>Bn :BookmarkNext<CR>|                   " Next
-nnoremap <leader>Bp :BookmarkPrev<CR>|                   " Previous
-nnoremap <leader>Ba :BookmarkShowAll<CR>|                " Show All
-nnoremap <leader>Bc :BookmarkClear<CR>|                  " Clear in current buffer
-
 " Buffer
 nnoremap <leader><Tab> :e#<CR>|                          " Switch to last buffer
 nnoremap <leader>bb :CtrlPBuffer<CR>|                    " List
 nnoremap <leader>bn :bnext<CR>|                          " Next
 nnoremap <leader>bp :bprevious<CR>|                      " Previous
 nnoremap <leader>bd :bdelete<CR>|                        " Delete
+nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffers
 
 " Folding
 nnoremap <leader>ff za|                                  " Toggle current fold
