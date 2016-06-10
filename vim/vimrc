@@ -309,10 +309,12 @@ nnoremap <leader>l <C-w>l|                               " Navigate right
 " ------------------------------------------------------------------------------
 " Project Config
 " ------------------------------------------------------------------------------
-set rtp+=~/.vim/bundle/vim-project/
-call project#rc('/src')
+if isdirectory($HOME . "/.vim/bundle/vim-project")
+  set rtp+=~/.vim/bundle/vim-project/
+  call project#rc('/src')
 
-" Get work projects if the file exists
-if filereadable($HOME . "/.vim/work/projects.vim")
-  source ~/.vim/work/projects.vim
+  " Get work projects if the file exists
+  if filereadable($HOME . "/.vim/work/projects.vim")
+    source ~/.vim/work/projects.vim
+  end
 end
