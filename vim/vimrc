@@ -18,8 +18,7 @@ set noswapfile                 " No swap file
 set nobackup                   " No backup
 set nowb                       " No write-backup
 set laststatus=2               " Always show statusline
-set foldmethod=syntax          " Enable syntax folding
-set foldlevelstart=20          " Set starting fold high so file starts unfolded
+set foldlevelstart=99          " Set starting fold high so file starts unfolded
 set t_Co=16                    " Set terminal color to 16
 set textwidth=80               " Text-width to 80 columns
 set colorcolumn=80             " Highlight column 80
@@ -207,7 +206,7 @@ let g:ycm_server_keep_logfiles = 1
 if has('win32')
   let g:ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
 else
-  let g:ycm_path_to_python_interpreter = '/usr/bin/python3'
+  let g:ycm_path_to_python_interpreter = 'python'
 end
 
 " ------------------------------------------------------------------------------
@@ -224,8 +223,8 @@ nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffe
 
 " Folding
 nnoremap <leader>ff za|                                  " Toggle current fold
+nnoremap <leader>fa zM|                                  " Close all folds
 nnoremap <leader>fo zR|                                  " Open all folds
-nnoremap <leader>fc zM|                                  " Close all folds
 nnoremap <leader>fv zv|                                  " View cursor line
 
 " Formatting
