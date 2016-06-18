@@ -188,6 +188,11 @@ let g:paredit_electric_return=0
 set background=dark
 colorscheme solarized
 
+" ------------------------------------------------------------------------------
+" Syntastic Config
+" ------------------------------------------------------------------------------
+let g:syntastic_always_populate_loc_list = 1
+
 "  ------------------------------------------------------------------------------
 " TComment Config
 " ------------------------------------------------------------------------------
@@ -228,6 +233,7 @@ nnoremap <leader>Fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
 nnoremap <leader>FA :setlocal formatoptions-=a<CR>|      " Disable auto-format
 nnoremap <leader>Fu yyp<C-V>$r-|                         " Undlerline line
 vnoremap <leader>Fs :'<,'>sort<CR>|                      " Sort lines
+nnoremap <leader>Fw :StripWhitespace<CR>|                " Strip Whitespace
 
 " Git
 nnoremap <leader>gdn :GitGutterNextHunk<CR>|             " Jump to next diff
@@ -236,13 +242,19 @@ nnoremap <leader>gdt :GitGutterToggle<CR>|               " Toggle git-gutter
 
 " Linting (Errors)
 nnoremap <leader>ec :SyntasticCheck<CR>|                 " Error check
-nnoremap <leader>ee :Errors<CR>|                         " List errors
 nnoremap <leader>et :SyntasticToggleMode<CR>|            " Toggle syntastic
+nnoremap <leader>eo :lopen<CR>|                          " Open
+nnoremap <leader>ec :lclose<CR>|                         " Close
+nnoremap <leader>en :lnext<CR>|                          " Next
+nnoremap <leader>ep :lprevious<CR>|                      " Previous
 
 " Meta
 nnoremap <leader>_d :e $MYVIMRC<CR>|                     " Edit .vimrc
 nnoremap <leader>_r :source $MYVIMRC<CR>|                " Reload .vimrc
 nnoremap <leader>_f :FileBeagle ~/.vim/ftplugin<CR>|     " Open ftplugins
+
+" Make
+nnoremap <leader>mm :Make<CR>|                           " Make
 
 " Notes
 nnoremap <leader>nn :Note<space>|                        " Open note
@@ -266,7 +278,6 @@ nnoremap <leader>cp :cprevious<CR>|                      " Previous
 " Substitute
 nnoremap <leader>ss :%s/|                                " Substitute
 nnoremap <leader>st :%s/\t/|                             " Substitite tabs
-nnoremap <leader>sw :StripWhitespace<CR>|                " Strip Whitespace
 
 " Spelling
 nnoremap <leader>Ss :setlocal spell spelllang=en_us<CR>| " Activate spelling
@@ -289,12 +300,6 @@ nnoremap <leader>h <C-w>h|                               " Navigate left
 nnoremap <leader>j <C-w>j|                               " Navigate down
 nnoremap <leader>k <C-w>k|                               " Navigate up
 nnoremap <leader>l <C-w>l|                               " Navigate right
-
-" ------------------------------------------------------------------------------
-" Filetype-specific keybindings
-" ------------------------------------------------------------------------------
-" au FileType cs source ~/.vim/ftplugin/cs.vim
-" au FileType python source ~/.vim/ftplugin/python.vim
 
 " ------------------------------------------------------------------------------
 " Project Config
