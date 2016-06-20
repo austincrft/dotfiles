@@ -128,10 +128,12 @@ Plugin 'vim-scripts/paredit.vim'
 
 " CSharp
 Plugin 'OrangeT/vim-csharp'
+Plugin 'heaths/vim-msbuild'
 
 " Tools
 Plugin 'KabbAmine/zeavim.vim'
 Plugin 'amiorin/vim-project'
+Plugin 'kshenoy/vim-signature'
 Plugin 'tpope/vim-dispatch'
 Plugin 'vim-scripts/BufOnly.vim'
 Plugin 'xolox/vim-misc'
@@ -183,6 +185,12 @@ let g:notes_directories = ['~/Dropbox/vim-notes']
 let g:paredit_electric_return=0
 
 " ------------------------------------------------------------------------------
+" Signature Config
+" ------------------------------------------------------------------------------
+let g:SignatureMarkTextHLDynamic=1
+let g:SignatureMarkerTextHLDynamic=1
+
+" ------------------------------------------------------------------------------
 " Solarized Theme
 " ------------------------------------------------------------------------------
 set background=dark
@@ -226,8 +234,9 @@ nnoremap <leader>fv zv|                                  " View cursor line
 " Formatting
 nnoremap <leader>Fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
 nnoremap <leader>FA :setlocal formatoptions-=a<CR>|      " Disable auto-format
-nnoremap <leader>Fu yyp<C-V>$r-|                         " Undlerline line
+nnoremap <leader>Fu yyp<C-V>$r-|                         " Underline line
 vnoremap <leader>Fs :'<,'>sort<CR>|                      " Sort lines
+vnoremap <leader>Fw gq|                                  " Wrap lines at textwidth
 
 " Git
 nnoremap <leader>gdn :GitGutterNextHunk<CR>|             " Jump to next diff
