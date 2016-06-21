@@ -146,4 +146,4 @@ client.unfocused        $dark_gray    $dark_gray    $dull_text    $medium_gray
 client.urgent           $red          $red          $bright_text  $red
 
 # Background
-  exec_always feh --bg-scale ~/Pictures/wallpaper.jpg
+  exec_always feh --bg-scale ~/Dropbox/images/wallpaper.jpg

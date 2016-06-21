@@ -18,8 +18,6 @@ set noswapfile                 " No swap file
 set nobackup                   " No backup
 set nowb                       " No write-backup
 set laststatus=2               " Always show statusline
-set foldmethod=syntax          " Enable syntax folding
-set foldlevelstart=20          " Set starting fold high so file starts unfolded
 set t_Co=16                    " Set terminal color to 16
 set textwidth=80               " Text-width to 80 columns
 set colorcolumn=80             " Highlight column 80
@@ -27,12 +25,7 @@ set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
-
-" ------------------------------------------------------------------------------
-"  Set ESC and Leader
-" ------------------------------------------------------------------------------
-imap jj <Esc>
-let mapleader = ' '
+autocmd FocusLost * silent! wa " Automatically save file
 
 " ------------------------------------------------------------------------------
 " Indentation and Linebreaks
@@ -56,15 +49,21 @@ set ignorecase
 set smartcase
 
 " ------------------------------------------------------------------------------
-" Automatically save file
+"  Set ESC and Leader
 " ------------------------------------------------------------------------------
-autocmd FocusLost * silent! wa
+imap jj <Esc>
+let mapleader = ' '
 
 " ------------------------------------------------------------------------------
 " Core Mappings
 " ------------------------------------------------------------------------------
 nnoremap <S-Tab> :bnext<CR>| " Fast buffer navigation
 vnoremap * "zy/<C-R>z<CR>|   " Search for visual selection using z-register
+
+" ------------------------------------------------------------------------------
+"  Configure Directories
+" ------------------------------------------------------------------------------
+set runtimepath=$HOME/.vim,$VIMRUNTIME
 
 " ------------------------------------------------------------------------------
 " Persistent Undo -- Keep undo history across sessions by storing in file
@@ -128,7 +127,6 @@ Plugin 'vim-scripts/paredit.vim'
 
 " CSharp
 Plugin 'OrangeT/vim-csharp'
-Plugin 'heaths/vim-msbuild'
 
 " Tools
 Plugin 'KabbAmine/zeavim.vim'
@@ -196,6 +194,11 @@ let g:SignatureMarkerTextHLDynamic=1
 set background=dark
 colorscheme solarized
 
+" ------------------------------------------------------------------------------
+" Syntastic Config
+" ------------------------------------------------------------------------------
+let g:syntastic_always_populate_loc_list = 1
+
 "  ------------------------------------------------------------------------------
 " TComment Config
 " ------------------------------------------------------------------------------
@@ -210,7 +213,7 @@ let g:ycm_server_keep_logfiles = 1
 if has('win32')
   let g:ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
 else
-  let g:ycm_path_to_python_interpreter = '/usr/bin/python3'
+  let g:ycm_path_to_python_interpreter = 'python'
 end
 
 " ------------------------------------------------------------------------------
@@ -227,8 +230,8 @@ nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffe
 
 " Folding
 nnoremap <leader>ff za|                                  " Toggle current fold
+nnoremap <leader>fa zM|                                  " Close all folds
 nnoremap <leader>fo zR|                                  " Open all folds
-nnoremap <leader>fc zM|                                  " Close all folds
 nnoremap <leader>fv zv|                                  " View cursor line
 
 " Formatting
@@ -237,6 +240,7 @@ nnoremap <leader>FA :setlocal formatoptions-=a<CR>|      " Disable auto-format
 nnoremap <leader>Fu yyp<C-V>$r-|                         " Underline line
 vnoremap <leader>Fs :'<,'>sort<CR>|                      " Sort lines
 vnoremap <leader>Fw gq|                                  " Wrap lines at textwidth
+nnoremap <leader>FW :StripWhitespace<CR>|                " Strip Whitespace
 
 " Git
 nnoremap <leader>gdn :GitGutterNextHunk<CR>|             " Jump to next diff
@@ -245,13 +249,19 @@ nnoremap <leader>gdt :GitGutterToggle<CR>|               " Toggle git-gutter
 
 " Linting (Errors)
 nnoremap <leader>ec :SyntasticCheck<CR>|                 " Error check
-nnoremap <leader>ee :Errors<CR>|                         " List errors
 nnoremap <leader>et :SyntasticToggleMode<CR>|            " Toggle syntastic
+nnoremap <leader>eo :lopen<CR>|                          " Open
+nnoremap <leader>ec :lclose<CR>|                         " Close
+nnoremap <leader>en :lnext<CR>|                          " Next
+nnoremap <leader>ep :lprevious<CR>|                      " Previous
 
 " Meta
 nnoremap <leader>_d :e $MYVIMRC<CR>|                     " Edit .vimrc
 nnoremap <leader>_r :source $MYVIMRC<CR>|                " Reload .vimrc
 nnoremap <leader>_f :FileBeagle ~/.vim/ftplugin<CR>|     " Open ftplugins
+
+" Make
+nnoremap <leader>mm :Make<CR>|                           " Make
 
 " Notes
 nnoremap <leader>nn :Note<space>|                        " Open note
@@ -275,7 +285,6 @@ nnoremap <leader>cp :cprevious<CR>|                      " Previous
 " Substitute
 nnoremap <leader>ss :%s/|                                " Substitute
 nnoremap <leader>st :%s/\t/|                             " Substitite tabs
-nnoremap <leader>sw :StripWhitespace<CR>|                " Strip Whitespace
 
 " Spelling
 nnoremap <leader>Ss :setlocal spell spelllang=en_us<CR>| " Activate spelling
@@ -300,18 +309,14 @@ nnoremap <leader>k <C-w>k|                               " Navigate up
 nnoremap <leader>l <C-w>l|                               " Navigate right
 
 " ------------------------------------------------------------------------------
-" Filetype-specific keybindings
-" ------------------------------------------------------------------------------
-" au FileType cs source ~/.vim/ftplugin/cs.vim
-" au FileType python source ~/.vim/ftplugin/python.vim
-
-" ------------------------------------------------------------------------------
 " Project Config
 " ------------------------------------------------------------------------------
-set rtp+=~/.vim/bundle/vim-project/
-call project#rc('/src')
+if isdirectory($HOME . "/.vim/bundle/vim-project")
+  set rtp+=~/.vim/bundle/vim-project/
+  call project#rc('/src')
 
-" Get work projects if the file exists
-if filereadable($HOME . "/.vim/work/projects.vim")
-  source ~/.vim/work/projects.vim
+  " Get work projects if the file exists
+  if filereadable($HOME . "/.vim/work/projects.vim")
+    source ~/.vim/work/projects.vim
+  end
 end
