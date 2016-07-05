@@ -3,11 +3,11 @@ let python_highlight_all=1
 
 " Folds
 set foldmethod=indent
+set foldlevel=2
 set foldnestmax=2
 
 " Make
 set makeprg=python\ %
-set autowrite
 
 " Tabs
 set tabstop=4
