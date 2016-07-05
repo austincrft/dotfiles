@@ -55,6 +55,13 @@ imap jj <Esc>
 let mapleader = ' '
 
 " ------------------------------------------------------------------------------
+" Neovim terminal escape
+" ------------------------------------------------------------------------------
+if has('nvim')
+  tnoremap <Esc> <C-\><C-n>
+endif
+
+" ------------------------------------------------------------------------------
 " Core Mappings
 " ------------------------------------------------------------------------------
 nnoremap <S-Tab> :bnext<CR>| " Fast buffer navigation
@@ -86,63 +93,60 @@ if !empty($CONEMUBUILD)
 endif
 
 " ------------------------------------------------------------------------------
-" Vundle Config
+" Plug Config
 " ------------------------------------------------------------------------------
-filetype off
+" Automatically download Plug if vim is started without it
+if empty(glob("~/.vim/autoload/plug.vim"))
+  execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/'
+        \ 'junegunn/vim-plug/master/plug.vim'
+endif
 
-" Install Vundle
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-
-" Let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+call plug#begin('~/.vim/plugged')
 
 " Editor features
-Plugin 'jiangmiao/auto-pairs'
-Plugin 'tomtom/tcomment_vim.git'
-Plugin 'tpope/vim-surround'
+Plug 'jiangmiao/auto-pairs'
+Plug 'tomtom/tcomment_vim'
+Plug 'tpope/vim-surround'
 
 " File browsing
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'jeetsukumaran/vim-filebeagle'
-Plugin 'rking/ag.vim'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'rking/ag.vim'
+Plug 'jeetsukumaran/vim-filebeagle', { 'on': ['FileBeagle', 'FileBeagleBufferDir'] }
 
 " Formatting
-Plugin 'godlygeek/tabular'
-Plugin 'ntpeters/vim-better-whitespace'
+Plug 'godlygeek/tabular'
+Plug 'ntpeters/vim-better-whitespace'
 
 " Linting
-Plugin 'scrooloose/syntastic'
+Plug 'scrooloose/syntastic'
 
 " Git
-Plugin 'airblade/vim-gitgutter'
-Plugin 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'tpope/vim-fugitive'
 
 " Auto-Complete
-Plugin 'Valloric/YouCompleteMe'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 
 " Clojure
-Plugin 'tpope/vim-fireplace'
-Plugin 'vim-scripts/paredit.vim'
+Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+Plug 'tpope/vim-salve', { 'for': 'clojure' }
 
 " CSharp
-Plugin 'OrangeT/vim-csharp'
+Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
 
 " Tools
-Plugin 'KabbAmine/zeavim.vim'
-Plugin 'amiorin/vim-project'
-Plugin 'kshenoy/vim-signature'
-Plugin 'tpope/vim-dispatch'
-Plugin 'vim-scripts/BufOnly.vim'
-Plugin 'xolox/vim-misc'
-Plugin 'xolox/vim-notes'
+Plug 'amiorin/vim-project'
+Plug 'kshenoy/vim-signature'
+Plug 'tpope/vim-dispatch'
+Plug 'vim-scripts/BufOnly.vim'
+Plug 'xolox/vim-notes' | Plug 'xolox/vim-misc'
 
 " Visuals
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'bling/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+Plug 'altercation/vim-colors-solarized'
+Plug 'bling/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
-call vundle#end()            " Required
+call plug#end()
 filetype plugin indent on    " Required
 
 " ------------------------------------------------------------------------------
@@ -178,11 +182,6 @@ let g:gitgutter_map_keys=0 " Disable keymappings
 let g:notes_directories = ['~/Dropbox/vim-notes']
 
 " ------------------------------------------------------------------------------
-" Paredit Config
-" ------------------------------------------------------------------------------
-let g:paredit_electric_return=0
-
-" ------------------------------------------------------------------------------
 " Signature Config
 " ------------------------------------------------------------------------------
 let g:SignatureMarkTextHLDynamic=1
@@ -199,7 +198,7 @@ colorscheme solarized
 " ------------------------------------------------------------------------------
 let g:syntastic_always_populate_loc_list = 1
 
-"  ------------------------------------------------------------------------------
+" ------------------------------------------------------------------------------
 " TComment Config
 " ------------------------------------------------------------------------------
 let g:tcommentMaps=0                          " Disable keymappings
