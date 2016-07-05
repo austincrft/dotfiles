@@ -106,8 +106,8 @@ font pango:Sauce Code Powerline 10
   bindsym XF86AudioPrev exec playerctl previous Volume & Media
 
 # Sreen Brightness
-  bindsym XF86MonBrightnessUp exec xbacklight -inc 20
-  bindsym XF86MonBrightnessDown exec xbacklight -dec 20
+  bindsym XF86MonBrightnessUp exec xbacklight -inc 10
+  bindsym XF86MonBrightnessDown exec xbacklight -dec 10
 
 # Scripts
   bindsym $mod+t exec ~/.config/i3/scripts/toggle_touchpad.sh
