@@ -13,5 +13,8 @@ DOSKEY ls=ls --color
 DOSKEY la=ls -a --color
 DOSKEY ll=ls -l --color
 
+:: grep
+DOSKEY grep=grep --color=auto $*
+
 :: cd
 DOSKEY cdu=cd %USERPROFILE%
