@@ -86,7 +86,8 @@ endif
 " ------------------------------------------------------------------------------
 if !empty($CONEMUBUILD)
     set term=xterm
-    set termencoding=utf8
+    set encoding=utf-8
+    set termencoding=&encoding
     set t_Co=16
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
@@ -110,7 +111,7 @@ Plug 'tpope/vim-surround'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'rking/ag.vim'
+Plug 'rking/ag.vim', { 'on': 'Ag' }
 Plug 'jeetsukumaran/vim-filebeagle'
 
 " Formatting
@@ -121,11 +122,10 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'scrooloose/syntastic'
 
 " Git
-Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-fugitive'
 
 " Auto-Complete
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+Plug 'Valloric/YouCompleteMe'
 
 " Clojure
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
@@ -134,12 +134,18 @@ Plug 'tpope/vim-salve'
 " CSharp
 Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
 
+" FSharp
+Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
+
 " Scala
 Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 
 " Tools
 Plug 'amiorin/vim-project'
+Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
+Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
+Plug 'takac/vim-hardtime'
 Plug 'tpope/vim-dispatch'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'xolox/vim-notes' | Plug 'xolox/vim-misc'
@@ -155,7 +161,7 @@ filetype plugin indent on    " Required
 " ------------------------------------------------------------------------------
 " Ag Config
 " ------------------------------------------------------------------------------
-let g:ag_prg="ag --vimgrep --ignore tags"
+let g:ag_prg="ag --vimgrep --nocolor --column --ignore tags"
 
 " ------------------------------------------------------------------------------
 " Airline Config
@@ -177,7 +183,14 @@ let g:filebeagle_suppress_keymaps = 1
 " ------------------------------------------------------------------------------
 " GitGutter Config
 " ------------------------------------------------------------------------------
-let g:gitgutter_map_keys=0 " Disable keymappings
+let g:gitgutter_map_keys=0
+
+" ------------------------------------------------------------------------------
+" Hardtime Config
+" ------------------------------------------------------------------------------
+let g:hardtime_maxcount = 2
+let g:hardtime_ignore_quickfix = 1
+let g:hardtime_default_on = 1
 
 " ------------------------------------------------------------------------------
 " Notes Config
@@ -249,11 +262,6 @@ vnoremap <leader>Fs :'<,'>sort<CR>|                      " Sort lines
 vnoremap <leader>Fw gq|                                  " Wrap lines at textwidth
 nnoremap <leader>FW :StripWhitespace<CR>|                " Strip Whitespace
 
-" Git
-nnoremap <leader>gdn :GitGutterNextHunk<CR>|             " Jump to next diff
-nnoremap <leader>gdp :GitGutterPrevHunk<CR>|             " Jump to previous diff
-nnoremap <leader>gdt :GitGutterToggle<CR>|               " Toggle git-gutter
-
 " Linting (Errors)
 nnoremap <leader>ec :SyntasticCheck<CR>|                 " Error check
 nnoremap <leader>et :SyntasticToggleMode<CR>|            " Toggle syntastic
@@ -318,7 +326,7 @@ nnoremap <leader>l <C-w>l|                               " Navigate right
 " ------------------------------------------------------------------------------
 " Project Config
 " ------------------------------------------------------------------------------
-if isdirectory($HOME . "/.vim/bundle/vim-project")
+if isdirectory($HOME . "/.vim/plugged/vim-project")
   set rtp+=~/.vim/bundle/vim-project/
   call project#rc('/src')
 
