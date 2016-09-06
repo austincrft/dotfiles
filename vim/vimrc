@@ -141,6 +141,9 @@ Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
 " Scala
 Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 
+" Tags
+Plug 'majutsushi/tagbar'
+
 " Tools
 Plug 'amiorin/vim-project'
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
@@ -182,11 +185,6 @@ let g:ctrlp_working_path_mode='a'
 let g:filebeagle_suppress_keymaps = 1
 
 " ------------------------------------------------------------------------------
-" GitGutter Config
-" ------------------------------------------------------------------------------
-let g:gitgutter_map_keys=0
-
-" ------------------------------------------------------------------------------
 " Hardtime Config
 " ------------------------------------------------------------------------------
 let g:hardtime_maxcount = 2
@@ -208,6 +206,11 @@ let g:salve_auto_start_repl=1
 " ------------------------------------------------------------------------------
 let g:SignatureMarkTextHLDynamic=1
 let g:SignatureMarkerTextHLDynamic=1
+
+" ------------------------------------------------------------------------------
+" Sneak config
+" ------------------------------------------------------------------------------
+let g:sneak#streak = 1
 
 " ------------------------------------------------------------------------------
 " Solarized Theme
