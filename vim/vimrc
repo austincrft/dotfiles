@@ -108,6 +108,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'jiangmiao/auto-pairs'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-surround'
+Plug 'michaeljsmith/vim-indent-object'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
