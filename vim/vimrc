@@ -130,13 +130,16 @@ Plug 'Valloric/YouCompleteMe'
 
 " Clojure
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-Plug 'tpope/vim-salve', { 'for': 'clojure' }
+Plug 'tpope/vim-salve'
 
 " CSharp
 Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
 
 " FSharp
 Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
+
+" Scala
+Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 
 " Tools
 Plug 'amiorin/vim-project'
@@ -194,6 +197,11 @@ let g:hardtime_default_on = 1
 " Notes Config
 " ------------------------------------------------------------------------------
 let g:notes_directories = ['~/Dropbox/vim-notes']
+
+" ------------------------------------------------------------------------------
+" Salve Config
+" ------------------------------------------------------------------------------
+let g:salve_auto_start_repl=1
 
 " ------------------------------------------------------------------------------
 " Signature Config
