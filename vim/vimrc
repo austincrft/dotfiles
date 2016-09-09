@@ -317,6 +317,7 @@ nnoremap <leader>tn :tnext<CR>|                          " Next
 nnoremap <leader>tp :tprev<CR>|                          " Previous
 nnoremap <leader>tf :tfirst<CR>|                         " First
 nnoremap <leader>tl :tlast<CR>|                          " Last
+nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
 
 " Windows
 nnoremap <leader>wv :vsplit<CR>|                         " Split vertically
