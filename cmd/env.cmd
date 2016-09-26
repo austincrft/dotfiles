@@ -18,3 +18,10 @@ DOSKEY grep=grep --color=auto $*
 
 :: cd
 DOSKEY cdu=cd %USERPROFILE%
+
+:: .NET stuff
+DOSKEY nunit-console="%USERPROFILE%\NUnit.3.4.1\NUnit.ConsoleRunner.3.4.1\tools\nunit3-console.exe" $*
+DOSKEY msbuild="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe" $*
+
+:: pandoc
+DOSKEY pandoc="%USERPROFILE%\AppData\Local\Pandoc\pandoc.exe" $*
