@@ -26,6 +26,7 @@ set completeopt=menuone        " Complete option (don't show preview)
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 autocmd FocusLost * silent! wa " Automatically save file
+filetype plugin indent on      " Enable filetypes
 
 " ------------------------------------------------------------------------------
 " Indentation and Linebreaks
@@ -33,9 +34,9 @@ autocmd FocusLost * silent! wa " Automatically save file
 set autoindent
 set smartindent
 set smarttab
-set shiftwidth=2
-set softtabstop=2
-set tabstop=2
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
 set expandtab
 set nowrap
 set linebreak
@@ -58,7 +59,7 @@ let mapleader = ' '
 " Neovim terminal escape
 " ------------------------------------------------------------------------------
 if has('nvim')
-  tnoremap <Esc> <C-\><C-n>
+    tnoremap <Esc> <C-\><C-n>
 endif
 
 " ------------------------------------------------------------------------------
@@ -76,9 +77,9 @@ set runtimepath=$HOME/.vim,$VIMRUNTIME
 " Persistent Undo -- Keep undo history across sessions by storing in file
 " ------------------------------------------------------------------------------
 if has('persistent_undo')
-  silent !mkdir ~/.vim/backups > /dev/null 2>&1
-  set undodir=~/.vim/backups
-  set undofile
+    silent !mkdir ~/.vim/backups > /dev/null 2>&1
+    set undodir=~/.vim/backups
+    set undofile
 endif
 
 " ------------------------------------------------------------------------------
@@ -98,8 +99,8 @@ endif
 " ------------------------------------------------------------------------------
 " Automatically download Plug if vim is started without it
 if empty(glob("~/.vim/autoload/plug.vim"))
-  execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/'
-        \ 'junegunn/vim-plug/master/plug.vim'
+    execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/'
+          \ 'junegunn/vim-plug/master/plug.vim'
 endif
 
 call plug#begin('~/.vim/plugged')
@@ -123,10 +124,13 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'scrooloose/syntastic'
 
 " Git
-Plug 'tpope/vim-fugitive'
+if !has('win32')
+    Plug 'tpope/vim-fugitive'
+endif
 
 " Auto-Complete
-Plug 'Valloric/YouCompleteMe'
+" Plug 'Valloric/YouCompleteMe'
+Plug 'Shougo/neocomplete.vim'
 
 " Clojure
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
@@ -134,6 +138,7 @@ Plug 'tpope/vim-salve'
 
 " CSharp
 Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
+Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
 " FSharp
 Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
@@ -142,7 +147,7 @@ Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
 Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 
 " Tags
-Plug 'majutsushi/tagbar'
+Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
 " Tools
 Plug 'amiorin/vim-project'
@@ -160,7 +165,6 @@ Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
-filetype plugin indent on    " Required
 
 " ------------------------------------------------------------------------------
 " Ag Config
@@ -170,9 +174,9 @@ let g:ag_prg="ag --vimgrep --nocolor --column --ignore tags"
 " ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#hunks#enabled = 0
-let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#hunks#enabled=0
+let g:airline_powerline_fonts=1
 
 " ------------------------------------------------------------------------------
 " CtrlP Config
@@ -180,21 +184,50 @@ let g:airline_powerline_fonts = 1
 let g:ctrlp_working_path_mode='a'
 
 " ------------------------------------------------------------------------------
+" FSharp Config
+" ------------------------------------------------------------------------------
+" let g:fsharp_xbuild_path='msbuild'
+let g:fsharp_test_runner="nunit-console"
+
+" ------------------------------------------------------------------------------
 " FileBeagle Config
 " ------------------------------------------------------------------------------
-let g:filebeagle_suppress_keymaps = 1
+let g:filebeagle_suppress_keymaps=1
 
 " ------------------------------------------------------------------------------
 " Hardtime Config
 " ------------------------------------------------------------------------------
-let g:hardtime_maxcount = 2
-let g:hardtime_ignore_quickfix = 1
-let g:hardtime_default_on = 1
+let g:hardtime_maxcount=2
+let g:hardtime_ignore_quickfix=1
+let g:hardtime_default_on=1
 
 " ------------------------------------------------------------------------------
 " Notes Config
 " ------------------------------------------------------------------------------
-let g:notes_directories = ['~/Dropbox/vim-notes']
+let g:notes_directories=['~/Dropbox/vim-notes']
+let g:notes_suffix = '.txt'
+let g:notes_unicode_enabled=0
+
+" ------------------------------------------------------------------------------
+" Neocomplete Config
+" ------------------------------------------------------------------------------
+let g:neocomplete#enable_at_startup=1                 " Use neocomplete
+let g:neocomplete#enable_smart_case=1                 " Use smartcase
+let g:neocomplete#sources#syntax#min_keyword_length=3 " Keyword length
+
+" Default keyword pattern for ones not supplied in syntax file
+if !exists('g:neocomplete#keyword_patterns')
+  let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns._ = '\h\w*'
+
+" Define input patterns
+if !exists('g:neocomplete#sources#omni#input_patterns')
+    let g:neocomplete#sources#omni#input_patterns = {}
+endif
+
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+let g:neocomplete#sources#omni#input_patterns.cs='.*[^=\);]'
 
 " ------------------------------------------------------------------------------
 " Salve Config
@@ -210,7 +243,8 @@ let g:SignatureMarkerTextHLDynamic=1
 " ------------------------------------------------------------------------------
 " Sneak config
 " ------------------------------------------------------------------------------
-let g:sneak#streak = 1
+let g:sneak#streak=1
+let g:sneak#use_ic_scs=1
 
 " ------------------------------------------------------------------------------
 " Solarized Theme
@@ -221,7 +255,7 @@ colorscheme solarized
 " ------------------------------------------------------------------------------
 " Syntastic Config
 " ------------------------------------------------------------------------------
-let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_always_populate_loc_list=1
 
 " ------------------------------------------------------------------------------
 " TComment Config
@@ -233,11 +267,10 @@ vmap gc :TComment<CR>|                        " Comment selection
 " ------------------------------------------------------------------------------
 " YouCompleteMe Config
 " ------------------------------------------------------------------------------
-let g:ycm_server_keep_logfiles = 1
 if has('win32')
-  let g:ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
+    let g:ycm_path_to_python_interpreter='C:\Python35\python.exe'
 else
-  let g:ycm_path_to_python_interpreter = 'python'
+    let g:ycm_path_to_python_interpreter='python'
 end
 
 " ------------------------------------------------------------------------------
@@ -332,11 +365,11 @@ nnoremap <leader>l <C-w>l|                               " Navigate right
 " Project Config
 " ------------------------------------------------------------------------------
 if isdirectory($HOME . "/.vim/plugged/vim-project")
-  set rtp+=~/.vim/bundle/vim-project/
-  call project#rc('/src')
+    set rtp+=~/.vim/bundle/vim-project/
+    call project#rc('/src')
 
-  " Get work projects if the file exists
-  if filereadable($HOME . "/.vim/work/projects.vim")
-    source ~/.vim/work/projects.vim
-  end
+    " Get work projects if the file exists
+    if filereadable($HOME . "/.vim/work/projects.vim")
+        source ~/.vim/work/projects.vim
+    end
 end
