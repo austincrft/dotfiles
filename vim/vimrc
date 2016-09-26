@@ -33,9 +33,9 @@ autocmd FocusLost * silent! wa " Automatically save file
 set autoindent
 set smartindent
 set smarttab
-set shiftwidth=2
-set softtabstop=2
-set tabstop=2
+set shiftwidth=4
+set softtabstop=4
+set tabstop=4
 set expandtab
 set nowrap
 set linebreak
@@ -170,9 +170,9 @@ let g:ag_prg="ag --vimgrep --nocolor --column --ignore tags"
 " ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#hunks#enabled = 0
-let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#hunks#enabled=0
+let g:airline_powerline_fonts=1
 
 " ------------------------------------------------------------------------------
 " CtrlP Config
@@ -180,21 +180,29 @@ let g:airline_powerline_fonts = 1
 let g:ctrlp_working_path_mode='a'
 
 " ------------------------------------------------------------------------------
+" FSharp Config
+" ------------------------------------------------------------------------------
+" let g:fsharp_xbuild_path='msbuild'
+let g:fsharp_test_runner="nunit-console"
+
+" ------------------------------------------------------------------------------
 " FileBeagle Config
 " ------------------------------------------------------------------------------
-let g:filebeagle_suppress_keymaps = 1
+let g:filebeagle_suppress_keymaps=1
 
 " ------------------------------------------------------------------------------
 " Hardtime Config
 " ------------------------------------------------------------------------------
-let g:hardtime_maxcount = 2
-let g:hardtime_ignore_quickfix = 1
-let g:hardtime_default_on = 1
+let g:hardtime_maxcount=2
+let g:hardtime_ignore_quickfix=1
+let g:hardtime_default_on=1
 
 " ------------------------------------------------------------------------------
 " Notes Config
 " ------------------------------------------------------------------------------
-let g:notes_directories = ['~/Dropbox/vim-notes']
+let g:notes_directories=['~/Dropbox/vim-notes']
+let g:notes_suffix = '.txt'
+let g:notes_unicode_enabled=0
 
 " ------------------------------------------------------------------------------
 " Salve Config
@@ -210,7 +218,8 @@ let g:SignatureMarkerTextHLDynamic=1
 " ------------------------------------------------------------------------------
 " Sneak config
 " ------------------------------------------------------------------------------
-let g:sneak#streak = 1
+let g:sneak#streak=1
+let g:sneak#use_ic_scs=1
 
 " ------------------------------------------------------------------------------
 " Solarized Theme
@@ -221,7 +230,7 @@ colorscheme solarized
 " ------------------------------------------------------------------------------
 " Syntastic Config
 " ------------------------------------------------------------------------------
-let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_always_populate_loc_list=1
 
 " ------------------------------------------------------------------------------
 " TComment Config
@@ -233,11 +242,11 @@ vmap gc :TComment<CR>|                        " Comment selection
 " ------------------------------------------------------------------------------
 " YouCompleteMe Config
 " ------------------------------------------------------------------------------
-let g:ycm_server_keep_logfiles = 1
+let g:ycm_server_keep_logfiles=1
 if has('win32')
-  let g:ycm_path_to_python_interpreter = 'C:\Python35\python.exe'
+  let g:ycm_path_to_python_interpreter='C:\Python35\python.exe'
 else
-  let g:ycm_path_to_python_interpreter = 'python'
+  let g:ycm_path_to_python_interpreter='python'
 end
 
 " ------------------------------------------------------------------------------
