@@ -129,7 +129,6 @@ if !has('win32')
 endif
 
 " Auto-Complete
-" Plug 'Valloric/YouCompleteMe'
 Plug 'Shougo/neocomplete.vim'
 
 " Clojure
@@ -186,7 +185,7 @@ let g:ctrlp_working_path_mode='a'
 " ------------------------------------------------------------------------------
 " FSharp Config
 " ------------------------------------------------------------------------------
-" let g:fsharp_xbuild_path='msbuild'
+let g:fsharp_xbuild_path='msbuild'
 let g:fsharp_test_runner="nunit-console"
 
 " ------------------------------------------------------------------------------
@@ -226,8 +225,16 @@ if !exists('g:neocomplete#sources#omni#input_patterns')
     let g:neocomplete#sources#omni#input_patterns = {}
 endif
 
+" Tabs for completion
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 let g:neocomplete#sources#omni#input_patterns.cs='.*[^=\);]'
+
+" ------------------------------------------------------------------------------
+" OmniSharp Config
+" ------------------------------------------------------------------------------
+let g:syntastic_cs_checkers=['syntax', 'semantic', 'issues']
 
 " ------------------------------------------------------------------------------
 " Salve Config
@@ -263,15 +270,6 @@ let g:syntastic_always_populate_loc_list=1
 let g:tcommentMaps=0                          " Disable keymappings
 nmap gcc :TComment<CR>|                       " Comment line
 vmap gc :TComment<CR>|                        " Comment selection
-
-" ------------------------------------------------------------------------------
-" YouCompleteMe Config
-" ------------------------------------------------------------------------------
-if has('win32')
-    let g:ycm_path_to_python_interpreter='C:\Python35\python.exe'
-else
-    let g:ycm_path_to_python_interpreter='python'
-end
 
 " ------------------------------------------------------------------------------
 " Leader Mappings
