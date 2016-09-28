@@ -142,6 +142,9 @@ Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 " FSharp
 Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
 
+" Python
+Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+
 " Scala
 Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 
@@ -201,6 +204,12 @@ let g:hardtime_ignore_quickfix=1
 let g:hardtime_default_on=1
 
 " ------------------------------------------------------------------------------
+" Jedi Config
+" ------------------------------------------------------------------------------
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#popup_on_dot = 0
+
+" ------------------------------------------------------------------------------
 " Notes Config
 " ------------------------------------------------------------------------------
 let g:notes_directories=['~/Dropbox/vim-notes']
@@ -228,8 +237,12 @@ endif
 " Tabs for completion
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 
+" Languages
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 let g:neocomplete#sources#omni#input_patterns.cs='.*[^=\);]'
+
+autocmd FileType python setlocal omnifunc=jedi#completions
+let g:neocomplete#sources#omni#input_patterns.python = '[^. \t]\.\w*'
 
 " ------------------------------------------------------------------------------
 " OmniSharp Config
