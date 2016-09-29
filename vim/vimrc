@@ -53,7 +53,7 @@ set smartcase
 "  Set ESC and Leader
 " ------------------------------------------------------------------------------
 imap jj <Esc>
-let mapleader = ' '
+let mapleader=' '
 
 " ------------------------------------------------------------------------------
 " Neovim terminal escape
@@ -156,7 +156,6 @@ Plug 'amiorin/vim-project'
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
-Plug 'takac/vim-hardtime'
 Plug 'tpope/vim-dispatch'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'xolox/vim-notes' | Plug 'xolox/vim-misc'
@@ -190,6 +189,9 @@ let g:ctrlp_working_path_mode='a'
 " ------------------------------------------------------------------------------
 let g:fsharp_xbuild_path='msbuild'
 let g:fsharp_test_runner="nunit-console"
+let g:fsharp_only_check_errors_on_write=1
+let g:fsharp_map_keys=0
+let g:fsharp_completion_helptext=0
 
 " ------------------------------------------------------------------------------
 " FileBeagle Config
@@ -197,23 +199,16 @@ let g:fsharp_test_runner="nunit-console"
 let g:filebeagle_suppress_keymaps=1
 
 " ------------------------------------------------------------------------------
-" Hardtime Config
-" ------------------------------------------------------------------------------
-let g:hardtime_maxcount=2
-let g:hardtime_ignore_quickfix=1
-let g:hardtime_default_on=1
-
-" ------------------------------------------------------------------------------
 " Jedi Config
 " ------------------------------------------------------------------------------
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#popup_on_dot = 0
+let g:jedi#auto_vim_configuration=0
+let g:jedi#popup_on_dot=0
 
 " ------------------------------------------------------------------------------
 " Notes Config
 " ------------------------------------------------------------------------------
 let g:notes_directories=['~/Dropbox/vim-notes']
-let g:notes_suffix = '.txt'
+let g:notes_suffix='.txt'
 let g:notes_unicode_enabled=0
 
 " ------------------------------------------------------------------------------
@@ -225,24 +220,28 @@ let g:neocomplete#sources#syntax#min_keyword_length=3 " Keyword length
 
 " Default keyword pattern for ones not supplied in syntax file
 if !exists('g:neocomplete#keyword_patterns')
-  let g:neocomplete#keyword_patterns = {}
+  let g:neocomplete#keyword_patterns={}
 endif
-let g:neocomplete#keyword_patterns._ = '\h\w*'
+let g:neocomplete#keyword_patterns._='\h\w*'
 
 " Define input patterns
 if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns = {}
+    let g:neocomplete#sources#omni#input_patterns={}
 endif
 
 " Tabs for completion
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Languages
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 let g:neocomplete#sources#omni#input_patterns.cs='.*[^=\);]'
 
 autocmd FileType python setlocal omnifunc=jedi#completions
-let g:neocomplete#sources#omni#input_patterns.python = '[^. \t]\.\w*'
+let g:neocomplete#sources#omni#input_patterns.python='.*[^=\);]'
+
+autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
+let g:neocomplete#sources#omni#input_patterns.fsharp='.*[^=\);]'
 
 " ------------------------------------------------------------------------------
 " OmniSharp Config

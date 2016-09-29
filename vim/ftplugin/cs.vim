@@ -8,7 +8,6 @@ set foldlevelstart=2
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
-set textwidth=79
 
 " Mappings
 nnoremap <leader>md :OmniSharpDocumentation<CR>|
@@ -18,5 +17,6 @@ nnoremap <leader>mfi :OmniSharpFixIssue<CR>|
 nnoremap <leader>mfI :OmniSharpFindImplementations<CR>|
 nnoremap <leader>mfu :OmniSharpFindUsages<CR>|
 nnoremap <leader>mt :OmniSharpTypeLookup<CR>|
+nnoremap <leader>mT :OmniSharpRunAllTests<CR>|
 nnoremap [m :OmniSharpNavigateUp<CR>|
 nnoremap ]m :OmniSharpNavigateDown<CR>|
