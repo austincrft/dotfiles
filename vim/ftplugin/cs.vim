@@ -8,10 +8,15 @@ set foldlevelstart=2
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
-set textwidth=79
 
 " Mappings
-nnoremap <leader>md :YcmCompleter GetDoc<CR>|        " Get Doc
-nnoremap <leader>mg :YcmCompleter GoTo<CR>|          " Go To Definition
-nnoremap <leader>mr :YcmCompleter RestartServer<CR>| " Restart Server
-nnoremap <leader>mt :YcmCompleter GetType<CR>|       " Get Type
+nnoremap <leader>md :OmniSharpDocumentation<CR>|
+nnoremap <leader>mg :OmniSharpGotoDefinition<CR>|
+nnoremap <leader>mr :OmniSharpStopServer<CR><bar>:OmniSharpStartServer<CR>|
+nnoremap <leader>mfi :OmniSharpFixIssue<CR>|
+nnoremap <leader>mfI :OmniSharpFindImplementations<CR>|
+nnoremap <leader>mfu :OmniSharpFindUsages<CR>|
+nnoremap <leader>mt :OmniSharpTypeLookup<CR>|
+nnoremap <leader>mT :OmniSharpRunAllTests<CR>|
+nnoremap [m :OmniSharpNavigateUp<CR>|
+nnoremap ]m :OmniSharpNavigateDown<CR>|
