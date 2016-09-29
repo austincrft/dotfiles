@@ -15,3 +15,6 @@ alias cls='clear'
 # vim
 alias vim-classic='/usr/bin/vim'
 alias vim='nvim'
+
+# dotnet
+alias msbuild='xbuild'

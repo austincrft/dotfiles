@@ -124,13 +124,12 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'scrooloose/syntastic'
 
 " Git
-if !has('win32')
-    Plug 'tpope/vim-fugitive'
-endif
+Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
 
 " Auto-Complete
 " Plug 'Valloric/YouCompleteMe'
-Plug 'Shougo/neocomplete.vim'
+Plug 'Shougo/neocomplete.vim', !has('nvim') ? {} : { 'on': [] }
+Plug 'Shougo/deoplete.nvim', has('nvim') ? {} : { 'on': [] }
 
 " Clojure
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
@@ -186,7 +185,7 @@ let g:ctrlp_working_path_mode='a'
 " ------------------------------------------------------------------------------
 " FSharp Config
 " ------------------------------------------------------------------------------
-" let g:fsharp_xbuild_path='msbuild'
+let g:fsharp_xbuild_path='msbuild'
 let g:fsharp_test_runner="nunit-console"
 
 " ------------------------------------------------------------------------------
@@ -227,6 +226,8 @@ if !exists('g:neocomplete#sources#omni#input_patterns')
 endif
 
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+autocmd FileType fs setlocal omnifunc=fsharp#Complete
+
 let g:neocomplete#sources#omni#input_patterns.cs='.*[^=\);]'
 
 " ------------------------------------------------------------------------------
