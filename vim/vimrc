@@ -1,3 +1,8 @@
+" Set local foldmarker
+" vim:fdm=marker
+
+" Editor {{{
+
 " Use Vim settings, rather then Vi settings
 " This must be first, because it changes other options as a side effect
 set nocompatible
@@ -94,6 +99,10 @@ if !empty($CONEMUBUILD)
     let &t_AF="\e[38;5;%dm"
 endif
 
+" }}}
+
+" Plugins {{{
+
 " ------------------------------------------------------------------------------
 " Plug Config
 " ------------------------------------------------------------------------------
@@ -166,6 +175,10 @@ Plug 'bling/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 call plug#end()
+
+" }}}
+
+" Plugin Config {{{
 
 " ------------------------------------------------------------------------------
 " Ag Config
@@ -283,6 +296,31 @@ let g:tcommentMaps=0                          " Disable keymappings
 nmap gcc :TComment<CR>|                       " Comment line
 vmap gc :TComment<CR>|                        " Comment selection
 
+" }}}
+
+" Functions {{{
+
+" ------------------------------------------------------------------------------
+" Navigate to next closed fold
+" ------------------------------------------------------------------------------
+function! NextClosedFold(dir)
+    let cmd = 'norm!z' . a:dir
+    let view = winsaveview()
+    let [l0, l, open] = [0, view.lnum, 1]
+    while l != l0 && open
+        exe cmd
+        let [l0, l] = [l, line('.')]
+        let open = foldclosed(l) < 0
+    endwhile
+    if open
+        call winrestview(view)
+    endif
+endfunction
+
+" }}}
+
+" Leader Mappings {{{
+
 " ------------------------------------------------------------------------------
 " Leader Mappings
 " ------------------------------------------------------------------------------
@@ -290,8 +328,8 @@ vmap gc :TComment<CR>|                        " Comment selection
 " Buffer
 nnoremap <leader><Tab> :e#<CR>|                          " Switch to last buffer
 nnoremap <leader>bb :CtrlPBuffer<CR>|                    " List
-nnoremap <leader>bn :bnext<CR>|                          " Next
-nnoremap <leader>bp :bprevious<CR>|                      " Previous
+nnoremap <leader>bj :bnext<CR>|                          " Next
+nnoremap <leader>bk :bprevious<CR>|                      " Previous
 nnoremap <leader>bd :bdelete<CR>|                        " Delete
 nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffers
 
@@ -299,7 +337,7 @@ nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffe
 nnoremap <leader>ff za|                                  " Toggle current fold
 nnoremap <leader>fa zM|                                  " Close all folds
 nnoremap <leader>fo zR|                                  " Open all folds
-nnoremap <leader>fv zv|                                  " View cursor line
+nnoremap <leader>fj :call NextClosedFold('j')<cr>        " Next closed fold
 
 " Formatting
 nnoremap <leader>Fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
@@ -314,8 +352,8 @@ nnoremap <leader>ec :SyntasticCheck<CR>|                 " Error check
 nnoremap <leader>et :SyntasticToggleMode<CR>|            " Toggle syntastic
 nnoremap <leader>eo :lopen<CR>|                          " Open
 nnoremap <leader>ec :lclose<CR>|                         " Close
-nnoremap <leader>en :lnext<CR>|                          " Next
-nnoremap <leader>ep :lprevious<CR>|                      " Previous
+nnoremap <leader>ej :lnext<CR>|                          " Next
+nnoremap <leader>ek :lprevious<CR>|                      " Previous
 
 " Meta
 nnoremap <leader>_d :e $MYVIMRC<CR>|                     " Edit .vimrc
@@ -341,8 +379,8 @@ nnoremap <leader>pT :Start! ctags -R<CR>|                " Async ctags generate
 " Quickfix
 nnoremap <leader>co :botright copen<CR>|                 " Open (full width)
 nnoremap <leader>cc :cclose<CR>|                         " Close
-nnoremap <leader>cn :cnext<CR>|                          " Next
-nnoremap <leader>cp :cprevious<CR>|                      " Previous
+nnoremap <leader>cj :cnext<CR>|                          " Next
+nnoremap <leader>ck :cprevious<CR>|                      " Previous
 
 " Substitute
 nnoremap <leader>ss :%s/|                                " Substitute
@@ -356,8 +394,8 @@ nnoremap <leader>Sf z=|                                  " Fix word
 " Tags
 nnoremap <leader>tt :CtrlPTag<CR>|                       " Fuzzy-search tags
 nnoremap <leader>ts :tselect<CR>|                        " View list
-nnoremap <leader>tn :tnext<CR>|                          " Next
-nnoremap <leader>tp :tprev<CR>|                          " Previous
+nnoremap <leader>tj :tnext<CR>|                          " Next
+nnoremap <leader>tk :tprev<CR>|                          " Previous
 nnoremap <leader>tf :tfirst<CR>|                         " First
 nnoremap <leader>tl :tlast<CR>|                          " Last
 nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
@@ -371,6 +409,10 @@ nnoremap <leader>j <C-w>j|                               " Navigate down
 nnoremap <leader>k <C-w>k|                               " Navigate up
 nnoremap <leader>l <C-w>l|                               " Navigate right
 
+" }}}
+
+" Projects {{{
+
 " ------------------------------------------------------------------------------
 " Project Config
 " ------------------------------------------------------------------------------
@@ -383,3 +425,5 @@ if isdirectory($HOME . "/.vim/plugged/vim-project")
         source ~/.vim/work/projects.vim
     end
 end
+
+" }}}
