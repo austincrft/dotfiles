@@ -139,6 +139,8 @@ Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
 Plug 'Shougo/neocomplete.vim', !has('nvim') ? {} : { 'on': [] }
 Plug 'Shougo/deoplete.nvim', has('nvim') ? {} : { 'on': [] }
 
+" Languages {{{
+
 " Clojure
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 Plug 'tpope/vim-salve'
@@ -155,6 +157,8 @@ Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 
 " Scala
 Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
+
+" }}}
 
 " Tags
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
