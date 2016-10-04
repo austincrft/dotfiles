@@ -133,12 +133,11 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'scrooloose/syntastic'
 
 " Git
-if !has('win32')
-    Plug 'tpope/vim-fugitive'
-endif
+Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
 
 " Auto-Complete
-Plug 'Shougo/neocomplete.vim'
+Plug 'Shougo/neocomplete.vim', !has('nvim') ? {} : { 'on': [] }
+Plug 'Shougo/deoplete.nvim', has('nvim') ? {} : { 'on': [] }
 
 " Clojure
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
@@ -248,6 +247,8 @@ inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Languages
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+autocmd FileType fs setlocal omnifunc=fsharp#Complete
+
 let g:neocomplete#sources#omni#input_patterns.cs='.*[^=\);]'
 
 autocmd FileType python setlocal omnifunc=jedi#completions
