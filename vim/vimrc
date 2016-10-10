@@ -91,12 +91,20 @@ endif
 " ConEmu Config
 " ------------------------------------------------------------------------------
 if !empty($CONEMUBUILD)
+    " Visual
     set term=xterm
     set encoding=utf-8
     set termencoding=&encoding
     set t_Co=16
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
+
+    " Mouse
+    set mouse=a
+    inoremap <Esc>[62~ <C-X><C-E>
+    inoremap <Esc>[63~ <C-X><C-Y>
+    nnoremap <Esc>[62~ <C-E>
+    nnoremap <Esc>[63~ <C-Y>
 endif
 
 " }}}
@@ -128,6 +136,9 @@ Plug 'jeetsukumaran/vim-filebeagle'
 " Formatting
 Plug 'godlygeek/tabular'
 Plug 'ntpeters/vim-better-whitespace'
+
+" Folding
+Plug 'Konfekt/FastFold'
 
 " Linting
 Plug 'scrooloose/syntastic'
