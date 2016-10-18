@@ -4,7 +4,9 @@
     "^'this\\.' is redundant and can be removed safely.$",
     "^Redundant argument name specification$",
     "^Convert to constant$",
-    "^Parameter can be I.*$"
+    "^Parameter can be I.*$",
+    "^Keyword 'internal' is redundant\\.  This is the default modifier\\.$",
+    "^'base\\.' is redundant and can be removed safely\\.$"
   ],
 
   "TestCommands": {
