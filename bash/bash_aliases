@@ -18,3 +18,5 @@ alias vim='nvim'
 
 # dotnet
 alias msbuild='xbuild'
+alias fsc='fsharpc'
+alias fsi='fsharpi'
