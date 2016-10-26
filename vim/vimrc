@@ -219,6 +219,7 @@ let g:fsharp_test_runner="nunit-console"
 let g:fsharp_only_check_errors_on_write=1
 let g:fsharp_map_keys=0
 let g:fsharp_completion_helptext=0
+let g:syntastic_fsharp_checkers=['syntax']
 
 " ------------------------------------------------------------------------------
 " FileBeagle Config
