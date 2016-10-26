@@ -61,13 +61,6 @@ imap jj <Esc>
 let mapleader=' '
 
 " ------------------------------------------------------------------------------
-" Neovim terminal escape
-" ------------------------------------------------------------------------------
-if has('nvim')
-    tnoremap <Esc> <C-\><C-n>
-endif
-
-" ------------------------------------------------------------------------------
 " Core Mappings
 " ------------------------------------------------------------------------------
 nnoremap <S-Tab> :bnext<CR>| " Fast buffer navigation
@@ -87,6 +80,40 @@ if has('persistent_undo')
     set undofile
 endif
 
+" }}}
+
+" Functions {{{
+
+" ------------------------------------------------------------------------------
+" Navigate to next closed fold
+" ------------------------------------------------------------------------------
+function! NextClosedFold(dir)
+    let cmd = 'norm!z' . a:dir
+    let view = winsaveview()
+    let [l0, l, open] = [0, view.lnum, 1]
+    while l != l0 && open
+        exe cmd
+        let [l0, l] = [l, line('.')]
+        let open = foldclosed(l) < 0
+    endwhile
+    if open
+        call winrestview(view)
+    endif
+endfunction
+
+" ------------------------------------------------------------------------------
+" Alias command
+" ------------------------------------------------------------------------------
+function! SetupCommandAlias(from, to)
+  exec 'cnoreabbrev <expr> '.a:from
+        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
+        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+endfunction
+
+" }}}
+
+" {{{ Misc Config
+
 " ------------------------------------------------------------------------------
 " ConEmu Config
 " ------------------------------------------------------------------------------
@@ -105,6 +132,14 @@ if !empty($CONEMUBUILD)
     inoremap <Esc>[63~ <C-X><C-Y>
     nnoremap <Esc>[62~ <C-E>
     nnoremap <Esc>[63~ <C-Y>
+endif
+
+" ------------------------------------------------------------------------------
+" Neovim
+" ------------------------------------------------------------------------------
+if has('nvim')
+    tnoremap <Esc> <C-\><C-n>| " Terminal escape
+    call SetupCommandAlias('sh', 'term')
 endif
 
 " }}}
@@ -148,7 +183,7 @@ Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
 
 " Auto-Complete
 Plug 'Shougo/neocomplete.vim', !has('nvim') ? {} : { 'on': [] }
-Plug 'Shougo/deoplete.nvim', has('nvim') ? {} : { 'on': [] }
+Plug 'Shougo/deoplete.nvim', has('nvim') ? {} : { 'on': [], 'do': ':UpdateRemotePlugins'}
 
 " Languages {{{
 
@@ -212,6 +247,36 @@ let g:airline_powerline_fonts=1
 let g:ctrlp_working_path_mode='a'
 
 " ------------------------------------------------------------------------------
+" Deoplete Config
+" ------------------------------------------------------------------------------
+let g:deoplete#enable_at_startup=1
+
+" Default keyword pattern for ones not supplied in syntax file
+if !exists('g:deoplete#keyword_patterns')
+  let g:deoplete#keyword_patterns={}
+endif
+let g:deoplete#keyword_patterns._='\h\w*'
+
+" Define input patterns
+if !exists('g:deoplete#omni#input_patterns')
+    let g:deoplete#omni#input_patterns={}
+endif
+
+" Tabs for completion
+inoremap <expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+" Languages
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+let g:deoplete#omni#input_patterns.cs='.*[^=\);]'
+
+autocmd FileType python setlocal omnifunc=jedi#completions
+let g:deoplete#omni#input_patterns.python='.*[^=\);]'
+
+autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
+let g:deoplete#omni#input_patterns.fsharp='.*[^=\);]'
+
+" ------------------------------------------------------------------------------
 " FSharp Config
 " ------------------------------------------------------------------------------
 let g:fsharp_xbuild_path='msbuild'
@@ -225,6 +290,11 @@ let g:syntastic_fsharp_checkers=['syntax']
 " FileBeagle Config
 " ------------------------------------------------------------------------------
 let g:filebeagle_suppress_keymaps=1
+
+" ------------------------------------------------------------------------------
+" Goyo Config
+" ------------------------------------------------------------------------------
+let g:goyo_width = 120
 
 " ------------------------------------------------------------------------------
 " Jedi Config
@@ -248,13 +318,13 @@ let g:neocomplete#sources#syntax#min_keyword_length=3 " Keyword length
 
 " Default keyword pattern for ones not supplied in syntax file
 if !exists('g:neocomplete#keyword_patterns')
-  let g:neocomplete#keyword_patterns={}
+  let g:deoplete#keyword_patterns={}
 endif
-let g:neocomplete#keyword_patterns._='\h\w*'
+let g:deoplete#keyword_patterns._='\h\w*'
 
 " Define input patterns
-if !exists('g:neocomplete#sources#omni#input_patterns')
-    let g:neocomplete#sources#omni#input_patterns={}
+if !exists('g:deoplete#sources#omni#input_patterns')
+    let g:deoplete#sources#omni#input_patterns={}
 endif
 
 " Tabs for completion
@@ -263,15 +333,13 @@ inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Languages
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
-autocmd FileType fs setlocal omnifunc=fsharp#Complete
-
-let g:neocomplete#sources#omni#input_patterns.cs='.*[^=\);]'
+let g:deoplete#sources#omni#input_patterns.cs='.*[^=\);]'
 
 autocmd FileType python setlocal omnifunc=jedi#completions
-let g:neocomplete#sources#omni#input_patterns.python='.*[^=\);]'
+let g:deoplete#sources#omni#input_patterns.python='.*[^=\);]'
 
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
-let g:neocomplete#sources#omni#input_patterns.fsharp='.*[^=\);]'
+let g:deoplete#sources#omni#input_patterns.fsharp='.*[^=\);]'
 
 " ------------------------------------------------------------------------------
 " OmniSharp Config
@@ -312,27 +380,6 @@ let g:syntastic_always_populate_loc_list=1
 let g:tcommentMaps=0                          " Disable keymappings
 nmap gcc :TComment<CR>|                       " Comment line
 vmap gc :TComment<CR>|                        " Comment selection
-
-" }}}
-
-" Functions {{{
-
-" ------------------------------------------------------------------------------
-" Navigate to next closed fold
-" ------------------------------------------------------------------------------
-function! NextClosedFold(dir)
-    let cmd = 'norm!z' . a:dir
-    let view = winsaveview()
-    let [l0, l, open] = [0, view.lnum, 1]
-    while l != l0 && open
-        exe cmd
-        let [l0, l] = [l, line('.')]
-        let open = foldclosed(l) < 0
-    endwhile
-    if open
-        call winrestview(view)
-    endif
-endfunction
 
 " }}}
 
