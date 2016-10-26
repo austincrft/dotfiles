@@ -61,13 +61,6 @@ imap jj <Esc>
 let mapleader=' '
 
 " ------------------------------------------------------------------------------
-" Neovim terminal escape
-" ------------------------------------------------------------------------------
-if has('nvim')
-    tnoremap <Esc> <C-\><C-n>
-endif
-
-" ------------------------------------------------------------------------------
 " Core Mappings
 " ------------------------------------------------------------------------------
 nnoremap <S-Tab> :bnext<CR>| " Fast buffer navigation
@@ -87,6 +80,40 @@ if has('persistent_undo')
     set undofile
 endif
 
+" }}}
+
+" Functions {{{
+
+" ------------------------------------------------------------------------------
+" Navigate to next closed fold
+" ------------------------------------------------------------------------------
+function! NextClosedFold(dir)
+    let cmd = 'norm!z' . a:dir
+    let view = winsaveview()
+    let [l0, l, open] = [0, view.lnum, 1]
+    while l != l0 && open
+        exe cmd
+        let [l0, l] = [l, line('.')]
+        let open = foldclosed(l) < 0
+    endwhile
+    if open
+        call winrestview(view)
+    endif
+endfunction
+
+" ------------------------------------------------------------------------------
+" Alias command
+" ------------------------------------------------------------------------------
+function! SetupCommandAlias(from, to)
+  exec 'cnoreabbrev <expr> '.a:from
+        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
+        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+endfunction
+
+" }}}
+
+" {{{ Misc Config
+
 " ------------------------------------------------------------------------------
 " ConEmu Config
 " ------------------------------------------------------------------------------
@@ -105,6 +132,14 @@ if !empty($CONEMUBUILD)
     inoremap <Esc>[63~ <C-X><C-Y>
     nnoremap <Esc>[62~ <C-E>
     nnoremap <Esc>[63~ <C-Y>
+endif
+
+" ------------------------------------------------------------------------------
+" Neovim
+" ------------------------------------------------------------------------------
+if has('nvim')
+    tnoremap <Esc> <C-\><C-n>| " Terminal escape
+    call SetupCommandAlias('sh', 'term')
 endif
 
 " }}}
@@ -344,27 +379,6 @@ let g:syntastic_always_populate_loc_list=1
 let g:tcommentMaps=0                          " Disable keymappings
 nmap gcc :TComment<CR>|                       " Comment line
 vmap gc :TComment<CR>|                        " Comment selection
-
-" }}}
-
-" Functions {{{
-
-" ------------------------------------------------------------------------------
-" Navigate to next closed fold
-" ------------------------------------------------------------------------------
-function! NextClosedFold(dir)
-    let cmd = 'norm!z' . a:dir
-    let view = winsaveview()
-    let [l0, l, open] = [0, view.lnum, 1]
-    while l != l0 && open
-        exe cmd
-        let [l0, l] = [l, line('.')]
-        let open = foldclosed(l) < 0
-    endwhile
-    if open
-        call winrestview(view)
-    endif
-endfunction
 
 " }}}
 
