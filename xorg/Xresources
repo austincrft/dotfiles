@@ -12,6 +12,10 @@ URxvt.keysym.Control-Shift-C:   perl:clipboard:copy
 URxvt.keysym.Control-Shift-V:   perl:clipboard:paste
 URxvt.clipboard.autocopy: false
 
+! Clickable URLs
+URxvt.url-launcher: /usr/bin/xdg-open
+URxvt.matcher.button: 1
+
 ! Move by words
 URxvt.keysym.C-Up:    \033[1;5A
 URxvt.keysym.C-Down:  \033[1;5B
@@ -19,7 +23,7 @@ URxvt.keysym.C-Left:  \033[1;5D
 URxvt.keysym.C-Right: \033[1;5C
 
 ! Plugins
-URxvt.perl-ext-common: default,clipboard
+URxvt.perl-ext-common: default,clipboard,matcher
 !
 ! ------------------------------------------------------------------------------
 ! ROFI Theme
