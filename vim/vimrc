@@ -182,8 +182,7 @@ Plug 'scrooloose/syntastic'
 Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
 
 " Auto-Complete
-Plug 'Shougo/neocomplete.vim', !has('nvim') ? {} : { 'on': [] }
-Plug 'Shougo/deoplete.nvim', has('nvim') ? {} : { 'on': [], 'do': ':UpdateRemotePlugins'}
+Plug 'lifepillar/vim-mucomplete'
 
 " Languages {{{
 
@@ -230,6 +229,13 @@ call plug#end()
 " Plugin Config {{{
 
 " ------------------------------------------------------------------------------
+" Auto-Complete Config
+" ------------------------------------------------------------------------------
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+autocmd FileType python setlocal omnifunc=jedi#completions
+autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
+
+" ------------------------------------------------------------------------------
 " Ag Config
 " ------------------------------------------------------------------------------
 let g:ag_prg="ag --vimgrep --nocolor --column --ignore tags"
@@ -245,36 +251,6 @@ let g:airline_powerline_fonts=1
 " CtrlP Config
 " ------------------------------------------------------------------------------
 let g:ctrlp_working_path_mode='a'
-
-" ------------------------------------------------------------------------------
-" Deoplete Config
-" ------------------------------------------------------------------------------
-let g:deoplete#enable_at_startup=1
-
-" Default keyword pattern for ones not supplied in syntax file
-if !exists('g:deoplete#keyword_patterns')
-  let g:deoplete#keyword_patterns={}
-endif
-let g:deoplete#keyword_patterns._='\h\w*'
-
-" Define input patterns
-if !exists('g:deoplete#omni#input_patterns')
-    let g:deoplete#omni#input_patterns={}
-endif
-
-" Tabs for completion
-inoremap <expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" Languages
-autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
-let g:deoplete#omni#input_patterns.cs='.*[^=\);]'
-
-autocmd FileType python setlocal omnifunc=jedi#completions
-let g:deoplete#omni#input_patterns.python='.*[^=\);]'
-
-autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
-let g:deoplete#omni#input_patterns.fsharp='.*[^=\);]'
 
 " ------------------------------------------------------------------------------
 " FSharp Config
@@ -308,38 +284,6 @@ let g:jedi#popup_on_dot=0
 let g:notes_directories=['~/Dropbox/vim-notes']
 let g:notes_suffix='.txt'
 let g:notes_unicode_enabled=0
-
-" ------------------------------------------------------------------------------
-" Neocomplete Config
-" ------------------------------------------------------------------------------
-let g:neocomplete#enable_at_startup=1                 " Use neocomplete
-let g:neocomplete#enable_smart_case=1                 " Use smartcase
-let g:neocomplete#sources#syntax#min_keyword_length=3 " Keyword length
-
-" Default keyword pattern for ones not supplied in syntax file
-if !exists('g:neocomplete#keyword_patterns')
-  let g:deoplete#keyword_patterns={}
-endif
-let g:deoplete#keyword_patterns._='\h\w*'
-
-" Define input patterns
-if !exists('g:deoplete#sources#omni#input_patterns')
-    let g:deoplete#sources#omni#input_patterns={}
-endif
-
-" Tabs for completion
-inoremap <expr><Tab>  pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr><S-Tab>  pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" Languages
-autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
-let g:deoplete#sources#omni#input_patterns.cs='.*[^=\);]'
-
-autocmd FileType python setlocal omnifunc=jedi#completions
-let g:deoplete#sources#omni#input_patterns.python='.*[^=\);]'
-
-autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
-let g:deoplete#sources#omni#input_patterns.fsharp='.*[^=\);]'
 
 " ------------------------------------------------------------------------------
 " OmniSharp Config
