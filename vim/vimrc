@@ -24,7 +24,6 @@ set nobackup                   " No backup
 set nowb                       " No write-backup
 set laststatus=2               " Always show statusline
 set t_Co=16                    " Set terminal color to 16
-set textwidth=80               " Text-width to 80 columns
 set colorcolumn=80             " Highlight column 80
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
@@ -161,7 +160,9 @@ call plug#begin('~/.vim/plugged')
 Plug 'jiangmiao/auto-pairs'
 Plug 'tomtom/tcomment_vim'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
+Plug 'tommcdo/vim-exchange'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
@@ -172,9 +173,6 @@ Plug 'jeetsukumaran/vim-filebeagle'
 Plug 'godlygeek/tabular'
 Plug 'ntpeters/vim-better-whitespace'
 
-" Folding
-Plug 'Konfekt/FastFold'
-
 " Linting
 Plug 'scrooloose/syntastic'
 
@@ -183,6 +181,7 @@ Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
 
 " Auto-Complete
 Plug 'lifepillar/vim-mucomplete'
+Plug 'SirVer/ultisnips'
 
 " Languages {{{
 
@@ -196,6 +195,9 @@ Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
 " FSharp
 Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
+
+" Powershell
+Plug 'PProvost/vim-ps1' , { 'for': 'ps1' }
 
 " Python
 Plug 'davidhalter/jedi-vim', { 'for': 'python' }
@@ -261,6 +263,7 @@ let g:fsharp_only_check_errors_on_write=1
 let g:fsharp_map_keys=0
 let g:fsharp_completion_helptext=0
 let g:syntastic_fsharp_checkers=['syntax']
+" let g:fsharpbinding_debug=1
 
 " ------------------------------------------------------------------------------
 " FileBeagle Config
@@ -288,6 +291,7 @@ let g:notes_unicode_enabled=0
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
+let g:OmniSharp_server_type='roslyn'
 let g:syntastic_cs_checkers=['syntax', 'semantic', 'issues']
 
 " ------------------------------------------------------------------------------
@@ -321,9 +325,18 @@ let g:syntastic_always_populate_loc_list=1
 " ------------------------------------------------------------------------------
 " TComment Config
 " ------------------------------------------------------------------------------
-let g:tcommentMaps=0                          " Disable keymappings
-nmap gcc :TComment<CR>|                       " Comment line
-vmap gc :TComment<CR>|                        " Comment selection
+let g:tcommentMaps=0
+nmap gcc :TComment<CR>
+vmap gc :TComment<CR>
+
+" ------------------------------------------------------------------------------
+" UltiSnips Config
+" ------------------------------------------------------------------------------
+let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
+let g:UltiSnipsExpandTrigger='<C-;>'
+let g:UltiSnipsListSnippets='<C-:>'
+let g:UltiSnipsJumpForwardTrigger='<C-J>'
+let g:UltiSnipsJumpBackwardTrigger='<C-K>'
 
 " }}}
 
