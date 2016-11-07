@@ -109,6 +109,17 @@ function! SetupCommandAlias(from, to)
         \ .'? ("'.a:to.'") : ("'.a:from.'"))'
 endfunction
 
+" ------------------------------------------------------------------------------
+" Escape XML
+" ------------------------------------------------------------------------------
+function! EscapeXml()
+    silent! s/&/\&amp;/g
+    silent! s/"/\&quot;/g
+    silent! s/'/\&apos;/g
+    silent! s/>/\&gt;/g
+    silent! s/</\&lt;/g
+endfunction
+
 " }}}
 
 " {{{ Misc Config
@@ -442,8 +453,8 @@ if isdirectory($HOME . "/.vim/plugged/vim-project")
     call project#rc('/src')
 
     " Get work projects if the file exists
-    if filereadable($HOME . "/.vim/work/projects.vim")
-        source ~/.vim/work/projects.vim
+    if filereadable($HOME . "/work/projects.vim")
+        source ~/work/projects.vim
     end
 end
 
