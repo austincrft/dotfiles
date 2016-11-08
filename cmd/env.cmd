@@ -25,3 +25,7 @@ DOSKEY msbuild="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe" $*
 
 :: pandoc
 DOSKEY pandoc="%USERPROFILE%\AppData\Local\Pandoc\pandoc.exe" $*
+
+:: Work-Specific Aliases
+SET work_aliases="%USERPROFILE%\work\aliases.cmd"
+IF EXIST %work_aliases% CALL %work_aliases%
