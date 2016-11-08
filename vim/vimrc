@@ -229,7 +229,7 @@ call plug#end()
 " Plugin Config {{{
 
 " ------------------------------------------------------------------------------
-" Auto-Complete Config
+" Completion Config
 " ------------------------------------------------------------------------------
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
@@ -260,7 +260,6 @@ let g:fsharp_test_runner="nunit-console"
 let g:fsharp_only_check_errors_on_write=1
 let g:fsharp_map_keys=0
 let g:fsharp_completion_helptext=0
-let g:syntastic_fsharp_checkers=['syntax']
 
 " ------------------------------------------------------------------------------
 " FileBeagle Config
@@ -284,11 +283,6 @@ let g:jedi#popup_on_dot=0
 let g:notes_directories=['~/Dropbox/vim-notes']
 let g:notes_suffix='.txt'
 let g:notes_unicode_enabled=0
-
-" ------------------------------------------------------------------------------
-" OmniSharp Config
-" ------------------------------------------------------------------------------
-let g:syntastic_cs_checkers=['syntax', 'semantic', 'issues']
 
 " ------------------------------------------------------------------------------
 " Salve Config
@@ -317,6 +311,8 @@ colorscheme solarized
 " Syntastic Config
 " ------------------------------------------------------------------------------
 let g:syntastic_always_populate_loc_list=1
+let g:syntastic_cs_checkers=['syntax', 'semantic', 'issues']
+let g:syntastic_fsharp_checkers=['syntax']
 
 " ------------------------------------------------------------------------------
 " TComment Config
