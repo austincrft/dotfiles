@@ -177,7 +177,7 @@ Plug 'tommcdo/vim-exchange'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'rking/ag.vim', { 'on': 'Ag' }
+Plug 'mhinz/vim-grepper'
 Plug 'jeetsukumaran/vim-filebeagle'
 
 " Formatting
@@ -206,6 +206,9 @@ Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
 " FSharp
 Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
+
+" HTML
+Plug 'alvan/vim-closetag', " { 'for': ['html', 'xml'] }
 
 " Powershell
 Plug 'PProvost/vim-ps1' , { 'for': 'ps1' }
@@ -249,16 +252,16 @@ autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 
 " ------------------------------------------------------------------------------
-" Ag Config
-" ------------------------------------------------------------------------------
-let g:ag_prg="ag --vimgrep --nocolor --column --ignore tags"
-
-" ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#hunks#enabled=0
 let g:airline_powerline_fonts=1
+
+" ------------------------------------------------------------------------------
+" CloseTag Config
+" ------------------------------------------------------------------------------
+let g:closetag_filenames="*.html,*.htm,*.xml,*.xsl"
 
 " ------------------------------------------------------------------------------
 " CtrlP Config
@@ -284,7 +287,17 @@ let g:filebeagle_suppress_keymaps=1
 " ------------------------------------------------------------------------------
 " Goyo Config
 " ------------------------------------------------------------------------------
-let g:goyo_width = 120
+let g:goyo_width=120
+
+" ------------------------------------------------------------------------------
+" Grepper Config
+" ------------------------------------------------------------------------------
+let g:grepper = {
+    \ 'tools': ['ag', 'git', 'grep'],
+    \ 'ag': {
+    \   'grepprg': 'ag --vimgrep --nocolor --column --ignore tags'
+    \ }
+    \}
 
 " ------------------------------------------------------------------------------
 " Jedi Config
@@ -403,10 +416,12 @@ nnoremap <leader>ns :SearchNotes<space>|                 " Delete note
 " Project
 nnoremap <leader>pt :FileBeagle<CR>|                     " Open cwd
 nnoremap <leader>pF :FileBeagleBufferDir<CR>|            " Open buffer directory
-nnoremap <leader>pf :CtrlP<CR>|                          " Fuzzy-search files
-nnoremap <leader>ps :Ag<space>|                          " Pattern-search files
 nnoremap <leader>pc :pclose<CR>|                         " Close preview-window
 nnoremap <leader>pT :Start! ctags -R<CR>|                " Async ctags generate
+
+" Grep
+nnoremap <leader>gg :Grepper<CR>|                        " Grep
+nnoremap <leader>gw :Grepper -cword<CR>|                 " Grep current word
 
 " Quickfix
 nnoremap <leader>co :botright copen<CR>|                 " Open (full width)
