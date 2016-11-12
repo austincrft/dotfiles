@@ -16,6 +16,10 @@ DOSKEY ll=ls -l --color
 :: grep
 DOSKEY grep=grep --color=auto $*
 
+:: find
+DOSKEY findf=find $* -type f
+DOSKEY findd=find $* -type d
+
 :: cd
 DOSKEY cdu=cd %USERPROFILE%
 
