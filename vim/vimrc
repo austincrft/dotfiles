@@ -84,23 +84,6 @@ endif
 " Functions {{{
 
 " ------------------------------------------------------------------------------
-" Navigate to next closed fold
-" ------------------------------------------------------------------------------
-function! NextClosedFold(dir)
-    let cmd = 'norm!z' . a:dir
-    let view = winsaveview()
-    let [l0, l, open] = [0, view.lnum, 1]
-    while l != l0 && open
-        exe cmd
-        let [l0, l] = [l, line('.')]
-        let open = foldclosed(l) < 0
-    endwhile
-    if open
-        call winrestview(view)
-    endif
-endfunction
-
-" ------------------------------------------------------------------------------
 " Alias command
 " ------------------------------------------------------------------------------
 function! SetupCommandAlias(from, to)
@@ -118,6 +101,13 @@ function! EscapeXml()
     silent! s/'/\&apos;/g
     silent! s/>/\&gt;/g
     silent! s/</\&lt;/g
+endfunction
+
+" ------------------------------------------------------------------------------
+" Get Present Working Directory
+" ------------------------------------------------------------------------------
+function! GetPwd(path)
+    return execute(':pwd')
 endfunction
 
 " }}}
@@ -222,6 +212,7 @@ Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 " }}}
 
 " Tags
+" Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
 " Tools
@@ -291,12 +282,20 @@ let g:goyo_width=120
 " ------------------------------------------------------------------------------
 " Grepper Config
 " ------------------------------------------------------------------------------
+nmap gs  <plug>(GrepperOperator)
+xmap gs  <plug>(GrepperOperator)
 let g:grepper = {
     \ 'tools': ['ag', 'git', 'grep'],
     \ 'ag': {
     \   'grepprg': 'ag --vimgrep --nocolor --column --ignore tags'
     \ }
     \}
+
+" ------------------------------------------------------------------------------
+" Gutentags Config
+" ------------------------------------------------------------------------------
+" let g:gutentags_project_root_finder='GetPwd'
+" let g:gutentags_add_default_project_roots=0
 
 " ------------------------------------------------------------------------------
 " Jedi Config
@@ -382,15 +381,11 @@ nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffe
 nnoremap <leader>ff za|                                  " Toggle current fold
 nnoremap <leader>fa zM|                                  " Close all folds
 nnoremap <leader>fo zR|                                  " Open all folds
-nnoremap <leader>fj :call NextClosedFold('j')<cr>        " Next closed fold
 
 " Formatting
 nnoremap <leader>Fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
 nnoremap <leader>FA :setlocal formatoptions-=a<CR>|      " Disable auto-format
 nnoremap <leader>Fu yyp<C-V>$r-|                         " Underline line
-vnoremap <leader>Fs :'<,'>sort<CR>|                      " Sort lines
-vnoremap <leader>Fw gq|                                  " Wrap lines at textwidth
-nnoremap <leader>FW :StripWhitespace<CR>|                " Strip Whitespace
 
 " Linting (Errors)
 nnoremap <leader>ec :SyntasticCheck<CR>|                 " Error check
@@ -421,7 +416,6 @@ nnoremap <leader>pT :Start! ctags -R<CR>|                " Async ctags generate
 
 " Grep
 nnoremap <leader>gg :Grepper<CR>|                        " Grep
-nnoremap <leader>gw :Grepper -cword<CR>|                 " Grep current word
 
 " Quickfix
 nnoremap <leader>co :botright copen<CR>|                 " Open (full width)
