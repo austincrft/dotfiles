@@ -1,10 +1,9 @@
 # i3blocks config file
-
-full_text=
+full_text=〉
 align=center
-color=#FFFFFF
-
+color=#574921
 separator=false
+separator_block_width=7
 
 command=/usr/lib/i3blocks/$BLOCK_NAME
 separator_block_width=30
@@ -18,14 +17,14 @@ interval=5
 [separator]
 
 [disk]
-command=echo "<span color='#cb4b16'></span>  `/usr/lib/i3blocks/disk`"
+command=echo "<span color='#cb4b16'></span>  `df -h --output=avail / | tail -n 1`"
 label=
 interval=30
 
 [separator]
 
 [volume]
-command=echo "<span color='#2aa198'></span>  `/usr/lib/i3blocks/volume`"
+command=echo "<span color='#2aa198'></span>  `/usr/share/i3blocks/volume 5 pulse`"
 label=
 instance=Master
 interval=1
