@@ -19,6 +19,12 @@ HISTFILESIZE=2000
 # Update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# Run autocutsel if available
+if [ -x /us/bin/autocutsel ]; then
+    autocutsel -s PRIMARY &
+    autocutsel &
+fi
+
 # Make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
