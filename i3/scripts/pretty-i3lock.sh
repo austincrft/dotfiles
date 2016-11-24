@@ -2,7 +2,7 @@
 
 scrot /tmp/screen.png
 convert /tmp/screen.png -scale 10% -scale 1000% /tmp/screen.png
-icon=$HOME/.config/i3/img/screen-lock.png
+icon=$HOME/Dropbox/images/screen-lock.png
 
 if [[ -f $icon ]]
 then
