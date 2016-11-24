@@ -170,6 +170,11 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mhinz/vim-grepper'
 Plug 'jeetsukumaran/vim-filebeagle'
 
+" Terminal fuzzy-searching (no Windows support yet)
+if (!has('win32'))
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+endif
+
 " Formatting
 Plug 'godlygeek/tabular'
 Plug 'ntpeters/vim-better-whitespace'
