@@ -1,7 +1,6 @@
 #Constants
 set $mod Mod4
 
-# set $background #faf8f2
 set $background #e4cfe6
 set $foreground #574921
 set $gray       #825c31
@@ -51,10 +50,10 @@ mode "  " {
 
 # Gaps
 gap_size 10
-new_window 1pixel
+new_window pixel 5
 
 # Program Bindings
-bindsym $mod+d exec rofi -font "Sauce Code Powerline 26" -show drun -modi drun
+bindsym $mod+d exec rofi -show drun
 bindsym $mod+Return exec i3-sensible-terminal
 
 # Program Config
@@ -62,7 +61,6 @@ for_window [window_role="app"] floating disabled
 assign [instance=$messenger class="google-chrome"] $workspace3
 assign [instance=$hangouts class="google-chrome"] $workspace3
 assign [class="google-chrome"] $workspace2
-assign [class="Slack"] $workspace3
 
 # Workspace Bindings
 bindsym $mod+1 workspace $workspace1
@@ -70,22 +68,12 @@ bindsym $mod+2 workspace $workspace2
 bindsym $mod+3 workspace $workspace3
 bindsym $mod+4 workspace $workspace4
 bindsym $mod+5 workspace $workspace5
-bindsym $mod+6 workspace $workspace6
-bindsym $mod+7 workspace $workspace7
-bindsym $mod+8 workspace $workspace8
-bindsym $mod+9 workspace $workspace9
-bindsym $mod+0 workspace $workspace10
 
 bindsym $mod+Shift+1 move container to workspace $workspace1
 bindsym $mod+Shift+2 move container to workspace $workspace2
 bindsym $mod+Shift+3 move container to workspace $workspace3
 bindsym $mod+Shift+4 move container to workspace $workspace4
 bindsym $mod+Shift+5 move container to workspace $workspace5
-bindsym $mod+Shift+6 move container to workspace $workspace6
-bindsym $mod+Shift+7 move container to workspace $workspace7
-bindsym $mod+Shift+8 move container to workspace $workspace8
-bindsym $mod+Shift+9 move container to workspace $workspace9
-bindsym $mod+Shift+0 move container to workspace $workspace10
 
 # Volume & Media Bindings
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5%
@@ -136,5 +124,6 @@ client.focused_inactive $warning    $warning   $foreground $warning
 client.unfocused        $warning    $warning   $background $warning
 client.urgent           $gray       $gray      $foreground $gray
 
-# Background
-exec_always feh --bg-scale ~/Pictures/bg.png
+# Startup Programs
+exec_always feh --bg-scale ~/Dropbox/images/macbook/bg.png
+exec compton
