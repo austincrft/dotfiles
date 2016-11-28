@@ -1,4 +1,4 @@
-#Constants
+# Constants
 set $mod Mod4
 
 set $background #e4cfe6
@@ -90,7 +90,8 @@ bindsym XF86MonBrightnessUp exec xbacklight -inc 10
 bindsym XF86MonBrightnessDown exec xbacklight -dec 10
 
 # Scripts
-bindsym $mod+t exec ~/.config/i3/scripts/toggle_touchpad.sh
+bindsym $mod+Shift+t exec ~/.config/i3/scripts/toggle-touchpad.sh
+bindsym $mod+Shift+b exec ~/.config/i3/scripts/toggle-laptop-keyboard.sh
 bindsym $mod+Shift+semicolon exec ~/.config/i3/scripts/pretty-i3lock.sh
 
 # Exit binding
