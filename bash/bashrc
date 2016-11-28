@@ -40,6 +40,11 @@ if [ -x /usr/bin/dircolors ] && [ -f ~/.dircolors/dircolors.ansi-dark ]; then
     eval `dircolors ~/.dircolors/dircolors.ansi-dark`
 fi
 
+if [ -d ~/.dynamic-colors ]; then
+    export PATH="$HOME/.dynamic-colors/bin:$PATH"
+    source ~/.dynamic-colors/completions/dynamic-colors.bash
+fi
+
 # Alias definitions
 if [ -f ~/.bash_aliases ]; then
     source ~/.bash_aliases
