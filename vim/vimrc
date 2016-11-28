@@ -103,13 +103,6 @@ function! EscapeXml()
     silent! s/</\&lt;/g
 endfunction
 
-" ------------------------------------------------------------------------------
-" Get Present Working Directory
-" ------------------------------------------------------------------------------
-function! GetPwd(path)
-    return execute(':pwd')
-endfunction
-
 " }}}
 
 " {{{ Misc Config
@@ -164,6 +157,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'tommcdo/vim-exchange'
+Plug 'sjl/gundo.vim'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
@@ -195,7 +189,7 @@ Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
 " FSharp
-Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
+Plug 'fsharp/vim-fsharp', { 'for': 'fsharp', 'do': 'make' }
 
 " HTML
 Plug 'alvan/vim-closetag', " { 'for': ['html', 'xml'] }
@@ -212,7 +206,6 @@ Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 " }}}
 
 " Tags
-" Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
 " Tools
@@ -402,6 +395,9 @@ nnoremap <leader>_f :FileBeagle ~/.vim/ftplugin<CR>|     " Open ftplugins
 
 " Make
 nnoremap <leader>mm :Make<CR>|                           " Make
+
+" Undo
+nnoremap <leader>uu :GundoToggle<CR>|                    " View undo tree
 
 " Notes
 nnoremap <leader>nn :Note<space>|                        " Open note
