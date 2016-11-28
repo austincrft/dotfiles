@@ -104,10 +104,14 @@ function! EscapeXml()
 endfunction
 
 " ------------------------------------------------------------------------------
-" Get Present Working Directory
+" Toggle background
 " ------------------------------------------------------------------------------
-function! GetPwd(path)
-    return execute(':pwd')
+function! ToggleBackground()
+    if &background ==# 'dark'
+        set background=light
+    else
+        set background=dark
+    endif
 endfunction
 
 " }}}
@@ -338,7 +342,7 @@ let g:sneak#streak=1
 let g:sneak#use_ic_scs=1
 
 " ------------------------------------------------------------------------------
-" Solarized Theme
+" Color Scheme
 " ------------------------------------------------------------------------------
 set background=dark
 colorscheme solarized
@@ -404,6 +408,7 @@ nnoremap <leader>ek :lprevious<CR>|                      " Previous
 nnoremap <leader>_d :e $MYVIMRC<CR>|                     " Edit .vimrc
 nnoremap <leader>_r :source $MYVIMRC<CR>|                " Reload .vimrc
 nnoremap <leader>_f :FileBeagle ~/.vim/ftplugin<CR>|     " Open ftplugins
+nnoremap <leader>_b :call ToggleBackground()<CR>|        " Toggle background
 
 " Make
 nnoremap <leader>mm :Make<CR>|                           " Make
