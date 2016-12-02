@@ -1,149 +1,130 @@
-#Constants
-  set $mod Mod4
+# Constants
+set $mod Mod4
 
-  set $light_gray  #586e75
-  set $medium_gray #002b36
-  set $dark_gray   #073642
-  set $blue        #268bd2
-  set $bright_text #ffffff
-  set $dull_text   #7780a1
-  set $yellow      #b58900
-  set $orange      #cb4b16
-  set $red         #dc322f
-  set $magenta     #d33682
-  set $violet      #6c71c4
-  set $blue        #268bd2
-  set $cyan        #2aa198
-  set $green       #859900
+set $background #e4cfe6
+set $foreground #574921
+set $gray       #825c31
+set $primary    #95c7ae
+set $secondary  #aec795
+set $tertiary   #c7ae95
+set $warning    #c79595
 
-  set $workspace1 "1 "
-  set $workspace2 "2 "
-  set $workspace3 "3 "
-  set $workspace4 "4 "
-  set $workspace5 "5 "
-  set $workspace6 "6 "
-  set $workspace7 "7 "
-  set $workspace8 "8 "
-  set $workspace9 "9 "
-  set $workspace10 "10 "
+set $workspace1 "1  Code  "
+set $workspace2 "2  Web  "
+set $workspace3 "3  Chat  "
+set $workspace4 "4  Misc  "
+set $workspace5 "5  Music"
 
-  set $messenger "crx_bhegnkaaijcaiebmmlbhpcagoaiaacho"
-  set $hangouts "crx_knipolnnllmklapflnccelgolnpehhpl"
+set $messenger "crx_bhegnkaaijcaiebmmlbhpcagoaiaacho"
+set $hangouts "crx_knipolnnllmklapflnccelgolnpehhpl"
 
 # General Config
-font pango:Sauce Code Powerline 10
+font pango:Sauce Code Powerline 15
 
 # Window-Related Bindings
-  bindsym $mod+Shift+q kill
-  bindsym $mod+h focus left
-  bindsym $mod+j focus down
-  bindsym $mod+k focus up
-  bindsym $mod+l focus right
-  bindsym $mod+Shift+h move left
-  bindsym $mod+Shift+j move down
-  bindsym $mod+Shift+k move up
-  bindsym $mod+Shift+l move right
-  bindsym $mod+v split v
-  bindsym $mod+semicolon split h
-  bindsym $mod+f fullscreen toggle
-  bindsym $mod+space focus mode_toggle
-  bindsym $mod+s layout stacking
-  bindsym $mod+w layout tabbed
-  bindsym $mod+e layout toggle split
-  bindsym $mod+Shift+space floating toggle
-  bindsym $mod+r mode "  "
-  mode "  " {
+bindsym $mod+Shift+q kill
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+bindsym $mod+v split v
+bindsym $mod+semicolon split h
+bindsym $mod+f fullscreen toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+r mode "  "
+mode "  " {
     bindsym h resize shrink width 10 px or 10 ppt
-    bindsym j resize grow height 10 px or 10 ppt
-    bindsym k resize shrink height 10 px or 10 ppt
-    bindsym l resize grow width 10 px or 10 ppt
-    bindsym Escape mode "default"
-  }
+        bindsym j resize grow height 10 px or 10 ppt
+        bindsym k resize shrink height 10 px or 10 ppt
+        bindsym l resize grow width 10 px or 10 ppt
+        bindsym Escape mode "default"
+}
+
+# Gaps
+gap_size 10
+new_window pixel 5
 
 # Program Bindings
-  bindsym $mod+d exec rofi -font "Sauce Code Powerline 26" -show drun -modi drun
-  bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+d exec rofi -show drun
+bindsym $mod+Return exec i3-sensible-terminal
 
 # Program Config
-  for_window [window_role="app"] floating disabled
-  assign [instance=$messenger class="google-chrome"] $workspace3
-  assign [instance=$hangouts class="google-chrome"] $workspace3
-  assign [class="google-chrome"] $workspace2
-  assign [class="Google Play Music Desktop Player"] $workspace10
-  assign [class="Slack"] $workspace3
+for_window [window_role="app"] floating disabled
+assign [instance=$messenger class="google-chrome"] $workspace3
+assign [instance=$hangouts class="google-chrome"] $workspace3
+assign [class="google-chrome"] $workspace2
 
 # Workspace Bindings
-  bindsym $mod+1 workspace $workspace1
-  bindsym $mod+2 workspace $workspace2
-  bindsym $mod+3 workspace $workspace3
-  bindsym $mod+4 workspace $workspace4
-  bindsym $mod+5 workspace $workspace5
-  bindsym $mod+6 workspace $workspace6
-  bindsym $mod+7 workspace $workspace7
-  bindsym $mod+8 workspace $workspace8
-  bindsym $mod+9 workspace $workspace9
-  bindsym $mod+0 workspace $workspace10
+bindsym $mod+1 workspace $workspace1
+bindsym $mod+2 workspace $workspace2
+bindsym $mod+3 workspace $workspace3
+bindsym $mod+4 workspace $workspace4
+bindsym $mod+5 workspace $workspace5
 
-  bindsym $mod+Shift+1 move container to workspace $workspace1
-  bindsym $mod+Shift+2 move container to workspace $workspace2
-  bindsym $mod+Shift+3 move container to workspace $workspace3
-  bindsym $mod+Shift+4 move container to workspace $workspace4
-  bindsym $mod+Shift+5 move container to workspace $workspace5
-  bindsym $mod+Shift+6 move container to workspace $workspace6
-  bindsym $mod+Shift+7 move container to workspace $workspace7
-  bindsym $mod+Shift+8 move container to workspace $workspace8
-  bindsym $mod+Shift+9 move container to workspace $workspace9
-  bindsym $mod+Shift+0 move container to workspace $workspace10
+bindsym $mod+Shift+1 move container to workspace $workspace1
+bindsym $mod+Shift+2 move container to workspace $workspace2
+bindsym $mod+Shift+3 move container to workspace $workspace3
+bindsym $mod+Shift+4 move container to workspace $workspace4
+bindsym $mod+Shift+5 move container to workspace $workspace5
 
 # Volume & Media Bindings
-  bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5%
-  bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 1 +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume 1 -5%
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 1 +5%
 
-  bindsym XF86AudioMute exec --no-startup-id pulseaudio-ctl mute
-  bindsym XF86AudioPlay exec playerctl play-pause
-  bindsym XF86AudioPause exec playerctl pause
-  bindsym XF86AudioNext exec playerctl next
-  bindsym XF86AudioPrev exec playerctl previous Volume & Media
+bindsym XF86AudioMute exec --no-startup-id pulseaudio-ctl mute
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioPause exec playerctl pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioPrev exec playerctl previous Volume & Media
 
 # Sreen Brightness
-  bindsym XF86MonBrightnessUp exec xbacklight -inc 10
-  bindsym XF86MonBrightnessDown exec xbacklight -dec 10
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10
 
 # Scripts
-  bindsym $mod+t exec ~/.config/i3/scripts/toggle_touchpad.sh
-  bindsym $mod+Shift+semicolon exec ~/.config/i3/scripts/pretty-i3lock.sh
+bindsym $mod+Shift+t exec ~/.config/i3/scripts/toggle-touchpad.sh
+bindsym $mod+Shift+b exec ~/.config/i3/scripts/toggle-laptop-keyboard.sh
+bindsym $mod+Shift+semicolon exec ~/.config/i3/scripts/pretty-i3lock.sh
 
 # Exit binding
-  bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
 
 # Reload Bindings
-  bindsym $mod+Shift+c reload
-  bindsym $mod+Shift+r restart
-  bindsym $mod+Shift+x exec --no-startup-id xrdb ~/.Xresources
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+x exec --no-startup-id xrdb ~/.Xresources
 
 # Bar
-  bar {
-          status_command i3blocks
-          position top
-          tray_output none
-          colors {
-            separator $bright_text
-            background $dark_gray
-            statusline $bright_text
-            #                  border       background   text
-            focused_workspace  $light_gray  $light_gray  $bright_text
-            active_workspace   $light_gray  $light_gray  $bright_text
-            inactive_workspace $dark_gray   $dark_gray   $dull_text
-            urgent_workspace   $red         $red         $bright_text
-          }
-  }
+bar {
+    status_command i3blocks
+        position top
+        tray_output none
+        colors {
+            background $background
+            statusline $warning
+            # border       background   text
+            focused_workspace  $background  $background  #574921
+            active_workspace $background $background $warning
+            inactive_workspace $background $background $warning
+            urgent_workspace $warning $warning $primary
 
-# Window
-#                       border        background    text          indicator
-client.focused          $light_gray   $light_gray   $bright_text  $blue
-client.focused_inactive $dark_gray    $dark_gray    $dull_text    $medium_gray
-client.unfocused        $dark_gray    $dark_gray    $dull_text    $medium_gray
-client.urgent           $red          $red          $bright_text  $red
+        }
+}
 
-# Background
-  exec_always feh --bg-scale ~/Dropbox/images/wallpaper.jpg
+# colors                BORDER      BACKGROUND TEXT        INDICATOR
+client.focused          $primary    $primary   $background $warning
+client.focused_inactive $warning    $warning   $foreground $warning
+client.unfocused        $warning    $warning   $background $warning
+client.urgent           $gray       $gray      $foreground $gray
+
+# Startup Programs
+exec_always feh --bg-scale ~/Dropbox/images/macbook/bg.png
+exec compton
