@@ -103,6 +103,28 @@ function! EscapeXml()
     silent! s/</\&lt;/g
 endfunction
 
+" ------------------------------------------------------------------------------
+" Toggle background
+" ------------------------------------------------------------------------------
+function! ToggleBackground()
+    if &background ==# 'dark'
+        set background=light
+    else
+        set background=dark
+    endif
+endfunction
+
+" ------------------------------------------------------------------------------
+" Toggle wrap
+" ------------------------------------------------------------------------------
+function! ToggleWrap()
+  if &wrap ==# 'nowrap'
+    setlocal wrap
+  else
+    setlocal nowrap
+  endif
+endfunction
+
 " }}}
 
 " {{{ Misc Config
@@ -164,6 +186,11 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mhinz/vim-grepper'
 Plug 'jeetsukumaran/vim-filebeagle'
 
+" Terminal fuzzy-searching (no Windows support yet)
+if (!has('win32'))
+    Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+endif
+
 " Formatting
 Plug 'godlygeek/tabular'
 Plug 'ntpeters/vim-better-whitespace'
@@ -193,6 +220,9 @@ Plug 'fsharp/vim-fsharp', { 'for': 'fsharp', 'do': 'make' }
 
 " HTML
 Plug 'alvan/vim-closetag', " { 'for': ['html', 'xml'] }
+
+" Java
+Plug 'vim-javacomplete2', { 'for': 'java' }
 
 " Powershell
 Plug 'PProvost/vim-ps1' , { 'for': 'ps1' }
@@ -229,13 +259,6 @@ call plug#end()
 " Plugin Config {{{
 
 " ------------------------------------------------------------------------------
-" Completion Config
-" ------------------------------------------------------------------------------
-autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
-autocmd FileType python setlocal omnifunc=jedi#completions
-autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
-
-" ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#tabline#enabled=1
@@ -246,6 +269,14 @@ let g:airline_powerline_fonts=1
 " CloseTag Config
 " ------------------------------------------------------------------------------
 let g:closetag_filenames="*.html,*.htm,*.xml,*.xsl"
+
+" ------------------------------------------------------------------------------
+" Completion Config
+" ------------------------------------------------------------------------------
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+autocmd FileType java setlocal omnifunc=javacomplete#Complete
+autocmd FileType python setlocal omnifunc=jedi#completions
+autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 
 " ------------------------------------------------------------------------------
 " CtrlP Config
@@ -268,6 +299,11 @@ let g:fsharp_completion_helptext=0
 let g:filebeagle_suppress_keymaps=1
 
 " ------------------------------------------------------------------------------
+" FileType Config
+" ------------------------------------------------------------------------------
+autocmd BufRead,BufNewFile *.htm set filetype=aspvbs
+
+" ------------------------------------------------------------------------------
 " Goyo Config
 " ------------------------------------------------------------------------------
 let g:goyo_width=120
@@ -283,12 +319,6 @@ let g:grepper = {
     \   'grepprg': 'ag --vimgrep --nocolor --column --ignore tags'
     \ }
     \}
-
-" ------------------------------------------------------------------------------
-" Gutentags Config
-" ------------------------------------------------------------------------------
-" let g:gutentags_project_root_finder='GetPwd'
-" let g:gutentags_add_default_project_roots=0
 
 " ------------------------------------------------------------------------------
 " Jedi Config
@@ -326,7 +356,7 @@ let g:sneak#streak=1
 let g:sneak#use_ic_scs=1
 
 " ------------------------------------------------------------------------------
-" Solarized Theme
+" Color Scheme
 " ------------------------------------------------------------------------------
 set background=dark
 colorscheme solarized
@@ -342,8 +372,8 @@ let g:syntastic_fsharp_checkers=['syntax']
 " TComment Config
 " ------------------------------------------------------------------------------
 let g:tcommentMaps=0
-nmap gcc :TComment<CR>
-vmap gc :TComment<CR>
+nnoremap gcc :TComment<CR>
+vnoremap gc :TComment<CR>
 
 " ------------------------------------------------------------------------------
 " UltiSnips Config
@@ -378,7 +408,7 @@ nnoremap <leader>fo zR|                                  " Open all folds
 " Formatting
 nnoremap <leader>Fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
 nnoremap <leader>FA :setlocal formatoptions-=a<CR>|      " Disable auto-format
-nnoremap <leader>Fu yyp<C-V>$r-|                         " Underline line
+nnoremap <leader>Fw :call ToggleWrap()<CR>|              " Toggle wrap
 
 " Linting (Errors)
 nnoremap <leader>ec :SyntasticCheck<CR>|                 " Error check
@@ -392,6 +422,7 @@ nnoremap <leader>ek :lprevious<CR>|                      " Previous
 nnoremap <leader>_d :e $MYVIMRC<CR>|                     " Edit .vimrc
 nnoremap <leader>_r :source $MYVIMRC<CR>|                " Reload .vimrc
 nnoremap <leader>_f :FileBeagle ~/.vim/ftplugin<CR>|     " Open ftplugins
+nnoremap <leader>_b :call ToggleBackground()<CR>|        " Toggle background
 
 " Make
 nnoremap <leader>mm :Make<CR>|                           " Make

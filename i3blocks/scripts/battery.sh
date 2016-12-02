@@ -2,12 +2,11 @@
 
 BATTERY=BAT0
 
-if test -e "/sys/class/power_supply/$BATTERY"
-then
+if test -e "/sys/class/power_supply/$BATTERY"; then
     # Charging
     status=$(cat /sys/class/power_supply/$BATTERY/status)
     if [ "$status" == "Charging" ]; then
-        charging=' '
+        charging=" "
     fi
 
     # Capacity

@@ -19,6 +19,12 @@ HISTFILESIZE=2000
 # Update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
+# Run autocutsel if available
+if [ -x /us/bin/autocutsel ]; then
+    autocutsel -s PRIMARY &
+    autocutsel &
+fi
+
 # Make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
@@ -34,9 +40,14 @@ if [ -x /usr/bin/dircolors ] && [ -f ~/.dircolors/dircolors.ansi-dark ]; then
     eval `dircolors ~/.dircolors/dircolors.ansi-dark`
 fi
 
+if [ -d ~/.dynamic-colors ]; then
+    export PATH="$HOME/.dynamic-colors/bin:$PATH"
+    source ~/.dynamic-colors/completions/dynamic-colors.bash
+fi
+
 # Alias definitions
 if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+    source ~/.bash_aliases
 fi
 
 # Enable programmable completion features (you don't need to enable
@@ -44,11 +55,17 @@ fi
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
+    source /usr/share/bash-completion/bash_completion
   elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
+    source /etc/bash_completion
   fi
 fi
 
 # Go Config
 export GOPATH=~/gocode
+
+# fzf Config
+if [ -f ~/.fzf.bash ]; then
+    source ~/.fzf.bash
+    source ~/.fzfrc
+fi
