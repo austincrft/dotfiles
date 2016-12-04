@@ -62,8 +62,9 @@ let mapleader=' '
 " ------------------------------------------------------------------------------
 " Core Mappings
 " ------------------------------------------------------------------------------
-nnoremap <S-Tab> :bnext<CR>| " Fast buffer navigation
-vnoremap * "zy/<C-R>z<CR>|   " Search for visual selection using z-register
+nnoremap <S-Tab> :bnext<CR>|        " Fast buffer navigation
+vnoremap * "zy/<C-R>z<CR>|          " Search for visual selection using z-register
+cmap w!! w !sudo tee > /dev/null %| " Save as sudo
 
 " ------------------------------------------------------------------------------
 "  Configure Directories
