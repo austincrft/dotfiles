@@ -52,6 +52,9 @@ set hlsearch
 set incsearch
 set ignorecase
 set smartcase
+" Make 'n' always go forward and 'N' always go backwards
+noremap <expr> n (v:searchforward ? 'n' : 'N')|
+noremap <expr> N (v:searchforward ? 'N' : 'n')
 
 " ------------------------------------------------------------------------------
 "  Set ESC and Leader
@@ -62,7 +65,7 @@ let mapleader=' '
 " ------------------------------------------------------------------------------
 " Core Mappings
 " ------------------------------------------------------------------------------
-nnoremap <S-Tab> :bnext<CR>| " Fast buffer navigation
+nnoremap <S-Tab> :bnext<CR>| " Shift-Tab through buffers
 vnoremap * "zy/<C-R>z<CR>|   " Search for visual selection using z-register
 
 " ------------------------------------------------------------------------------
@@ -125,6 +128,21 @@ function! ToggleWrap()
   endif
 endfunction
 
+" ------------------------------------------------------------------------------
+" Read Command
+" ------------------------------------------------------------------------------
+function! ReadCommand(msgcmd)
+    " Capture message into variable
+    redir => message
+    silent execute a:msgcmd
+    redir END
+
+    " Paste to buffer
+    silent put=message
+endfunction
+
+command! -nargs=+ -complete=command ReadCommand call ReadCommand(<q-args>)
+
 " }}}
 
 " {{{ Misc Config
@@ -180,6 +198,7 @@ Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'tommcdo/vim-exchange'
 Plug 'sjl/gundo.vim'
+Plug 'romainl/vim-cool'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
@@ -302,6 +321,7 @@ let g:filebeagle_suppress_keymaps=1
 " FileType Config
 " ------------------------------------------------------------------------------
 autocmd BufRead,BufNewFile *.htm set filetype=aspvbs
+autocmd BufRead,BufNewFile *.aspx set filetype=aspx.vim
 
 " ------------------------------------------------------------------------------
 " Goyo Config
@@ -354,6 +374,7 @@ let g:SignatureMarkerTextHLDynamic=1
 " ------------------------------------------------------------------------------
 let g:sneak#streak=1
 let g:sneak#use_ic_scs=1
+let g:sneak#absolute_dir=1
 
 " ------------------------------------------------------------------------------
 " Color Scheme
@@ -394,11 +415,9 @@ let g:UltiSnipsJumpBackwardTrigger='<C-K>'
 
 " Buffer
 nnoremap <leader><Tab> :e#<CR>|                          " Switch to last buffer
-nnoremap <leader>bb :CtrlPBuffer<CR>|                    " List
-nnoremap <leader>bj :bnext<CR>|                          " Next
-nnoremap <leader>bk :bprevious<CR>|                      " Previous
-nnoremap <leader>bd :bdelete<CR>|                        " Delete
+nnoremap <leader>bb :CtrlPBuffer<CR>|                    " Fuzzy-search buffers
 nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffers
+nnoremap <leader>bD :BufOnly<CR>:bd<CR>|                 " Delete all buffers
 
 " Folding
 nnoremap <leader>ff za|                                  " Toggle current fold
@@ -411,7 +430,7 @@ nnoremap <leader>FA :setlocal formatoptions-=a<CR>|      " Disable auto-format
 nnoremap <leader>Fw :call ToggleWrap()<CR>|              " Toggle wrap
 
 " Linting (Errors)
-nnoremap <leader>ec :SyntasticCheck<CR>|                 " Error check
+nnoremap <leader>ee :SyntasticCheck<CR>|                 " Error check
 nnoremap <leader>et :SyntasticToggleMode<CR>|            " Toggle syntastic
 nnoremap <leader>eo :lopen<CR>|                          " Open
 nnoremap <leader>ec :lclose<CR>|                         " Close
