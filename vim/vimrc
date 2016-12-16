@@ -194,6 +194,9 @@ Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
 Plug 'lifepillar/vim-mucomplete'
 Plug 'SirVer/ultisnips'
 
+" Testing
+Plug 'janko-m/vim-test'
+
 " Languages {{{
 
 " Clojure
@@ -208,7 +211,10 @@ Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
 
 " HTML
-Plug 'alvan/vim-closetag', " { 'for': ['html', 'xml'] }
+Plug 'alvan/vim-closetag'
+
+" JavaScript
+Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
 
 " Powershell
 Plug 'PProvost/vim-ps1' , { 'for': 'ps1' }
@@ -251,6 +257,7 @@ call plug#end()
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
+autocmd Filetype javascript setlocal omnifunc=tern#Complete
 
 " ------------------------------------------------------------------------------
 " Airline Config
@@ -354,6 +361,11 @@ colorscheme solarized
 let g:syntastic_always_populate_loc_list=1
 let g:syntastic_cs_checkers=['syntax', 'semantic', 'issues']
 let g:syntastic_fsharp_checkers=['syntax']
+
+" ------------------------------------------------------------------------------
+" Test Config
+" ------------------------------------------------------------------------------
+let test#strategy='dispatch'
 
 " ------------------------------------------------------------------------------
 " TComment Config
