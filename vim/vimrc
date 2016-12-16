@@ -52,6 +52,9 @@ set hlsearch
 set incsearch
 set ignorecase
 set smartcase
+" Make 'n' always go forward and 'N' always go backwards
+noremap <expr> n (v:searchforward ? 'n' : 'N')|
+noremap <expr> N (v:searchforward ? 'N' : 'n')
 
 " ------------------------------------------------------------------------------
 "  Set ESC and Leader
@@ -62,7 +65,7 @@ let mapleader=' '
 " ------------------------------------------------------------------------------
 " Core Mappings
 " ------------------------------------------------------------------------------
-nnoremap <S-Tab> :bnext<CR>|        " Fast buffer navigation
+nnoremap <S-Tab> :bnext<CR>|        " Shift-Tab through buffers
 vnoremap * "zy/<C-R>z<CR>|          " Search for visual selection using z-register
 cmap w!! w !sudo tee > /dev/null %| " Save as sudo
 
@@ -114,6 +117,32 @@ function! ToggleBackground()
         set background=dark
     endif
 endfunction
+
+" ------------------------------------------------------------------------------
+" Toggle wrap
+" ------------------------------------------------------------------------------
+function! ToggleWrap()
+  if &wrap ==# 'nowrap'
+    setlocal wrap
+  else
+    setlocal nowrap
+  endif
+endfunction
+
+" ------------------------------------------------------------------------------
+" Read Command
+" ------------------------------------------------------------------------------
+function! ReadCommand(msgcmd)
+    " Capture message into variable
+    redir => message
+    silent execute a:msgcmd
+    redir END
+
+    " Paste to buffer
+    silent put=message
+endfunction
+
+command! -nargs=+ -complete=command ReadCommand call ReadCommand(<q-args>)
 
 " }}}
 
@@ -169,6 +198,8 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'tommcdo/vim-exchange'
+Plug 'sjl/gundo.vim'
+Plug 'romainl/vim-cool'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
@@ -208,13 +239,16 @@ Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
 " FSharp
-Plug 'fsharp/vim-fsharp', { 'for': 'fsharp' }
+Plug 'fsharp/vim-fsharp', { 'for': 'fsharp', 'do': 'make' }
 
 " HTML
 Plug 'alvan/vim-closetag'
 
 " JavaScript
 Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
+
+" Java
+Plug 'vim-javacomplete2', { 'for': 'java' }
 
 " Powershell
 Plug 'PProvost/vim-ps1' , { 'for': 'ps1' }
@@ -228,7 +262,6 @@ Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 " }}}
 
 " Tags
-" Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
 " Tools
@@ -272,6 +305,14 @@ let g:airline_powerline_fonts=1
 let g:closetag_filenames="*.html,*.htm,*.xml,*.xsl"
 
 " ------------------------------------------------------------------------------
+" Completion Config
+" ------------------------------------------------------------------------------
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+autocmd FileType java setlocal omnifunc=javacomplete#Complete
+autocmd FileType python setlocal omnifunc=jedi#completions
+autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
+
+" ------------------------------------------------------------------------------
 " CtrlP Config
 " ------------------------------------------------------------------------------
 let g:ctrlp_working_path_mode='a'
@@ -292,6 +333,12 @@ let g:fsharp_completion_helptext=0
 let g:filebeagle_suppress_keymaps=1
 
 " ------------------------------------------------------------------------------
+" FileType Config
+" ------------------------------------------------------------------------------
+autocmd BufRead,BufNewFile *.htm set filetype=aspvbs
+autocmd BufRead,BufNewFile *.aspx set filetype=aspx.vim
+
+" ------------------------------------------------------------------------------
 " Goyo Config
 " ------------------------------------------------------------------------------
 let g:goyo_width=120
@@ -307,12 +354,6 @@ let g:grepper = {
     \   'grepprg': 'ag --vimgrep --nocolor --column --ignore tags'
     \ }
     \}
-
-" ------------------------------------------------------------------------------
-" Gutentags Config
-" ------------------------------------------------------------------------------
-" let g:gutentags_project_root_finder='GetPwd'
-" let g:gutentags_add_default_project_roots=0
 
 " ------------------------------------------------------------------------------
 " Jedi Config
@@ -348,6 +389,7 @@ let g:SignatureMarkerTextHLDynamic=1
 " ------------------------------------------------------------------------------
 let g:sneak#streak=1
 let g:sneak#use_ic_scs=1
+let g:sneak#absolute_dir=1
 
 " ------------------------------------------------------------------------------
 " Color Scheme
@@ -371,8 +413,8 @@ let test#strategy='dispatch'
 " TComment Config
 " ------------------------------------------------------------------------------
 let g:tcommentMaps=0
-nmap gcc :TComment<CR>
-vmap gc :TComment<CR>
+nnoremap gcc :TComment<CR>
+vnoremap gc :TComment<CR>
 
 " ------------------------------------------------------------------------------
 " UltiSnips Config
@@ -393,11 +435,9 @@ let g:UltiSnipsJumpBackwardTrigger='<C-K>'
 
 " Buffer
 nnoremap <leader><Tab> :e#<CR>|                          " Switch to last buffer
-nnoremap <leader>bb :CtrlPBuffer<CR>|                    " List
-nnoremap <leader>bj :bnext<CR>|                          " Next
-nnoremap <leader>bk :bprevious<CR>|                      " Previous
-nnoremap <leader>bd :bdelete<CR>|                        " Delete
+nnoremap <leader>bb :CtrlPBuffer<CR>|                    " Fuzzy-search buffers
 nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffers
+nnoremap <leader>bD :BufOnly<CR>:bd<CR>|                 " Delete all buffers
 
 " Folding
 nnoremap <leader>ff za|                                  " Toggle current fold
@@ -407,10 +447,10 @@ nnoremap <leader>fo zR|                                  " Open all folds
 " Formatting
 nnoremap <leader>Fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
 nnoremap <leader>FA :setlocal formatoptions-=a<CR>|      " Disable auto-format
-nnoremap <leader>Fu yyp<C-V>$r-|                         " Underline line
+nnoremap <leader>Fw :call ToggleWrap()<CR>|              " Toggle wrap
 
 " Linting (Errors)
-nnoremap <leader>ec :SyntasticCheck<CR>|                 " Error check
+nnoremap <leader>ee :SyntasticCheck<CR>|                 " Error check
 nnoremap <leader>et :SyntasticToggleMode<CR>|            " Toggle syntastic
 nnoremap <leader>eo :lopen<CR>|                          " Open
 nnoremap <leader>ec :lclose<CR>|                         " Close
@@ -425,6 +465,9 @@ nnoremap <leader>_b :call ToggleBackground()<CR>|        " Toggle background
 
 " Make
 nnoremap <leader>mm :Make<CR>|                           " Make
+
+" Undo
+nnoremap <leader>uu :GundoToggle<CR>|                    " View undo tree
 
 " Notes
 nnoremap <leader>nn :Note<space>|                        " Open note
