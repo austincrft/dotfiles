@@ -38,9 +38,6 @@ filetype plugin indent on      " Enable filetypes
 set autoindent
 set smartindent
 set smarttab
-set shiftwidth=4
-set softtabstop=4
-set tabstop=4
 set expandtab
 set nowrap
 set linebreak
@@ -53,7 +50,7 @@ set incsearch
 set ignorecase
 set smartcase
 " Make 'n' always go forward and 'N' always go backwards
-noremap <expr> n (v:searchforward ? 'n' : 'N')|
+noremap <expr> n (v:searchforward ? 'n' : 'N')
 noremap <expr> N (v:searchforward ? 'N' : 'n')
 
 " ------------------------------------------------------------------------------
@@ -63,11 +60,28 @@ imap jj <Esc>
 let mapleader=' '
 
 " ------------------------------------------------------------------------------
-" Core Mappings
+" Normal Mappings
 " ------------------------------------------------------------------------------
-nnoremap <S-Tab> :bnext<CR>|        " Shift-Tab through buffers
-vnoremap * "zy/<C-R>z<CR>|          " Search for visual selection using z-register
+nnoremap <S-Tab> :bnext<CR>| " Shift-Tab through buffers
+
+" ------------------------------------------------------------------------------
+" Visual Mappings
+" ------------------------------------------------------------------------------
+vnoremap * "zy/<C-R>z<CR>| " Search for selection using z-register
+vnoremap @@ :norm! @@<CR>| " Replay last macro on selection
+
+" ------------------------------------------------------------------------------
+" Command Mappings
+" ------------------------------------------------------------------------------
 cmap w!! w !sudo tee > /dev/null %| " Save as sudo
+
+" ------------------------------------------------------------------------------
+" Fold Config
+" ------------------------------------------------------------------------------
+set foldmethod=indent
+" Set foldlevel to 1 > max fold
+autocmd BufWinEnter *
+    \ let &foldlevel = max(map(range(1, line('$')), 'foldlevel(v:val)'))
 
 " ------------------------------------------------------------------------------
 "  Configure Directories
@@ -92,8 +106,8 @@ endif
 " ------------------------------------------------------------------------------
 function! SetupCommandAlias(from, to)
   exec 'cnoreabbrev <expr> '.a:from
-        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
-        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+       \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
+       \ .'? ("'.a:to.'") : ("'.a:from.'"))'
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -156,7 +170,7 @@ if !empty($CONEMUBUILD)
     set term=xterm
     set encoding=utf-8
     set termencoding=&encoding
-    set t_Co=16
+    set t_Co=256
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
 
@@ -193,7 +207,7 @@ call plug#begin('~/.vim/plugged')
 
 " Editor features
 Plug 'jiangmiao/auto-pairs'
-Plug 'tomtom/tcomment_vim'
+Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
@@ -224,6 +238,9 @@ Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
 " Auto-Complete
 Plug 'lifepillar/vim-mucomplete'
 Plug 'SirVer/ultisnips'
+
+" Database
+Plug 'vim-scripts/dbext.vim'
 
 " Languages {{{
 
@@ -266,6 +283,13 @@ Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-dispatch'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'xolox/vim-notes' | Plug 'xolox/vim-misc'
+Plug 'KabbAmine/zeavim.vim', {'on': [
+      \   'Zeavim', 'Docset',
+      \   '<Plug>Zeavim',
+      \   '<Plug>ZVVisSelection',
+      \   '<Plug>ZVKeyDocset',
+      \   '<Plug>ZVMotion'
+      \ ]}
 
 " Visuals
 Plug 'altercation/vim-colors-solarized'
@@ -289,6 +313,11 @@ let g:airline_powerline_fonts=1
 " CloseTag Config
 " ------------------------------------------------------------------------------
 let g:closetag_filenames="*.html,*.htm,*.xml,*.xsl"
+"
+" ------------------------------------------------------------------------------
+" Commentary Config
+" ------------------------------------------------------------------------------
+autocmd FileType cs setlocal commentstring=//\ %s
 
 " ------------------------------------------------------------------------------
 " Completion Config
@@ -322,7 +351,6 @@ let g:filebeagle_suppress_keymaps=1
 " FileType Config
 " ------------------------------------------------------------------------------
 autocmd BufRead,BufNewFile *.htm set filetype=aspvbs
-autocmd BufRead,BufNewFile *.aspx set filetype=aspx.vim
 
 " ------------------------------------------------------------------------------
 " Goyo Config
@@ -335,11 +363,11 @@ let g:goyo_width=120
 nmap gs  <plug>(GrepperOperator)
 xmap gs  <plug>(GrepperOperator)
 let g:grepper = {
-    \ 'tools': ['ag', 'git', 'grep'],
-    \ 'ag': {
-    \   'grepprg': 'ag --vimgrep --nocolor --column --ignore tags'
-    \ }
-    \}
+      \ 'tools': ['ag', 'git', 'grep'],
+      \ 'ag': {
+      \   'grepprg': 'ag --vimgrep --nocolor --column --ignore tags'
+      \ }
+      \}
 
 " ------------------------------------------------------------------------------
 " Jedi Config
@@ -391,20 +419,24 @@ let g:syntastic_cs_checkers=['syntax', 'semantic', 'issues']
 let g:syntastic_fsharp_checkers=['syntax']
 
 " ------------------------------------------------------------------------------
-" TComment Config
-" ------------------------------------------------------------------------------
-let g:tcommentMaps=0
-nnoremap gcc :TComment<CR>
-vnoremap gc :TComment<CR>
-
-" ------------------------------------------------------------------------------
 " UltiSnips Config
 " ------------------------------------------------------------------------------
 let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
-let g:UltiSnipsExpandTrigger='<C-;>'
-let g:UltiSnipsListSnippets='<C-:>'
+let g:UltiSnipsExpandTrigger='<C-J>'
+let g:UltiSnipsListSnippets='<C-K>'
 let g:UltiSnipsJumpForwardTrigger='<C-J>'
 let g:UltiSnipsJumpBackwardTrigger='<C-K>'
+
+" ------------------------------------------------------------------------------
+" Zeavim Config
+" ------------------------------------------------------------------------------
+let g:zv_file_types = {
+      \   'cs'     : 'net',
+      \   'python' : 'python',
+      \ }
+let g:zv_zeal_executable = has('win32') ?
+      \ 'C:\Program Files (x86)\Zeal\zeal.exe' :
+      \ 'path/to/zeal'
 
 " }}}
 
@@ -491,7 +523,7 @@ nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
 " Windows
 nnoremap <leader>wv :vsplit<CR>|                         " Split vertically
 nnoremap <leader>wh :split<CR>|                          " Split horizontally
-nnoremap <leader>wq <C-w>q|                              " Quit
+nnoremap <leader>w= <C-w>=|                              " Reset size
 nnoremap <leader>h <C-w>h|                               " Navigate left
 nnoremap <leader>j <C-w>j|                               " Navigate down
 nnoremap <leader>k <C-w>k|                               " Navigate up

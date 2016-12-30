@@ -1,13 +1,7 @@
-" Folds
-set foldmethod=indent
-set foldnestmax=3
-set foldlevel=2
-set foldlevelstart=2
-
 " Tabs
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
+setlocal tabstop=2
+setlocal softtabstop=2
+setlocal shiftwidth=2
 
 " Mappings
 nnoremap <leader>md :OmniSharpDocumentation<CR>|
