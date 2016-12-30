@@ -242,6 +242,9 @@ Plug 'SirVer/ultisnips'
 " Database
 Plug 'vim-scripts/dbext.vim'
 
+" Testing
+Plug 'janko-m/vim-test'
+
 " Languages {{{
 
 " Clojure
@@ -256,7 +259,10 @@ Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 Plug 'fsharp/vim-fsharp', { 'for': 'fsharp', 'do': 'make' }
 
 " HTML
-Plug 'alvan/vim-closetag', " { 'for': ['html', 'xml'] }
+Plug 'alvan/vim-closetag'
+
+" JavaScript
+Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
 
 " Java
 Plug 'vim-javacomplete2', { 'for': 'java' }
@@ -303,16 +309,24 @@ call plug#end()
 " Plugin Config {{{
 
 " ------------------------------------------------------------------------------
+" Completion Config
+" ------------------------------------------------------------------------------
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+autocmd FileType python setlocal omnifunc=jedi#completions
+autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
+autocmd Filetype javascript setlocal omnifunc=tern#Complete
+
+" ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
-let g:airline#extensions#tabline#enabled=1
-let g:airline#extensions#hunks#enabled=0
-let g:airline_powerline_fonts=1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#hunks#enabled = 0
+let g:airline_powerline_fonts = 1
 
 " ------------------------------------------------------------------------------
 " CloseTag Config
 " ------------------------------------------------------------------------------
-let g:closetag_filenames="*.html,*.htm,*.xml,*.xsl"
+let g:closetag_filenames = '*.html,*.htm,*.xml,*.xsl'
 "
 " ------------------------------------------------------------------------------
 " Commentary Config
@@ -330,22 +344,22 @@ autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 " ------------------------------------------------------------------------------
 " CtrlP Config
 " ------------------------------------------------------------------------------
-let g:ctrlp_working_path_mode='a'
+let g:ctrlp_working_path_mode = 'a'
 
 " ------------------------------------------------------------------------------
 " FSharp Config
 " ------------------------------------------------------------------------------
-let g:fsharp_xbuild_path='msbuild'
-let g:fsharp_test_runner="nunit-console"
-let g:fsharp_only_check_errors_on_write=1
-let g:fsharp_map_keys=0
-let g:fsharp_completion_helptext=0
+let g:fsharp_xbuild_path = 'msbuild'
+let g:fsharp_test_runner = 'nunit-console'
+let g:fsharp_only_check_errors_on_write = 1
+let g:fsharp_map_keys = 0
+let g:fsharp_completion_helptext = 0
 " let g:fsharpbinding_debug=1
 
 " ------------------------------------------------------------------------------
 " FileBeagle Config
 " ------------------------------------------------------------------------------
-let g:filebeagle_suppress_keymaps=1
+let g:filebeagle_suppress_keymaps = 1
 
 " ------------------------------------------------------------------------------
 " FileType Config
@@ -372,38 +386,38 @@ let g:grepper = {
 " ------------------------------------------------------------------------------
 " Jedi Config
 " ------------------------------------------------------------------------------
-let g:jedi#auto_vim_configuration=0
-let g:jedi#popup_on_dot=0
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#popup_on_dot = 0
 
 " ------------------------------------------------------------------------------
 " Notes Config
 " ------------------------------------------------------------------------------
-let g:notes_directories=['~/Dropbox/vim-notes']
-let g:notes_suffix='.txt'
-let g:notes_unicode_enabled=0
+let g:notes_directories = ['~/Dropbox/vim-notes']
+let g:notes_suffix = '.txt'
+let g:notes_unicode_enabled = 0
 
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
-let g:OmniSharp_server_type='roslyn'
+let g:OmniSharp_server_type = 'roslyn'
 
 " ------------------------------------------------------------------------------
 " Salve Config
 " ------------------------------------------------------------------------------
-let g:salve_auto_start_repl=1
+let g:salve_auto_start_repl = 1
 
 " ------------------------------------------------------------------------------
 " Signature Config
 " ------------------------------------------------------------------------------
-let g:SignatureMarkTextHLDynamic=1
-let g:SignatureMarkerTextHLDynamic=1
+let g:SignatureMarkTextHLDynamic = 1
+let g:SignatureMarkerTextHLDynamic = 1
 
 " ------------------------------------------------------------------------------
 " Sneak config
 " ------------------------------------------------------------------------------
-let g:sneak#streak=1
-let g:sneak#use_ic_scs=1
-let g:sneak#absolute_dir=1
+let g:sneak#streak = 1
+let g:sneak#use_ic_scs = 1
+let g:sneak#absolute_dir = 1
 
 " ------------------------------------------------------------------------------
 " Color Scheme
@@ -414,18 +428,23 @@ colorscheme solarized
 " ------------------------------------------------------------------------------
 " Syntastic Config
 " ------------------------------------------------------------------------------
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_cs_checkers=['syntax', 'semantic', 'issues']
-let g:syntastic_fsharp_checkers=['syntax']
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_cs_checkers = ['syntax', 'semantic', 'issues']
+let g:syntastic_fsharp_checkers = ['syntax']
+
+" ------------------------------------------------------------------------------
+" Test Config
+" ------------------------------------------------------------------------------
+let test#strategy = has('win32') ? 'dispatch' : 'asnycrun'
 
 " ------------------------------------------------------------------------------
 " UltiSnips Config
 " ------------------------------------------------------------------------------
-let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
-let g:UltiSnipsExpandTrigger='<C-J>'
-let g:UltiSnipsListSnippets='<C-K>'
-let g:UltiSnipsJumpForwardTrigger='<C-J>'
-let g:UltiSnipsJumpBackwardTrigger='<C-K>'
+let g:UltiSnipsSnippetsDir = '~/.vim/UltiSnips'
+let g:UltiSnipsExpandTrigger = '<C-J>'
+let g:UltiSnipsListSnippets = '<C-K>'
+let g:UltiSnipsJumpForwardTrigger = '<C-J>'
+let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
 
 " ------------------------------------------------------------------------------
 " Zeavim Config
