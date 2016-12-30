@@ -1,13 +1,8 @@
-" Folds
-set foldmethod=indent
-set foldlevel=2
-set foldnestmax=1
-
 " Tabs
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
-set textwidth=79
+setlocal tabstop=2
+setlocal softtabstop=2
+setlocal shiftwidth=2
+setlocal textwidth=79
 
 " Mappings
 nnoremap <leader>md K|             " GetDoc

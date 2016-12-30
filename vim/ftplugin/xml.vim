@@ -1,12 +1,7 @@
-" Folds
-set foldmethod=indent
-set foldlevel=99
-set foldlevelstart=99
-
 " Tabs
-set tabstop=2
-set softtabstop=2
-set shiftwidth=2
+setlocal tabstop=2
+setlocal softtabstop=2
+setlocal shiftwidth=2
 
 " Mappings
 nnoremap <leader>me :call EscapeXml()<CR>|
