@@ -27,6 +27,7 @@ set t_Co=16                    " Set terminal color to 16
 set colorcolumn=80             " Highlight column 80
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
+set cryptmethod=blowfish2      " Better encryption
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 autocmd FocusLost * silent! wa " Automatically save file
@@ -62,7 +63,8 @@ let mapleader=' '
 " ------------------------------------------------------------------------------
 " Normal Mappings
 " ------------------------------------------------------------------------------
-nnoremap <S-Tab> :bnext<CR>| " Shift-Tab through buffers
+nnoremap <Tab> :bnext<CR>|   " Tab forward through buffers
+nnoremap <S-Tab> :bprev<CR>| " Shift-Tab backwards through buffers
 
 " ------------------------------------------------------------------------------
 " Visual Mappings
@@ -180,6 +182,10 @@ if !empty($CONEMUBUILD)
     inoremap <Esc>[63~ <C-X><C-Y>
     nnoremap <Esc>[62~ <C-E>
     nnoremap <Esc>[63~ <C-Y>
+
+    " Backspace
+    inoremap <Char-0x07F> <BS>
+    nnoremap <Char-0x07F> <BS>
 endif
 
 " ------------------------------------------------------------------------------
@@ -276,19 +282,24 @@ Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 " Scala
 Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 
+" TypeScript
+Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
+" Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
+"     \ | Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+
 " }}}
 
 " Tags
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
 " Tools
-Plug 'amiorin/vim-project'
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-dispatch'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'xolox/vim-notes' | Plug 'xolox/vim-misc'
+Plug 'vimwiki/vimwiki'
 Plug 'KabbAmine/zeavim.vim', {'on': [
       \   'Zeavim', 'Docset',
       \   '<Plug>Zeavim',
@@ -309,14 +320,6 @@ call plug#end()
 " Plugin Config {{{
 
 " ------------------------------------------------------------------------------
-" Completion Config
-" ------------------------------------------------------------------------------
-autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
-autocmd FileType python setlocal omnifunc=jedi#completions
-autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
-autocmd Filetype javascript setlocal omnifunc=tern#Complete
-
-" ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#tabline#enabled = 1
@@ -327,11 +330,18 @@ let g:airline_powerline_fonts = 1
 " CloseTag Config
 " ------------------------------------------------------------------------------
 let g:closetag_filenames = '*.html,*.htm,*.xml,*.xsl'
-"
+
+" ------------------------------------------------------------------------------
+" Color Scheme
+" ------------------------------------------------------------------------------
+set background=dark
+colorscheme solarized
+
 " ------------------------------------------------------------------------------
 " Commentary Config
 " ------------------------------------------------------------------------------
 autocmd FileType cs setlocal commentstring=//\ %s
+autocmd FileType dosbatch setlocal commentstring=::\ %s
 
 " ------------------------------------------------------------------------------
 " Completion Config
@@ -340,11 +350,18 @@ autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
+autocmd Filetype javascript setlocal omnifunc=tern#Complete
+" autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
 
 " ------------------------------------------------------------------------------
 " CtrlP Config
 " ------------------------------------------------------------------------------
 let g:ctrlp_working_path_mode = 'a'
+if has('win32')
+  let g:ctrlp_prompt_mappings = {
+      \ 'PrtBS()': ['<Char-0x07F>', '<c-h>']
+  \ }
+endif
 
 " ------------------------------------------------------------------------------
 " FSharp Config
@@ -399,7 +416,7 @@ let g:notes_unicode_enabled = 0
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
-let g:OmniSharp_server_type = 'roslyn'
+" let g:OmniSharp_server_type = 'server'
 
 " ------------------------------------------------------------------------------
 " Salve Config
@@ -418,12 +435,6 @@ let g:SignatureMarkerTextHLDynamic = 1
 let g:sneak#streak = 1
 let g:sneak#use_ic_scs = 1
 let g:sneak#absolute_dir = 1
-
-" ------------------------------------------------------------------------------
-" Color Scheme
-" ------------------------------------------------------------------------------
-set background=dark
-colorscheme solarized
 
 " ------------------------------------------------------------------------------
 " Syntastic Config
@@ -445,6 +456,28 @@ let g:UltiSnipsExpandTrigger = '<C-J>'
 let g:UltiSnipsListSnippets = '<C-K>'
 let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
+
+" ------------------------------------------------------------------------------
+" Vimwiki Config
+" ------------------------------------------------------------------------------
+let g:vimwiki_table_mappings = 0
+let g:vimwiki_folding = 'expr'
+let g:vimwiki_list = [
+    \ {
+    \ 'path': '~/work/vimwiki',
+    \ 'syntax': 'markdown', 'ext': '.md',
+    \ 'nested_syntaxes': {
+        \ 'cs': 'cs',
+        \ 'sql': 'sql',
+        \ 'javascript': 'javascript',
+        \ 'typescript': 'typescript'
+        \ }
+    \ },
+    \
+    \ {
+    \ 'path': '~/Dropbox/vimwiki/',
+    \ 'syntax': 'markdown', 'ext': '.md',
+    \ }]
 
 " ------------------------------------------------------------------------------
 " Zeavim Config
@@ -521,9 +554,10 @@ nnoremap <leader>cc :cclose<CR>|                         " Close
 nnoremap <leader>cj :cnext<CR>|                          " Next
 nnoremap <leader>ck :cprevious<CR>|                      " Previous
 
-" Substitute
+" Substitute & Global
 nnoremap <leader>ss :%s/|                                " Substitute
-nnoremap <leader>st :%s/\t/|                             " Substitite tabs
+nnoremap <leader>sg :%g/|                                " Global
+nnoremap <leader>sG :%g!/|                               " Inverse Global
 
 " Spelling
 nnoremap <leader>Ss :setlocal spell spelllang=en_us<CR>| " Activate spelling
