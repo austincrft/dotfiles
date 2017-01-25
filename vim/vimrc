@@ -34,6 +34,13 @@ autocmd FocusLost * silent! wa " Automatically save file
 filetype plugin indent on      " Enable filetypes
 
 " ------------------------------------------------------------------------------
+" Default for tabs
+" ------------------------------------------------------------------------------
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+
+" ------------------------------------------------------------------------------
 " Indentation and Linebreaks
 " ------------------------------------------------------------------------------
 set autoindent
@@ -284,8 +291,8 @@ Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 
 " TypeScript
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
-" Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
-"     \ | Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
+    \ | Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 
 " }}}
 
@@ -298,7 +305,6 @@ Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-dispatch'
 Plug 'vim-scripts/BufOnly.vim'
-Plug 'xolox/vim-notes' | Plug 'xolox/vim-misc'
 Plug 'vimwiki/vimwiki'
 Plug 'KabbAmine/zeavim.vim', {'on': [
       \   'Zeavim', 'Docset',
@@ -534,11 +540,6 @@ nnoremap <leader>mm :Make<CR>|                           " Make
 " Undo
 nnoremap <leader>uu :GundoToggle<CR>|                    " View undo tree
 
-" Notes
-nnoremap <leader>nn :Note<space>|                        " Open note
-nnoremap <leader>nD :DeleteNote<CR>|                     " Delete note
-nnoremap <leader>ns :SearchNotes<space>|                 " Delete note
-
 " Project
 nnoremap <leader>pt :FileBeagle<CR>|                     " Open cwd
 nnoremap <leader>pF :FileBeagleBufferDir<CR>|            " Open buffer directory
@@ -581,22 +582,5 @@ nnoremap <leader>h <C-w>h|                               " Navigate left
 nnoremap <leader>j <C-w>j|                               " Navigate down
 nnoremap <leader>k <C-w>k|                               " Navigate up
 nnoremap <leader>l <C-w>l|                               " Navigate right
-
-" }}}
-
-" Projects {{{
-
-" ------------------------------------------------------------------------------
-" Project Config
-" ------------------------------------------------------------------------------
-if isdirectory($HOME . "/.vim/plugged/vim-project")
-    set rtp+=~/.vim/bundle/vim-project/
-    call project#rc('/src')
-
-    " Get work projects if the file exists
-    if filereadable($HOME . "/work/projects.vim")
-        source ~/work/projects.vim
-    end
-end
 
 " }}}
