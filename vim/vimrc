@@ -122,12 +122,24 @@ endfunction
 " ------------------------------------------------------------------------------
 " Escape XML
 " ------------------------------------------------------------------------------
-function! EscapeXml()
-    silent! s/&/\&amp;/g
-    silent! s/"/\&quot;/g
-    silent! s/'/\&apos;/g
-    silent! s/>/\&gt;/g
-    silent! s/</\&lt;/g
+function! EscapeXml(unescape)
+    if a:unescape == 0
+        silent! s/&/\&amp;/g
+        silent! s/"/\&quot;/g
+        silent! s/'/\&apos;/g
+        silent! s/'/\&#39;/g
+        silent! s/’/\&#8217;/g
+        silent! s/>/\&gt;/g
+        silent! s/</\&lt;/g
+    else
+        silent! s/&quot;/"/g
+        silent! s/&apos;/'/g
+        silent! s/&#39;/'/g
+        silent! s/&#8217;/’/g
+        silent! s/&gt;/>/g
+        silent! s/&lt;/</g
+        silent! s/&amp;/\&/g
+    endif
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -280,6 +292,9 @@ Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
 " Java
 Plug 'vim-javacomplete2', { 'for': 'java' }
 
+" Markdown
+Plug 'plasticboy/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
+
 " Powershell
 Plug 'PProvost/vim-ps1' , { 'for': 'ps1' }
 
@@ -298,6 +313,7 @@ Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
 
 " Tags
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
+Plug 'ludovicchabant/vim-gutentags'
 
 " Tools
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
@@ -335,7 +351,7 @@ let g:airline_powerline_fonts = 1
 " ------------------------------------------------------------------------------
 " CloseTag Config
 " ------------------------------------------------------------------------------
-let g:closetag_filenames = '*.html,*.htm,*.xml,*.xsl'
+let g:closetag_filenames = '*.html,*.xml,*.config'
 
 " ------------------------------------------------------------------------------
 " Color Scheme
@@ -362,11 +378,18 @@ autocmd Filetype javascript setlocal omnifunc=tern#Complete
 " ------------------------------------------------------------------------------
 " CtrlP Config
 " ------------------------------------------------------------------------------
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
 let g:ctrlp_working_path_mode = 'a'
+
+if executable('ag')
+    let g:ctrlp_user_command = 'ag -l --nocolor -g "" "%s"'
+endif
+
 if has('win32')
-  let g:ctrlp_prompt_mappings = {
-      \ 'PrtBS()': ['<Char-0x07F>', '<c-h>']
-  \ }
+    let g:ctrlp_prompt_mappings = {
+        \ 'PrtBS()': ['<Char-0x07F>', '<c-h>']
+    \ }
 endif
 
 " ------------------------------------------------------------------------------
@@ -383,11 +406,6 @@ let g:fsharp_completion_helptext = 0
 " FileBeagle Config
 " ------------------------------------------------------------------------------
 let g:filebeagle_suppress_keymaps = 1
-
-" ------------------------------------------------------------------------------
-" FileType Config
-" ------------------------------------------------------------------------------
-autocmd BufRead,BufNewFile *.htm set filetype=aspvbs
 
 " ------------------------------------------------------------------------------
 " Goyo Config
@@ -411,13 +429,6 @@ let g:grepper = {
 " ------------------------------------------------------------------------------
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#popup_on_dot = 0
-
-" ------------------------------------------------------------------------------
-" Notes Config
-" ------------------------------------------------------------------------------
-let g:notes_directories = ['~/Dropbox/vim-notes']
-let g:notes_suffix = '.txt'
-let g:notes_unicode_enabled = 0
 
 " ------------------------------------------------------------------------------
 " OmniSharp Config
@@ -452,7 +463,7 @@ let g:syntastic_fsharp_checkers = ['syntax']
 " ------------------------------------------------------------------------------
 " Test Config
 " ------------------------------------------------------------------------------
-let test#strategy = has('win32') ? 'dispatch' : 'asnycrun'
+let test#strategy = 'asnycrun'
 
 " ------------------------------------------------------------------------------
 " UltiSnips Config
@@ -542,7 +553,7 @@ nnoremap <leader>uu :GundoToggle<CR>|                    " View undo tree
 
 " Project
 nnoremap <leader>pt :FileBeagle<CR>|                     " Open cwd
-nnoremap <leader>pF :FileBeagleBufferDir<CR>|            " Open buffer directory
+nnoremap <leader>pf :FileBeagleBufferDir<CR>|            " Open buffer directory
 nnoremap <leader>pc :pclose<CR>|                         " Close preview-window
 nnoremap <leader>pT :Start! ctags -R<CR>|                " Async ctags generate
 
