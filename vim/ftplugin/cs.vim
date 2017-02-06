@@ -1,3 +1,7 @@
+" Line length
+setlocal colorcolumn=100
+setlocal textwidth=100
+
 " Mappings
 nnoremap <leader>md :OmniSharpDocumentation<CR>|
 nnoremap <leader>mg :OmniSharpGotoDefinition<CR>|
