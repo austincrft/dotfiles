@@ -1,12 +1,13 @@
 @echo off
 
 :: Unicode
-chcp 65001
+chcp 65001 > nul
 
 :: ls
-DOSKEY ls=ls --color
-DOSKEY la=ls -a --color
-DOSKEY ll=ls -l --color
+SET ls_options=-I "NTUSER.*" -I "ntuser.*" --color
+DOSKEY ls=ls %ls_options% $*
+DOSKEY la=ls -a %ls_options% $*
+DOSKEY ll=ls -l %ls_options% $*
 
 :: grep
 DOSKEY grep=grep --color=auto $*
@@ -24,6 +25,9 @@ DOSKEY msbuild="C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" $*
 
 :: pandoc
 DOSKEY pandoc="%USERPROFILE%\AppData\Local\Pandoc\pandoc.exe" $*
+
+DOSKEY pip="C:\Python36\Scripts\pip.exe" $*
+DOSKEY pip2="C:\Python27\Scripts\pip.exe" $*
 
 :: Work-Specific Aliases
 SET work_aliases="%USERPROFILE%\work\aliases.cmd"
