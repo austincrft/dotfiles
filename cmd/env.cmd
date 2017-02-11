@@ -1,34 +1,33 @@
 @echo off
 
-:: Python2
-DOSKEY python2="C:\Python27\python.exe" $*
-DOSKEY pythonw2="C:\Python27\pythonw.exe" $*
-
-:: Python3
-DOSKEY python3="C:\Python35\python.exe" $*
-DOSKEY pythonw3="C:\Python35\pythonw.exe" $*
+:: Unicode
+chcp 65001 > nul
 
 :: ls
-DOSKEY ls=ls --color
-DOSKEY la=ls -a --color
-DOSKEY ll=ls -l --color
+SET ls_options=-I "NTUSER.*" -I "ntuser.*" --color
+DOSKEY ls=ls %ls_options% $*
+DOSKEY la=ls -a %ls_options% $*
+DOSKEY ll=ls -l %ls_options% $*
 
 :: grep
 DOSKEY grep=grep --color=auto $*
 
 :: find
-DOSKEY findf=find $* -type f
-DOSKEY findd=find $* -type d
+DOSKEY find="C:\tools\cygwin64\bin\find.exe" $*
+DOSKEY findf="C:\tools\cygwin64\bin\find.exe" $* -type f
+DOSKEY findd="C:\tools\cygwin64\bin\find.exe" $* -type d
 
 :: cd
 DOSKEY cdu=cd %USERPROFILE%
 
-:: .NET stuff
-DOSKEY nunit-console="%USERPROFILE%\NUnit.3.4.1\NUnit.ConsoleRunner.3.4.1\tools\nunit3-console.exe" $*
-DOSKEY msbuild="C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe" $*
+:: .NET
+DOSKEY msbuild="C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe" $*
 
 :: pandoc
 DOSKEY pandoc="%USERPROFILE%\AppData\Local\Pandoc\pandoc.exe" $*
+
+DOSKEY pip="C:\Python36\Scripts\pip.exe" $*
+DOSKEY pip2="C:\Python27\Scripts\pip.exe" $*
 
 :: Work-Specific Aliases
 SET work_aliases="%USERPROFILE%\work\aliases.cmd"
