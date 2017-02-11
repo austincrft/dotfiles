@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <key name="Software">
 	<key name="ConEmu">
-		<key name=".Vanilla" modified="2016-03-18 14:33:19" build="150705">
+		<key name=".Vanilla" modified="2016-12-28 13:15:07" build="150705">
 			<value name="StartType" type="hex" data="02"/>
 			<value name="CmdLine" type="string" data=""/>
 			<value name="StartTasksFile" type="string" data=""/>
-			<value name="StartTasksName" type="string" data="{Shells::cmd}"/>
+			<value name="StartTasksName" type="string" data="{Shells::cmd (Admin)}"/>
 			<value name="StartFarFolders" type="hex" data="00"/>
 			<value name="StartFarEditors" type="hex" data="00"/>
 			<value name="ColorTable00" type="dword" data="00423607"/>
@@ -88,9 +88,11 @@
 			<value name="SaveCmdHistory" type="hex" data="01"/>
 			<value name="CmdLineHistory" type="multi">
 				<line data="{Shells::PowerShell}"/>
+				<line data="cmd.exe /k &quot;%ConEmuBaseDir%\CmdInit.cmd&quot;"/>
+				<line data="&quot;C:\src\dotfiles\ConEmu\ConEmu.xml&quot;"/>
+				<line data="{Shells::PowerShell (Admin)}"/>
 				<line data="{Shells::cmd}"/>
 				<line data="{Shells::cmd (Admin)}"/>
-				<line data="{Shells::PowerShell (Admin)}"/>
 				<line data="{Bash::Git bash}"/>
 				<line data="{Shells::cmd 64/32}"/>
 			</value>
@@ -116,10 +118,10 @@
 			<value name="Multi.SplitWidth" type="hex" data="04"/>
 			<value name="Multi.SplitHeight" type="hex" data="04"/>
 			<value name="KeyboardHooks" type="hex" data="01"/>
-			<value name="FontName" type="string" data="Source Code Pro"/>
+			<value name="FontName" type="string" data="Sauce Code Powerline"/>
 			<value name="FontName2" type="string" data="Consolas"/>
 			<value name="FontAutoSize" type="hex" data="00"/>
-			<value name="FontSize" type="dword" data="0000000e"/>
+			<value name="FontSize" type="dword" data="0000000d"/>
 			<value name="FontSizeX" type="dword" data="00000000"/>
 			<value name="FontUseDpi" type="hex" data="01"/>
 			<value name="FontUseUnits" type="hex" data="01"/>
@@ -129,7 +131,7 @@
 			<value name="Anti-aliasing" type="dword" data="00000006"/>
 			<value name="FontBold" type="hex" data="00"/>
 			<value name="FontItalic" type="hex" data="00"/>
-			<value name="Monospace" type="hex" data="01"/>
+			<value name="Monospace" type="hex" data="02"/>
 			<value name="BackGround Image show" type="hex" data="00"/>
 			<value name="BackGround Image" type="string" data="c:\back.bmp"/>
 			<value name="bgImageDarker" type="hex" data="ff"/>
@@ -143,16 +145,16 @@
 			<value name="ColorKeyTransparent" type="hex" data="00"/>
 			<value name="ColorKeyValue" type="dword" data="00010101"/>
 			<value name="UseCurrentSizePos" type="hex" data="01"/>
-			<value name="WindowMode" type="dword" data="0000051f"/>
-			<value name="ConWnd Width" type="dword" data="000000a3"/>
-			<value name="ConWnd Height" type="dword" data="0000003e"/>
+			<value name="WindowMode" type="dword" data="00000520"/>
+			<value name="ConWnd Width" type="dword" data="0000007d"/>
+			<value name="ConWnd Height" type="dword" data="0000001f"/>
 			<value name="Cascaded" type="hex" data="01"/>
-			<value name="ConWnd X" type="dword" data="00000131"/>
-			<value name="ConWnd Y" type="dword" data="fffffffd"/>
+			<value name="ConWnd X" type="dword" data="00000054"/>
+			<value name="ConWnd Y" type="dword" data="fffffff8"/>
 			<value name="16bit Height" type="dword" data="00000000"/>
 			<value name="AutoSaveSizePos" type="hex" data="01"/>
 			<value name="IntegralSize" type="hex" data="00"/>
-			<value name="QuakeStyle" type="hex" data="01"/>
+			<value name="QuakeStyle" type="hex" data="00"/>
 			<value name="QuakeAnimation" type="dword" data="00000064"/>
 			<value name="HideCaption" type="hex" data="00"/>
 			<value name="HideChildCaption" type="hex" data="01"/>
@@ -215,7 +217,7 @@
 			<value name="SendAltPrintScrn" type="hex" data="00"/>
 			<value name="SendPrintScrn" type="hex" data="00"/>
 			<value name="SendCtrlEsc" type="hex" data="00"/>
-			<value name="Min2Tray" type="hex" data="01"/>
+			<value name="Min2Tray" type="hex" data="00"/>
 			<value name="AlwaysShowTrayIcon" type="hex" data="00"/>
 			<value name="SafeFarClose" type="hex" data="01"/>
 			<value name="SafeFarCloseMacro" type="string" data=""/>
@@ -383,7 +385,7 @@
 			<value name="Update.DownloadPath" type="string" data="%TEMP%\ConEmu"/>
 			<value name="Update.LeavePackages" type="hex" data="00"/>
 			<value name="Update.PostUpdateCmd" type="string" data="echo Last successful update&gt;ConEmuUpdate.info &amp;&amp; date /t&gt;&gt;ConEmuUpdate.info &amp;&amp; time /t&gt;&gt;ConEmuUpdate.info"/>
-			<key name="HotKeys" modified="2016-03-18 14:33:19" build="150705">
+			<key name="HotKeys" modified="2016-12-28 13:15:07" build="150705">
 				<value name="KeyMacroVersion" type="hex" data="02"/>
 				<value name="Multi.Modifier" type="dword" data="0000005b"/>
 				<value name="Multi.ArrowsModifier" type="dword" data="0000005b"/>
@@ -442,8 +444,8 @@
 				<value name="Multi.MoveRight" type="dword" data="00125b27"/>
 				<value name="CTS.VkBlockStart" type="dword" data="00000000"/>
 				<value name="CTS.VkTextStart" type="dword" data="00000000"/>
-				<value name="CTS.VkCopyFmt0" type="dword" data="00001143"/>
-				<value name="CTS.VkCopyFmt1" type="dword" data="00101143"/>
+				<value name="CTS.VkCopyFmt0" type="dword" data="00101143"/>
+				<value name="CTS.VkCopyFmt1" type="dword" data="00121143"/>
 				<value name="CTS.VkCopyFmt2" type="dword" data="00000000"/>
 				<value name="CTS.VkCopyAll" type="dword" data="00000000"/>
 				<value name="HighlightMouseSwitch" type="dword" data="00005d4c"/>
@@ -451,7 +453,7 @@
 				<value name="Multi.ShowTabsList" type="dword" data="00000000"/>
 				<value name="Multi.ShowTabsList2" type="dword" data="00005d7b"/>
 				<value name="ClipboardVkAllLines" type="dword" data="0000102d"/>
-				<value name="ClipboardVkFirstLine" type="dword" data="00001156"/>
+				<value name="ClipboardVkFirstLine" type="dword" data="00101156"/>
 				<value name="DeleteWordToLeft" type="dword" data="00001108"/>
 				<value name="FindTextKey" type="dword" data="00005d46"/>
 				<value name="ScreenshotKey" type="dword" data="00005b48"/>
@@ -562,9 +564,18 @@
 				<value name="DndRKey" type="hex" data="a2"/>
 				<value name="WndDragKey" type="dword" data="00121101"/>
 			</key>
-			<key name="Tasks" modified="2016-03-18 14:33:19" build="150705">
-				<value name="Count" type="dword" data="00000008"/>
-				<key name="Task1" modified="2016-03-18 14:33:19" build="150705">
+			<key name="Tasks" modified="2016-12-28 13:15:07" build="150705">
+				<value name="Count" type="dword" data="00000006"/>
+				<key name="Task1" modified="2016-12-28 13:15:07" build="150705">
+					<value name="Name" type="string" data="{Shells::Cygwin}"/>
+					<value name="Flags" type="dword" data="00000000"/>
+					<value name="Hotkey" type="dword" data="00000000"/>
+					<value name="GuiArgs" type="string" data=""/>
+					<value name="Cmd1" type="string" data="C:\tools\cygwin\Cygwin.bat"/>
+					<value name="Active" type="dword" data="00000000"/>
+					<value name="Count" type="dword" data="00000001"/>
+				</key>
+				<key name="Task2" modified="2016-12-28 13:15:07" build="150705">
 					<value name="Name" type="string" data="{Shells::cmd}"/>
 					<value name="Flags" type="dword" data="00000000"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
@@ -573,26 +584,27 @@
 					<value name="Active" type="dword" data="00000000"/>
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
-				<key name="Task2" modified="2016-03-18 14:33:19" build="150705">
+				<key name="Task3" modified="2016-12-28 13:15:07" build="150705">
 					<value name="Name" type="string" data="{Shells::cmd (Admin)}"/>
 					<value name="Flags" type="dword" data="00000000"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
 					<value name="Cmd1" type="string" data="cmd.exe /k &quot;%ConEmuBaseDir%\CmdInit.cmd&quot; -new_console:a"/>
+					<value name="Cmd2" type="string" data="&quot;%windir%\syswow64\cmd.exe&quot; /k &quot;&quot;%ConEmuBaseDir%\CmdInit.cmd&quot; &amp; echo This is 32 bit cmd.exe -new_console:s50V&quot;"/>
 					<value name="Active" type="dword" data="00000000"/>
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
-				<key name="Task3" modified="2016-03-18 14:33:19" build="150705">
+				<key name="Task4" modified="2016-12-28 13:15:07" build="150705">
 					<value name="Name" type="string" data="{Shells::cmd 64/32}"/>
 					<value name="Flags" type="dword" data="00000000"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
 					<value name="Cmd1" type="string" data="&gt; &quot;%windir%\system32\cmd.exe&quot; /k &quot;&quot;%ConEmuBaseDir%\CmdInit.cmd&quot; &amp; echo This is Native cmd.exe&quot;"/>
-					<value name="Cmd2" type="string" data="&quot;%windir%\syswow64\cmd.exe&quot; /k &quot;&quot;%ConEmuBaseDir%\CmdInit.cmd&quot; &amp; echo This is 32 bit cmd.exe -new_console:s50V&quot;"/>
 					<value name="Active" type="dword" data="00000001"/>
 					<value name="Count" type="dword" data="00000002"/>
+					<value name="Cmd2" type="string" data="&quot;%windir%\syswow64\cmd.exe&quot; /k &quot;&quot;%ConEmuBaseDir%\CmdInit.cmd&quot; &amp; echo This is 32 bit cmd.exe -new_console:s50V&quot;"/>
 				</key>
-				<key name="Task4" modified="2016-03-18 14:33:19" build="150705">
+				<key name="Task5" modified="2016-12-28 13:15:07" build="150705">
 					<value name="Name" type="string" data="{Shells::PowerShell}"/>
 					<value name="Flags" type="dword" data="00000000"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
@@ -601,21 +613,12 @@
 					<value name="Active" type="dword" data="00000000"/>
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
-				<key name="Task5" modified="2016-03-18 14:33:19" build="150705">
+				<key name="Task6" modified="2016-12-28 13:15:07" build="150705">
 					<value name="Name" type="string" data="{Shells::PowerShell (Admin)}"/>
 					<value name="Flags" type="dword" data="00000000"/>
 					<value name="Hotkey" type="dword" data="00000000"/>
 					<value name="GuiArgs" type="string" data=""/>
 					<value name="Cmd1" type="string" data="powershell.exe -new_console:a"/>
-					<value name="Active" type="dword" data="00000000"/>
-					<value name="Count" type="dword" data="00000001"/>
-				</key>
-				<key name="Task6" modified="2016-03-18 14:33:19" build="150705">
-					<value name="Name" type="string" data="{Bash::Git bash}"/>
-					<value name="Flags" type="dword" data="00000000"/>
-					<value name="Hotkey" type="dword" data="00000000"/>
-					<value name="GuiArgs" type="string" data=""/>
-					<value name="Cmd1" type="string" data="&quot;%ConEmuDrive%\Program Files (x86)\Git\bin\sh.exe&quot; --login -i -new_console:C:&quot;%ConEmuDrive%\Program Files (x86)\Git\etc\git.ico&quot;"/>
 					<value name="Active" type="dword" data="00000000"/>
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
@@ -638,10 +641,10 @@
 					<value name="Count" type="dword" data="00000001"/>
 				</key>
 			</key>
-			<key name="Apps" modified="2016-03-18 14:33:19" build="150705">
+			<key name="Apps" modified="2016-12-28 13:15:07" build="150705">
 				<value name="Count" type="dword" data="00000000"/>
 			</key>
-			<key name="Colors" modified="2016-03-18 14:33:19" build="150705">
+			<key name="Colors" modified="2016-12-28 13:15:07" build="150705">
 				<value name="Count" type="dword" data="00000000"/>
 			</key>
 		</key>
