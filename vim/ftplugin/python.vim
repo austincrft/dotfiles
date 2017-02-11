@@ -7,7 +7,7 @@ set foldlevel=2
 set foldnestmax=2
 
 " Make
-set makeprg=python\ %
+" set makeprg=python\ %
 
 " Tabs
 set tabstop=4
@@ -16,6 +16,7 @@ set shiftwidth=4
 set textwidth=79
 
 " Mappings
-nnoremap <leader>md :YcmCompleter GetDoc<CR>|
-nnoremap <leader>mg :YcmCompleter GoTo<CR>|
-nnoremap <leader>mr :YcmCompleter RestartServer<CR>|
+nnoremap <leader>md :call jedi#show_documentation()<CR>|
+nnoremap <leader>mg :call jedi#goto_assignments()<CR>|
+nnoremap <leader>mfu :call jedi#usages()<CR>|
+nnoremap <leader>mr :call jedi#rename()<CR>|

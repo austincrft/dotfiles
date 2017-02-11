@@ -211,22 +211,16 @@ if (!has('win32'))
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 endif
 
-" Formatting
-Plug 'godlygeek/tabular'
-Plug 'ntpeters/vim-better-whitespace'
-
-" Linting
-Plug 'scrooloose/syntastic'
-
-" Git
-Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
-
 " Auto-Complete
 Plug 'lifepillar/vim-mucomplete'
 Plug 'SirVer/ultisnips'
 
-" Testing
-Plug 'janko-m/vim-test'
+" Formatting
+Plug 'godlygeek/tabular'
+Plug 'ntpeters/vim-better-whitespace'
+
+" Git
+Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
 
 " Languages {{{
 
@@ -261,8 +255,17 @@ Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 
 " }}}
 
+" Linting
+Plug 'scrooloose/syntastic'
+
+" REPL
+Plug 'jpalardy/vim-slime'
+
 " Tags
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
+
+" Testing
+Plug 'janko-m/vim-test'
 
 " Tools
 Plug 'amiorin/vim-project'
@@ -348,7 +351,7 @@ let g:goyo_width=120
 " ------------------------------------------------------------------------------
 nmap gs  <plug>(GrepperOperator)
 xmap gs  <plug>(GrepperOperator)
-let g:grepper = {
+let g:grepper={
     \ 'tools': ['ag', 'git', 'grep'],
     \ 'ag': {
     \   'grepprg': 'ag --vimgrep --nocolor --column --ignore tags'
@@ -360,6 +363,7 @@ let g:grepper = {
 " ------------------------------------------------------------------------------
 let g:jedi#auto_vim_configuration=0
 let g:jedi#popup_on_dot=0
+let g:jedi#auto_initialization=0
 
 " ------------------------------------------------------------------------------
 " Notes Config
@@ -408,6 +412,7 @@ let g:syntastic_fsharp_checkers=['syntax']
 " Test Config
 " ------------------------------------------------------------------------------
 let test#strategy='dispatch'
+let g:test#runner_commands=['Jasmine']
 
 " ------------------------------------------------------------------------------
 " TComment Config
