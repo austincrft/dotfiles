@@ -1,19 +1,12 @@
 " Syntax
 let python_highlight_all=1
 
-" Folds
-set foldmethod=indent
-set foldlevel=2
-set foldnestmax=2
-
 " Make
-" set makeprg=python\ %
+setlocal makeprg=python\ %
 
-" Tabs
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set textwidth=79
+" Line length
+setlocal colorcolumn=79
+setlocal textwidth=79
 
 " Mappings
 nnoremap <leader>md :call jedi#show_documentation()<CR>|

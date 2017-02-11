@@ -1,9 +1,3 @@
-" Folds
-set foldmethod=indent
-set foldnestmax=3
-set foldlevel=2
-set foldlevelstart=2
-
 " Mappings
 vnoremap <leader>me :FsiEval<CR>| " Visual
 nnoremap <leader>me :FsiEval<CR>| " Normal

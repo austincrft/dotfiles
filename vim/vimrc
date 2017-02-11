@@ -27,10 +27,18 @@ set t_Co=16                    " Set terminal color to 16
 set colorcolumn=80             " Highlight column 80
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
+set cryptmethod=blowfish2      " Better encryption
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 autocmd FocusLost * silent! wa " Automatically save file
 filetype plugin indent on      " Enable filetypes
+
+" ------------------------------------------------------------------------------
+" Default for tabs
+" ------------------------------------------------------------------------------
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 
 " ------------------------------------------------------------------------------
 " Indentation and Linebreaks
@@ -38,9 +46,6 @@ filetype plugin indent on      " Enable filetypes
 set autoindent
 set smartindent
 set smarttab
-set shiftwidth=4
-set softtabstop=4
-set tabstop=4
 set expandtab
 set nowrap
 set linebreak
@@ -53,7 +58,7 @@ set incsearch
 set ignorecase
 set smartcase
 " Make 'n' always go forward and 'N' always go backwards
-noremap <expr> n (v:searchforward ? 'n' : 'N')|
+noremap <expr> n (v:searchforward ? 'n' : 'N')
 noremap <expr> N (v:searchforward ? 'N' : 'n')
 
 " ------------------------------------------------------------------------------
@@ -63,11 +68,29 @@ imap jj <Esc>
 let mapleader=' '
 
 " ------------------------------------------------------------------------------
-" Core Mappings
+" Normal Mappings
 " ------------------------------------------------------------------------------
-nnoremap <S-Tab> :bnext<CR>|        " Shift-Tab through buffers
-vnoremap * "zy/<C-R>z<CR>|          " Search for visual selection using z-register
+nnoremap <Tab> :bnext<CR>|   " Tab forward through buffers
+nnoremap <S-Tab> :bprev<CR>| " Shift-Tab backwards through buffers
+
+" ------------------------------------------------------------------------------
+" Visual Mappings
+" ------------------------------------------------------------------------------
+vnoremap * "zy/<C-R>z<CR>| " Search for selection using z-register
+vnoremap @@ :norm! @@<CR>| " Replay last macro on selection
+
+" ------------------------------------------------------------------------------
+" Command Mappings
+" ------------------------------------------------------------------------------
 cmap w!! w !sudo tee > /dev/null %| " Save as sudo
+
+" ------------------------------------------------------------------------------
+" Fold Config
+" ------------------------------------------------------------------------------
+set foldmethod=indent
+" Set foldlevel to 1 > max fold
+autocmd BufWinEnter *
+    \ let &foldlevel = max(map(range(1, line('$')), 'foldlevel(v:val)'))
 
 " ------------------------------------------------------------------------------
 "  Configure Directories
@@ -92,19 +115,31 @@ endif
 " ------------------------------------------------------------------------------
 function! SetupCommandAlias(from, to)
   exec 'cnoreabbrev <expr> '.a:from
-        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
-        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+       \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
+       \ .'? ("'.a:to.'") : ("'.a:from.'"))'
 endfunction
 
 " ------------------------------------------------------------------------------
 " Escape XML
 " ------------------------------------------------------------------------------
-function! EscapeXml()
-    silent! s/&/\&amp;/g
-    silent! s/"/\&quot;/g
-    silent! s/'/\&apos;/g
-    silent! s/>/\&gt;/g
-    silent! s/</\&lt;/g
+function! EscapeXml(unescape)
+    if a:unescape == 0
+        silent! s/&/\&amp;/g
+        silent! s/"/\&quot;/g
+        silent! s/'/\&apos;/g
+        silent! s/'/\&#39;/g
+        silent! s/’/\&#8217;/g
+        silent! s/>/\&gt;/g
+        silent! s/</\&lt;/g
+    else
+        silent! s/&quot;/"/g
+        silent! s/&apos;/'/g
+        silent! s/&#39;/'/g
+        silent! s/&#8217;/’/g
+        silent! s/&gt;/>/g
+        silent! s/&lt;/</g
+        silent! s/&amp;/\&/g
+    endif
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -156,7 +191,7 @@ if !empty($CONEMUBUILD)
     set term=xterm
     set encoding=utf-8
     set termencoding=&encoding
-    set t_Co=16
+    set t_Co=256
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
 
@@ -166,6 +201,10 @@ if !empty($CONEMUBUILD)
     inoremap <Esc>[63~ <C-X><C-Y>
     nnoremap <Esc>[62~ <C-E>
     nnoremap <Esc>[63~ <C-Y>
+
+    " Backspace
+    inoremap <Char-0x07F> <BS>
+    nnoremap <Char-0x07F> <BS>
 endif
 
 " ------------------------------------------------------------------------------
@@ -193,7 +232,7 @@ call plug#begin('~/.vim/plugged')
 
 " Editor features
 Plug 'jiangmiao/auto-pairs'
-Plug 'tomtom/tcomment_vim'
+Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
@@ -222,6 +261,16 @@ Plug 'ntpeters/vim-better-whitespace'
 " Git
 Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
 
+" Auto-Complete
+Plug 'lifepillar/vim-mucomplete'
+Plug 'SirVer/ultisnips'
+
+" Database
+Plug 'vim-scripts/dbext.vim'
+
+" Testing
+Plug 'janko-m/vim-test'
+
 " Languages {{{
 
 " Clojure
@@ -244,6 +293,9 @@ Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
 " Java
 Plug 'vim-javacomplete2', { 'for': 'java' }
 
+" Markdown
+Plug 'plasticboy/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
+
 " Powershell
 Plug 'PProvost/vim-ps1' , { 'for': 'ps1' }
 
@@ -252,6 +304,11 @@ Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 
 " Scala
 Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
+
+" TypeScript
+Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
+Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
+    \ | Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 
 " }}}
 
@@ -263,18 +320,25 @@ Plug 'jpalardy/vim-slime'
 
 " Tags
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
+Plug 'ludovicchabant/vim-gutentags'
 
 " Testing
 Plug 'janko-m/vim-test'
 
 " Tools
-Plug 'amiorin/vim-project'
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-dispatch'
 Plug 'vim-scripts/BufOnly.vim'
-Plug 'xolox/vim-notes' | Plug 'xolox/vim-misc'
+Plug 'vimwiki/vimwiki'
+Plug 'KabbAmine/zeavim.vim', {'on': [
+      \   'Zeavim', 'Docset',
+      \   '<Plug>Zeavim',
+      \   '<Plug>ZVVisSelection',
+      \   '<Plug>ZVKeyDocset',
+      \   '<Plug>ZVMotion'
+      \ ]}
 
 " Visuals
 Plug 'altercation/vim-colors-solarized'
@@ -288,24 +352,28 @@ call plug#end()
 " Plugin Config {{{
 
 " ------------------------------------------------------------------------------
-" Completion Config
-" ------------------------------------------------------------------------------
-autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
-autocmd FileType python setlocal omnifunc=jedi#completions
-autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
-autocmd Filetype javascript setlocal omnifunc=tern#Complete
-
-" ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
-let g:airline#extensions#tabline#enabled=1
-let g:airline#extensions#hunks#enabled=0
-let g:airline_powerline_fonts=1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#hunks#enabled = 0
+let g:airline_powerline_fonts = 1
 
 " ------------------------------------------------------------------------------
 " CloseTag Config
 " ------------------------------------------------------------------------------
-let g:closetag_filenames="*.html,*.htm,*.xml,*.xsl"
+let g:closetag_filenames = '*.html,*.xml,*.config'
+
+" ------------------------------------------------------------------------------
+" Color Scheme
+" ------------------------------------------------------------------------------
+set background=dark
+colorscheme solarized
+
+" ------------------------------------------------------------------------------
+" Commentary Config
+" ------------------------------------------------------------------------------
+autocmd FileType cs setlocal commentstring=//\ %s
+autocmd FileType dosbatch setlocal commentstring=::\ %s
 
 " ------------------------------------------------------------------------------
 " Completion Config
@@ -314,32 +382,40 @@ autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
+autocmd Filetype javascript setlocal omnifunc=tern#Complete
+" autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
 
 " ------------------------------------------------------------------------------
 " CtrlP Config
 " ------------------------------------------------------------------------------
-let g:ctrlp_working_path_mode='a'
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+let g:ctrlp_working_path_mode = 'a'
+
+if executable('ag')
+    let g:ctrlp_user_command = 'ag -l --nocolor -g "" "%s"'
+endif
+
+if has('win32')
+    let g:ctrlp_prompt_mappings = {
+        \ 'PrtBS()': ['<Char-0x07F>', '<c-h>']
+    \ }
+endif
 
 " ------------------------------------------------------------------------------
 " FSharp Config
 " ------------------------------------------------------------------------------
-let g:fsharp_xbuild_path='msbuild'
-let g:fsharp_test_runner="nunit-console"
-let g:fsharp_only_check_errors_on_write=1
-let g:fsharp_map_keys=0
-let g:fsharp_completion_helptext=0
+let g:fsharp_xbuild_path = 'msbuild'
+let g:fsharp_test_runner = 'nunit-console'
+let g:fsharp_only_check_errors_on_write = 1
+let g:fsharp_map_keys = 0
+let g:fsharp_completion_helptext = 0
 " let g:fsharpbinding_debug=1
 
 " ------------------------------------------------------------------------------
 " FileBeagle Config
 " ------------------------------------------------------------------------------
-let g:filebeagle_suppress_keymaps=1
-
-" ------------------------------------------------------------------------------
-" FileType Config
-" ------------------------------------------------------------------------------
-autocmd BufRead,BufNewFile *.htm set filetype=aspvbs
-autocmd BufRead,BufNewFile *.aspx set filetype=aspx.vim
+let g:filebeagle_suppress_keymaps = 1
 
 " ------------------------------------------------------------------------------
 " Goyo Config
@@ -351,84 +427,97 @@ let g:goyo_width=120
 " ------------------------------------------------------------------------------
 nmap gs  <plug>(GrepperOperator)
 xmap gs  <plug>(GrepperOperator)
-let g:grepper={
-    \ 'tools': ['ag', 'git', 'grep'],
-    \ 'ag': {
-    \   'grepprg': 'ag --vimgrep --nocolor --column --ignore tags'
-    \ }
-    \}
+let g:grepper = {
+      \ 'tools': ['ag', 'git', 'grep'],
+      \ 'ag': {
+      \   'grepprg': 'ag --vimgrep --nocolor --column --ignore tags'
+      \ }
+      \}
 
 " ------------------------------------------------------------------------------
 " Jedi Config
 " ------------------------------------------------------------------------------
-let g:jedi#auto_vim_configuration=0
-let g:jedi#popup_on_dot=0
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#popup_on_dot = 0
 let g:jedi#auto_initialization=0
-
-" ------------------------------------------------------------------------------
-" Notes Config
-" ------------------------------------------------------------------------------
-let g:notes_directories=['~/Dropbox/vim-notes']
-let g:notes_suffix='.txt'
-let g:notes_unicode_enabled=0
 
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
-let g:OmniSharp_server_type='roslyn'
+" let g:OmniSharp_server_type = 'server'
 
 " ------------------------------------------------------------------------------
 " Salve Config
 " ------------------------------------------------------------------------------
-let g:salve_auto_start_repl=1
+let g:salve_auto_start_repl = 1
 
 " ------------------------------------------------------------------------------
 " Signature Config
 " ------------------------------------------------------------------------------
-let g:SignatureMarkTextHLDynamic=1
-let g:SignatureMarkerTextHLDynamic=1
+let g:SignatureMarkTextHLDynamic = 1
+let g:SignatureMarkerTextHLDynamic = 1
 
 " ------------------------------------------------------------------------------
 " Sneak config
 " ------------------------------------------------------------------------------
-let g:sneak#streak=1
-let g:sneak#use_ic_scs=1
-let g:sneak#absolute_dir=1
-
-" ------------------------------------------------------------------------------
-" Color Scheme
-" ------------------------------------------------------------------------------
-set background=dark
-colorscheme solarized
+let g:sneak#streak = 1
+let g:sneak#use_ic_scs = 1
+let g:sneak#absolute_dir = 1
 
 " ------------------------------------------------------------------------------
 " Syntastic Config
 " ------------------------------------------------------------------------------
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_cs_checkers=['syntax', 'semantic', 'issues']
-let g:syntastic_fsharp_checkers=['syntax']
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_cs_checkers = ['syntax', 'semantic', 'issues']
+let g:syntastic_fsharp_checkers = ['syntax']
 
 " ------------------------------------------------------------------------------
 " Test Config
 " ------------------------------------------------------------------------------
-let test#strategy='dispatch'
+let test#strategy = 'asnycrun'
 let g:test#runner_commands=['Jasmine']
-
-" ------------------------------------------------------------------------------
-" TComment Config
-" ------------------------------------------------------------------------------
-let g:tcommentMaps=0
-nnoremap gcc :TComment<CR>
-vnoremap gc :TComment<CR>
 
 " ------------------------------------------------------------------------------
 " UltiSnips Config
 " ------------------------------------------------------------------------------
-let g:UltiSnipsSnippetsDir='~/.vim/UltiSnips'
-let g:UltiSnipsExpandTrigger='<C-;>'
-let g:UltiSnipsListSnippets='<C-:>'
-let g:UltiSnipsJumpForwardTrigger='<C-J>'
-let g:UltiSnipsJumpBackwardTrigger='<C-K>'
+let g:UltiSnipsSnippetsDir = '~/.vim/UltiSnips'
+let g:UltiSnipsExpandTrigger = '<C-J>'
+let g:UltiSnipsListSnippets = '<C-K>'
+let g:UltiSnipsJumpForwardTrigger = '<C-J>'
+let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
+
+" ------------------------------------------------------------------------------
+" Vimwiki Config
+" ------------------------------------------------------------------------------
+let g:vimwiki_table_mappings = 0
+let g:vimwiki_folding = 'expr'
+let g:vimwiki_list = [
+    \ {
+    \ 'path': '~/work/vimwiki',
+    \ 'syntax': 'markdown', 'ext': '.md',
+    \ 'nested_syntaxes': {
+        \ 'cs': 'cs',
+        \ 'sql': 'sql',
+        \ 'javascript': 'javascript',
+        \ 'typescript': 'typescript'
+        \ }
+    \ },
+    \
+    \ {
+    \ 'path': '~/Dropbox/vimwiki/',
+    \ 'syntax': 'markdown', 'ext': '.md',
+    \ }]
+
+" ------------------------------------------------------------------------------
+" Zeavim Config
+" ------------------------------------------------------------------------------
+let g:zv_file_types = {
+      \   'cs'     : 'net',
+      \   'python' : 'python',
+      \ }
+let g:zv_zeal_executable = has('win32') ?
+      \ 'C:\Program Files (x86)\Zeal\zeal.exe' :
+      \ 'path/to/zeal'
 
 " }}}
 
@@ -474,14 +563,9 @@ nnoremap <leader>mm :Make<CR>|                           " Make
 " Undo
 nnoremap <leader>uu :GundoToggle<CR>|                    " View undo tree
 
-" Notes
-nnoremap <leader>nn :Note<space>|                        " Open note
-nnoremap <leader>nD :DeleteNote<CR>|                     " Delete note
-nnoremap <leader>ns :SearchNotes<space>|                 " Delete note
-
 " Project
 nnoremap <leader>pt :FileBeagle<CR>|                     " Open cwd
-nnoremap <leader>pF :FileBeagleBufferDir<CR>|            " Open buffer directory
+nnoremap <leader>pf :FileBeagleBufferDir<CR>|            " Open buffer directory
 nnoremap <leader>pc :pclose<CR>|                         " Close preview-window
 nnoremap <leader>pT :Start! ctags -R<CR>|                " Async ctags generate
 
@@ -494,9 +578,10 @@ nnoremap <leader>cc :cclose<CR>|                         " Close
 nnoremap <leader>cj :cnext<CR>|                          " Next
 nnoremap <leader>ck :cprevious<CR>|                      " Previous
 
-" Substitute
+" Substitute & Global
 nnoremap <leader>ss :%s/|                                " Substitute
-nnoremap <leader>st :%s/\t/|                             " Substitite tabs
+nnoremap <leader>sg :%g/|                                " Global
+nnoremap <leader>sG :%g!/|                               " Inverse Global
 
 " Spelling
 nnoremap <leader>Ss :setlocal spell spelllang=en_us<CR>| " Activate spelling
@@ -515,27 +600,10 @@ nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
 " Windows
 nnoremap <leader>wv :vsplit<CR>|                         " Split vertically
 nnoremap <leader>wh :split<CR>|                          " Split horizontally
-nnoremap <leader>wq <C-w>q|                              " Quit
+nnoremap <leader>w= <C-w>=|                              " Reset size
 nnoremap <leader>h <C-w>h|                               " Navigate left
 nnoremap <leader>j <C-w>j|                               " Navigate down
 nnoremap <leader>k <C-w>k|                               " Navigate up
 nnoremap <leader>l <C-w>l|                               " Navigate right
-
-" }}}
-
-" Projects {{{
-
-" ------------------------------------------------------------------------------
-" Project Config
-" ------------------------------------------------------------------------------
-if isdirectory($HOME . "/.vim/plugged/vim-project")
-    set rtp+=~/.vim/bundle/vim-project/
-    call project#rc('/src')
-
-    " Get work projects if the file exists
-    if filereadable($HOME . "/work/projects.vim")
-        source ~/work/projects.vim
-    end
-end
 
 " }}}
