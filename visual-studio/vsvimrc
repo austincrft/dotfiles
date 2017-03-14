@@ -1,0 +1,71 @@
+" ------------------------------------------------------------------------------
+" Search
+" ------------------------------------------------------------------------------
+set incsearch
+set ignorecase
+set smartcase
+
+" ------------------------------------------------------------------------------
+" Normal Mappings
+" ------------------------------------------------------------------------------
+nmap <C-O> :vsc View.NavigateBackward<CR>
+nmap <C-I> :vsc View.NavigateForward<CR>
+nnoremap <Tab> :vsc Window.NextTab<CR>
+nnoremap <S-Tab> :vsc Window.PreviousTab<CR>
+nnoremap :bd :vsc Window.CloseDocumentWindow<CR>
+
+" ------------------------------------------------------------------------------
+" Insert Mappings
+" ------------------------------------------------------------------------------
+imap jj <Esc>
+
+" ------------------------------------------------------------------------------
+" Visual Mappings
+" ------------------------------------------------------------------------------
+vnoremap @@ :norm! @@<CR>
+
+" ------------------------------------------------------------------------------
+" Leader
+" ------------------------------------------------------------------------------
+let mapleader=' '
+
+" ------------------------------------------------------------------------------
+" Leader Mappings
+" ------------------------------------------------------------------------------
+
+" Buffers
+nnoremap <leader><Tab> :vsc Window.NextDocumentWindowNav<CR>
+
+" Errors
+nnoremap <leader>ej :vsc View.NextError<CR>
+nnoremap <leader>ek :vsc View.PreviousError<CR>
+
+" Folds
+nnoremap <leader>fm :vsc Edit.CollapsetoDefinitions<CR>
+
+" Grep
+nnoremap <leader>gg :vsc Edit.FindinFiles<CR>
+
+" Make
+nnoremap <leader>mm :vsc Build.BuildSolution<CR>
+
+" Mode
+nnoremap <leader>mt :vsc TestExplorer.RunAllTests<CR>
+nnoremap <leader>mfu :vsc Edit.FindAllReferences<CR>
+nnoremap <leader>mfi :vsc Edit.GoToImplementation<CR>
+
+" Substitute & Global
+nnoremap <leader>ss :%s/
+nnoremap <leader>sg :%g/
+nnoremap <leader>sG :%g!/
+
+" Tags
+nnoremap <leader>tt :vsc Edit.NavigateTo<CR>
+
+" Windows
+nnoremap <leader>wv :vsplit<CR>
+nnoremap <leader>wh :split<CR>
+nnoremap <leader>h <C-w>h
+nnoremap <leader>j <C-w>j
+nnoremap <leader>k <C-w>k
+nnoremap <leader>l <C-w>l
