@@ -57,9 +57,6 @@ set hlsearch
 set incsearch
 set ignorecase
 set smartcase
-" Make 'n' always go forward and 'N' always go backwards
-noremap <expr> n (v:searchforward ? 'n' : 'N')
-noremap <expr> N (v:searchforward ? 'N' : 'n')
 
 " ------------------------------------------------------------------------------
 "  Set ESC and Leader
@@ -259,14 +256,7 @@ Plug 'godlygeek/tabular'
 Plug 'ntpeters/vim-better-whitespace'
 
 " Git
-Plug 'tpope/vim-fugitive', !has('win32') ? {} : { 'on': [] }
-
-" Auto-Complete
-Plug 'lifepillar/vim-mucomplete'
-Plug 'SirVer/ultisnips'
-
-" Database
-Plug 'vim-scripts/dbext.vim'
+Plug 'tpope/vim-fugitive' ", !has('win32') ? {} : { 'on': [] }
 
 " Testing
 Plug 'janko-m/vim-test'
@@ -278,6 +268,8 @@ Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 Plug 'tpope/vim-salve'
 
 " CSharp
+" Plug '~/.vim/plugged/vim-csharp', { 'for': 'cs' }
+" Plug '~/.vim/plugged/omnisharp-vim', { 'for': 'cs' }
 Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
@@ -297,7 +289,7 @@ Plug 'vim-javacomplete2', { 'for': 'java' }
 Plug 'plasticboy/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
 
 " Powershell
-Plug 'PProvost/vim-ps1' , { 'for': 'ps1' }
+Plug 'PProvost/vim-ps1', { 'for': 'ps1' }
 
 " Python
 Plug 'davidhalter/jedi-vim', { 'for': 'python' }
@@ -315,9 +307,6 @@ Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
 " Linting
 Plug 'scrooloose/syntastic'
 
-" REPL
-Plug 'jpalardy/vim-slime'
-
 " Tags
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 Plug 'ludovicchabant/vim-gutentags'
@@ -330,6 +319,7 @@ Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-dispatch'
+Plug 'skywind3000/asyncrun.vim'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'vimwiki/vimwiki'
 Plug 'KabbAmine/zeavim.vim', {'on': [
@@ -382,8 +372,8 @@ autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType java setlocal omnifunc=javacomplete#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
-autocmd Filetype javascript setlocal omnifunc=tern#Complete
-" autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
+" autocmd Filetype javascript setlocal omnifunc=tern#Complete
+autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
 
 " ------------------------------------------------------------------------------
 " CtrlP Config
@@ -444,7 +434,7 @@ let g:jedi#auto_initialization=0
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
-" let g:OmniSharp_server_type = 'server'
+let g:OmniSharp_server_type = 'roslyn'
 
 " ------------------------------------------------------------------------------
 " Salve Config
@@ -489,17 +479,16 @@ let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
 " ------------------------------------------------------------------------------
 " Vimwiki Config
 " ------------------------------------------------------------------------------
-let g:vimwiki_table_mappings = 0
 let g:vimwiki_folding = 'expr'
+let g:vimwiki_global_ext = 0
+let g:vimwiki_table_mappings = 0
 let g:vimwiki_list = [
     \ {
-    \ 'path': '~/work/vimwiki',
+    \ 'path': '~/work/vim/vimwiki',
     \ 'syntax': 'markdown', 'ext': '.md',
     \ 'nested_syntaxes': {
         \ 'cs': 'cs',
         \ 'sql': 'sql',
-        \ 'javascript': 'javascript',
-        \ 'typescript': 'typescript'
         \ }
     \ },
     \
@@ -533,15 +522,10 @@ nnoremap <leader>bb :CtrlPBuffer<CR>|                    " Fuzzy-search buffers
 nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffers
 nnoremap <leader>bD :BufOnly<CR>:bd<CR>|                 " Delete all buffers
 
-" Folding
-nnoremap <leader>ff za|                                  " Toggle current fold
-nnoremap <leader>fa zM|                                  " Close all folds
-nnoremap <leader>fo zR|                                  " Open all folds
-
 " Formatting
-nnoremap <leader>Fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
-nnoremap <leader>FA :setlocal formatoptions-=a<CR>|      " Disable auto-format
-nnoremap <leader>Fw :call ToggleWrap()<CR>|              " Toggle wrap
+nnoremap <leader>fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
+nnoremap <leader>fA :setlocal formatoptions-=a<CR>|      " Disable auto-format
+nnoremap <leader>fw :call ToggleWrap()<CR>|              " Toggle wrap
 
 " Linting (Errors)
 nnoremap <leader>ee :SyntasticCheck<CR>|                 " Error check
@@ -605,5 +589,13 @@ nnoremap <leader>h <C-w>h|                               " Navigate left
 nnoremap <leader>j <C-w>j|                               " Navigate down
 nnoremap <leader>k <C-w>k|                               " Navigate up
 nnoremap <leader>l <C-w>l|                               " Navigate right
+
+" }}}
+
+" Work {{{
+
+if isdirectory($HOME . '/work/vim')
+    source ~/work/vim/*.vim
+endif
 
 " }}}
