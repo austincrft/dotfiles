@@ -1,3 +1,12 @@
+# Platform detection
+platform='unknown'
+unamestr=`uname`
+if [[ "$unamestr" == 'Linux' ]]; then
+   platform='linux'
+elif [[ "$unamestr" == 'Darwin' ]]; then
+   platform='darwin'
+fi
+
 # colors
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
@@ -8,15 +17,3 @@ alias egrep='egrep --color=auto'
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-
-# clear screen
-alias cls='clear'
-
-# vim
-alias vim-classic='/usr/bin/vim'
-alias vim='nvim'
-
-# dotnet
-alias msbuild='xbuild'
-alias fsc='fsharpc'
-alias fsi='fsharpi'
