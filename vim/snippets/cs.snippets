@@ -1,258 +1,159 @@
-#######################################################################
-#                      C# Snippets for UltiSnips                      #
-#######################################################################
+# vim:fdm=marker
 
-priority -50
+#
+# C# Snippets for Snipmate
+#
 
-#########################
-#  classes and structs  #
-#########################
+# {{{ classes and structs
 
-snippet namespace "namespace" b
-namespace ${1:MyNamespace}
-{
-	${VISUAL}$0
-}
-endsnippet
+snippet namespace
+	namespace ${1:MyNamespace}
+	{
+		${VISUAL}${0}
+	}
+snippet class
+	class ${1:MyClass}
+	{
+		${0}
+	}
+snippet struct
+	struct ${1:MyStruct}
+	{
+		${0}
+	}
+snippet interface
+	interface I${1:Interface}
+	{
+		${0}
+	}
+snippet enum
+	enum ${1:MyEnum}
+	{
+		${2:Item}
+	};
 
-snippet class "class" w
-class ${1:MyClass}
-{
-	$0
-}
-endsnippet
+# }}}
 
-snippet struct "struct" w
-struct ${1:MyStruct}
-{
-	$0
-}
-endsnippet
+# {{{ properties
 
-snippet interface "interface" w
-interface I${1:Interface}
-{
-	$0
-}
-endsnippet
+snippet prop
+	public ${1:int} ${2:MyProperty} { get; set; }
+snippet propprivate
+	public ${1:int} ${2:MyProperty} { get; private set; }
 
-snippet enum "enumeration" b
-enum ${1:MyEnum} { ${2:Item} };
-endsnippet
+# }}}
 
-################
-#  properties  #
-################
+# {{{ loops
 
-snippet prop "Simple property declaration" b
-public ${1:int} ${2:MyProperty} { get; set; }
-endsnippet
+snippet for
+	for (var ${1:i} = 0; ${1} < ${2:10}; ${1}++)
+	{
+		${VISUAL}${0}
+	}
+snippet foreach
+	foreach (var ${1:item} in ${2:items})
+	{
+		${VISUAL}${0}
+	}
 
-snippet propfull "Full property declaration" b
-private ${1:int} ${2:_myProperty};
+# }}}
 
-public $1 ${3:MyProperty}
-{
-	get { return $2; }
-	set { $2 = value; }
-}
-endsnippet
+# {{{ branching
 
-snippet propg "Property with a private setter" b
-public ${1:int} ${2:MyProperty} { get; private set; }
-endsnippet
+snippet if
+	if (${1})
+	{
+		${VISUAL}${0}
+	}
+snippet ife
+	if (${1})
+	{
+		${VISUAL}${0}
+	}
+	else
+	{
+	}
+snippet elif
+	else if (${1})
+	{
+		${0}
+	}
+snippet ifnn
+	if (${1} != null)
+	{
+		${VISUAL}${0}
+	}
+snippet switch
+	switch (${1:statement})
+	{
+		case ${2:value}:
+			break;
 
-############
-#  blocks  #
-############
-
-snippet #if "#if #endif" b
-#if ${1:DEBUG}
-${VISUAL}$0
-#endif
-endsnippet
-
-snippet #region "#region #endregion" b
-#region ${1:Region}
-${VISUAL}$0
-#endregion
-endsnippet
-
-###########
-#  loops  #
-###########
-
-snippet for "for loop" b
-for (int ${1:i} = 0; $1 < ${2:10}; $1++)
-{
-	${VISUAL}$0
-}
-endsnippet
-
-snippet forr "for loop (reverse)" b
-for (int ${1:i} = ${2:10}; $1 >= 0; $1--)
-{
-	${VISUAL}$0
-}
-endsnippet
-
-snippet foreach "foreach loop" b
-foreach (var ${1:item} in ${2:items})
-{
-	${VISUAL}$0
-}
-endsnippet
-
-snippet while "while loop" b
-while (${1:true})
-{
-	${VISUAL}$0
-}
-endsnippet
-
-snippet do "do loop" b
-do
-{
-	${VISUAL}$0
-} while (${1:true});
-endsnippet
-
-###############
-#  branching  #
-###############
-
-snippet if "if statement" b
-if ($1)
-{
-	${VISUAL}$0
-}
-endsnippet
-
-snippet ife "if else statement" b
-if ($1)
-{
-	${VISUAL}$0
-}
-else
-{
-}
-endsnippet
-
-snippet elif "else if" b
-else if ($1)
-{
-	$0
-}
-endsnippet
-
-snippet elseif "else if" b
-else if ($1)
-{
-	$0
-}
-endsnippet
-
-snippet ifnn "if not null" b
-if ($1 != null)
-{
-	${VISUAL}$0
-}
-endsnippet
-
-snippet switch "switch statement" b
-switch (${1:statement})
-{
-	case ${2:value}:
+		default:
+			${0}break;
+	}
+snippet case
+	case ${1:value}:
+		${2}
 		break;
 
-	default:
-		$0break;
-}
-endsnippet
+# }}}
 
-snippet case "case" b
-case ${1:value}:
-	$2
-	break;
-endsnippet
+# {{{ wrappers
 
-##############
-#  wrappers  #
-##############
-
-snippet using "using statement" b
-using (${1:resource})
-{
-	${VISUAL}$0
-}
-endsnippet
-
-########################
-#  exception handling  #
-########################
-
-snippet try "try catch block" b
-try
-{
-	${VISUAL}$0
-}
-catch (${1:Exception} ${2:e})
-{
-	throw;
-}
-endsnippet
-
-snippet tryf "try finally block" b
-try
-{
-	${VISUAL}$0
-}
-finally
-{
-}
-endsnippet
-
-snippet throw "throw"
-throw new ${1}Exception("${2}");
-endsnippet
-
-##################
-#  full methods  #
-##################
-
-snippet equals "Equals method" b
-public override bool Equals(object obj)
-{
-	if (obj == null || GetType() != obj.GetType())
+snippet using
+	using (${1:resource})
 	{
-		return false;
+		${VISUAL}${0}
 	}
-	$0
-	return base.Equals(obj);
-}
-endsnippet
 
-##############
-#  comments  #
-##############
+# }}}
 
-snippet /// "XML comment" b
-/// <summary>
-/// $1
-/// </summary>
-endsnippet
+# {{{ exception handling
 
-#############
-#  testing  #
-#############
-snippet unittest "Unit Test" b
-public void $1$_$2_$3()
-{
-	//Arrange
-	$4
-	//Act
-	$5
-	//Assert
-	$6
-}
-endsnippet
+snippet try
+	try
+	{
+		${VISUAL}${0}
+	}
+	catch (${1:Exception} ${2:e})
+	{
+		throw;
+	}
+snippet throw
+	throw new ${1}Exception("${2}");
+
+# }}}
+
+# {{{ full methods
+
+snippet ctor
+	public ${1:`Filename()`}()
+	{
+		${0}
+	}
+
+# }}}
+
+# {{{ comments
+
+snippet ///
+	/// <summary>
+	/// ${1}
+	/// </summary>
+
+# }}}
+
+# {{{ testing
+
+snippet unittest
+	public void ${1}_${2}_${3}()
+	{
+		//Arrange
+		${4}
+		//Act
+		${5}
+		//Assert
+		${0}
+	}
+# }}}
