@@ -27,6 +27,7 @@ set t_Co=16                    " Set terminal color to 16
 set colorcolumn=80             " Highlight column 80
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
+set wildmenu                   " Tab through commands
 set cryptmethod=blowfish2      " Better encryption
 set mouse=a                    " Mouse support
 syntax on                      " Turn on syntax
@@ -249,7 +250,9 @@ endif
 
 " Auto-Complete
 Plug 'lifepillar/vim-mucomplete'
-Plug 'SirVer/ultisnips'
+Plug 'garbas/vim-snipmate'
+    \ | Plug 'marcweber/vim-addon-mw-utils'
+    \ | Plug 'tomtom/tlib_vim'
 
 " Formatting
 Plug 'godlygeek/tabular'
@@ -268,8 +271,6 @@ Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 Plug 'tpope/vim-salve'
 
 " CSharp
-" Plug '~/.vim/plugged/vim-csharp', { 'for': 'cs' }
-" Plug '~/.vim/plugged/omnisharp-vim', { 'for': 'cs' }
 Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
@@ -428,9 +429,14 @@ let g:jedi#popup_on_dot = 0
 let g:jedi#auto_initialization=0
 
 " ------------------------------------------------------------------------------
-" OmniSharp Config
+" MUcomplete Config
 " ------------------------------------------------------------------------------
-let g:OmniSharp_server_type = 'roslyn'
+let g:mucomplete#user_mappings = { 'snip' : "\<plug>snipMateShow" }
+let g:mucomplete#chains = {
+  \ 'default' : ['snip', 'path', 'omni', 'keyn', 'dict'],
+  \ }
+imap <expr> <C-L> (pumvisible() ? "\<c-y>" : "")
+\               . "\<plug>snipMateNextOrTrigger"
 
 " ------------------------------------------------------------------------------
 " Salve Config
@@ -444,11 +450,10 @@ let g:SignatureMarkTextHLDynamic = 1
 let g:SignatureMarkerTextHLDynamic = 1
 
 " ------------------------------------------------------------------------------
-" Sneak config
+" Snipmate Config
 " ------------------------------------------------------------------------------
-let g:sneak#streak = 1
-let g:sneak#use_ic_scs = 1
-let g:sneak#absolute_dir = 1
+let g:snipMate = {}
+let g:snipMate['no_match_completion_feedkeys_chars'] = ''
 
 " ------------------------------------------------------------------------------
 " Syntastic Config
