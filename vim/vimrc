@@ -204,14 +204,6 @@ if !empty($CONEMUBUILD)
     nnoremap <Char-0x07F> <BS>
 endif
 
-" ------------------------------------------------------------------------------
-" Neovim
-" ------------------------------------------------------------------------------
-if has('nvim')
-    tnoremap <Esc> <C-\><C-n>| " Terminal escape
-    call SetupCommandAlias('sh', 'term')
-endif
-
 " }}}
 
 " Plugins {{{
@@ -320,13 +312,6 @@ Plug 'tpope/vim-dispatch'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'vimwiki/vimwiki'
-Plug 'KabbAmine/zeavim.vim', {'on': [
-      \   'Zeavim', 'Docset',
-      \   '<Plug>Zeavim',
-      \   '<Plug>ZVVisSelection',
-      \   '<Plug>ZVKeyDocset',
-      \   '<Plug>ZVMotion'
-      \ ]}
 
 " Visuals
 Plug 'altercation/vim-colors-solarized'
@@ -369,7 +354,6 @@ autocmd FileType dosbatch setlocal commentstring=::\ %s
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
-" autocmd Filetype javascript setlocal omnifunc=tern#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
 
 " ------------------------------------------------------------------------------
@@ -426,7 +410,7 @@ let g:grepper = {
 " ------------------------------------------------------------------------------
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#popup_on_dot = 0
-let g:jedi#auto_initialization=0
+let g:jedi#auto_initialization = 0
 
 " ------------------------------------------------------------------------------
 " MUcomplete Config
@@ -497,17 +481,6 @@ let g:vimwiki_list = [
     \ 'path': '~/Dropbox/vimwiki/',
     \ 'syntax': 'markdown', 'ext': '.md',
     \ }]
-
-" ------------------------------------------------------------------------------
-" Zeavim Config
-" ------------------------------------------------------------------------------
-let g:zv_file_types = {
-      \   'cs'     : 'net',
-      \   'python' : 'python',
-      \ }
-let g:zv_zeal_executable = has('win32') ?
-      \ 'C:\Program Files (x86)\Zeal\zeal.exe' :
-      \ 'path/to/zeal'
 
 " }}}
 
