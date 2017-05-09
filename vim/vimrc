@@ -419,7 +419,9 @@ let g:mucomplete#user_mappings = { 'snip' : "\<plug>snipMateShow" }
 let g:mucomplete#chains = {
   \ 'default' : ['snip', 'path', 'omni', 'keyn', 'dict'],
   \ }
-imap <expr> <C-L> (pumvisible() ? "\<c-y>" : "")
+" Remap so can be used <C-J>
+imap <_> <plug>(MUcompleteCycFwd)
+imap <expr> <C-J> (pumvisible() ? "\<c-y>" : "")
 \               . "\<plug>snipMateNextOrTrigger"
 
 " ------------------------------------------------------------------------------
