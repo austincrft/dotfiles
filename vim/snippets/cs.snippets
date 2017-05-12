@@ -1,0 +1,159 @@
+# vim:fdm=marker
+
+#
+# C# Snippets for Snipmate
+#
+
+# {{{ classes and structs
+
+snippet namespace
+	namespace ${1:MyNamespace}
+	{
+		${VISUAL}${0}
+	}
+snippet class
+	class ${1:MyClass}
+	{
+		${0}
+	}
+snippet struct
+	struct ${1:MyStruct}
+	{
+		${0}
+	}
+snippet interface
+	interface I${1:Interface}
+	{
+		${0}
+	}
+snippet enum
+	enum ${1:MyEnum}
+	{
+		${2:Item}
+	};
+
+# }}}
+
+# {{{ properties
+
+snippet prop
+	public ${1:int} ${2:MyProperty} { get; set; }
+snippet propprivate
+	public ${1:int} ${2:MyProperty} { get; private set; }
+
+# }}}
+
+# {{{ loops
+
+snippet for
+	for (var ${1:i} = 0; ${1} < ${2:10}; ${1}++)
+	{
+		${VISUAL}${0}
+	}
+snippet foreach
+	foreach (var ${1:item} in ${2:items})
+	{
+		${VISUAL}${0}
+	}
+
+# }}}
+
+# {{{ branching
+
+snippet if
+	if (${1})
+	{
+		${VISUAL}${0}
+	}
+snippet ife
+	if (${1})
+	{
+		${VISUAL}${0}
+	}
+	else
+	{
+	}
+snippet elif
+	else if (${1})
+	{
+		${0}
+	}
+snippet ifnn
+	if (${1} != null)
+	{
+		${VISUAL}${0}
+	}
+snippet switch
+	switch (${1:statement})
+	{
+		case ${2:value}:
+			break;
+
+		default:
+			${0}break;
+	}
+snippet case
+	case ${1:value}:
+		${2}
+		break;
+
+# }}}
+
+# {{{ wrappers
+
+snippet using
+	using (${1:resource})
+	{
+		${VISUAL}${0}
+	}
+
+# }}}
+
+# {{{ exception handling
+
+snippet try
+	try
+	{
+		${VISUAL}${0}
+	}
+	catch (${1:Exception} ${2:e})
+	{
+		throw;
+	}
+snippet throw
+	throw new ${1}Exception("${2}");
+
+# }}}
+
+# {{{ full methods
+
+snippet ctor
+	public ${1:`Filename()`}()
+	{
+		${0}
+	}
+
+# }}}
+
+# {{{ comments
+
+snippet ///
+	/// <summary>
+	/// ${1}
+	/// </summary>
+
+# }}}
+
+# {{{ testing
+
+snippet unittest
+	public void ${1}_${2}_${3}()
+	{
+		//Arrange
+		${4}
+		//Act
+		${5}
+		//Assert
+		${0}
+	}
+# }}}

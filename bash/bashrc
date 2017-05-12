@@ -4,6 +4,18 @@ case $- in
       *) return;;
 esac
 
+# Platform detection
+platform='unknown'
+unamestr=`uname`
+gnubin='unknown'
+if [[ "$unamestr" == 'Linux' ]]; then
+    platform='linux'
+    gnubin=/usr/bin
+elif [[ "$unamestr" == 'Darwin' ]]; then
+    platform='darwin'
+    gnubin=/usr/local/opt/coreutils/libexec/gnubin
+fi
+
 # Don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -20,33 +32,33 @@ HISTFILESIZE=2000
 shopt -s checkwinsize
 
 # Run autocutsel if available
-if [ -x /us/bin/autocutsel ]; then
+if [[ -x /us/bin/autocutsel ]]; then
     autocutsel -s PRIMARY &
     autocutsel &
 fi
 
 # Make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+[ -x $gnubin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
 # Set PS1 to custom bash prompt if it exists
-if [ -f ~/.bash_prompt ]; then
-    TERM=rxvt-unicode-256color
+if [[ -f ~/.bash_prompt ]]; then
+    # TERM=rxvt-unicode-256color
     source ~/.bash_prompt
 fi
 unset color_prompt force_color_prompt
 
 # Enable color support
-if [ -x /usr/bin/dircolors ] && [ -f ~/.dircolors/dircolors.ansi-dark ]; then
-    eval `dircolors ~/.dircolors/dircolors.ansi-dark`
+if [[ -x $gnubin/dircolors ]] && [[ -f ~/.dircolors/dircolors.ansi-dark ]]; then
+    eval `$gnubin/dircolors ~/.dircolors/dircolors.ansi-dark`
 fi
 
-if [ -d ~/.dynamic-colors ]; then
+if [[ -d ~/.dynamic-colors ]]; then
     export PATH="$HOME/.dynamic-colors/bin:$PATH"
     source ~/.dynamic-colors/completions/dynamic-colors.bash
 fi
 
 # Alias definitions
-if [ -f ~/.bash_aliases ]; then
+if [[ -f ~/.bash_aliases ]]; then
     source ~/.bash_aliases
 fi
 
@@ -54,18 +66,24 @@ fi
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    source /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    source /etc/bash_completion
-  fi
+    if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+        source /usr/share/bash-completion/bash_completion
+    elif [[ -f /etc/bash_completion ]]; then
+        source /etc/bash_completion
+    fi
 fi
 
 # Go Config
 export GOPATH=~/gocode
 
 # fzf Config
-if [ -f ~/.fzf.bash ]; then
+if [[ -f ~/.fzf.bash ]]; then
     source ~/.fzf.bash
     source ~/.fzfrc
+fi
+
+# OS X GNU Tools
+if [[ $platform == 'darwin' ]]; then
+    PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+    MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
 fi

@@ -27,7 +27,9 @@ set t_Co=16                    " Set terminal color to 16
 set colorcolumn=80             " Highlight column 80
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
+set wildmenu                   " Tab through commands
 set cryptmethod=blowfish2      " Better encryption
+set mouse=a                    " Mouse support
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 autocmd FocusLost * silent! wa " Automatically save file
@@ -192,8 +194,6 @@ if !empty($CONEMUBUILD)
     let &t_AB="\e[48;5;%dm"
     let &t_AF="\e[38;5;%dm"
 
-    " Mouse
-    set mouse=a
     inoremap <Esc>[62~ <C-X><C-E>
     inoremap <Esc>[63~ <C-X><C-Y>
     nnoremap <Esc>[62~ <C-E>
@@ -204,14 +204,6 @@ if !empty($CONEMUBUILD)
     nnoremap <Char-0x07F> <BS>
 endif
 
-" ------------------------------------------------------------------------------
-" Neovim
-" ------------------------------------------------------------------------------
-if has('nvim')
-    tnoremap <Esc> <C-\><C-n>| " Terminal escape
-    call SetupCommandAlias('sh', 'term')
-endif
-
 " }}}
 
 " Plugins {{{
@@ -220,9 +212,10 @@ endif
 " Plug Config
 " ------------------------------------------------------------------------------
 " Automatically download Plug if vim is started without it
-if empty(glob("~/.vim/autoload/plug.vim"))
-    execute '!curl -fLo ~/.vim/autoload/plug.vim https://raw.github.com/'
-          \ 'junegunn/vim-plug/master/plug.vim'
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 call plug#begin('~/.vim/plugged')
@@ -249,7 +242,9 @@ endif
 
 " Auto-Complete
 Plug 'lifepillar/vim-mucomplete'
-Plug 'SirVer/ultisnips'
+Plug 'garbas/vim-snipmate'
+    \ | Plug 'marcweber/vim-addon-mw-utils'
+    \ | Plug 'tomtom/tlib_vim'
 
 " Formatting
 Plug 'godlygeek/tabular'
@@ -268,8 +263,6 @@ Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
 Plug 'tpope/vim-salve'
 
 " CSharp
-" Plug '~/.vim/plugged/vim-csharp', { 'for': 'cs' }
-" Plug '~/.vim/plugged/omnisharp-vim', { 'for': 'cs' }
 Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
@@ -281,9 +274,6 @@ Plug 'alvan/vim-closetag'
 
 " JavaScript
 Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
-
-" Java
-Plug 'vim-javacomplete2', { 'for': 'java' }
 
 " Markdown
 Plug 'plasticboy/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
@@ -322,13 +312,6 @@ Plug 'tpope/vim-dispatch'
 Plug 'skywind3000/asyncrun.vim'
 Plug 'vim-scripts/BufOnly.vim'
 Plug 'vimwiki/vimwiki'
-Plug 'KabbAmine/zeavim.vim', {'on': [
-      \   'Zeavim', 'Docset',
-      \   '<Plug>Zeavim',
-      \   '<Plug>ZVVisSelection',
-      \   '<Plug>ZVKeyDocset',
-      \   '<Plug>ZVMotion'
-      \ ]}
 
 " Visuals
 Plug 'altercation/vim-colors-solarized'
@@ -369,10 +352,8 @@ autocmd FileType dosbatch setlocal commentstring=::\ %s
 " Completion Config
 " ------------------------------------------------------------------------------
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
-autocmd FileType java setlocal omnifunc=javacomplete#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
-" autocmd Filetype javascript setlocal omnifunc=tern#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
 
 " ------------------------------------------------------------------------------
@@ -429,12 +410,19 @@ let g:grepper = {
 " ------------------------------------------------------------------------------
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#popup_on_dot = 0
-let g:jedi#auto_initialization=0
+let g:jedi#auto_initialization = 0
 
 " ------------------------------------------------------------------------------
-" OmniSharp Config
+" MUcomplete Config
 " ------------------------------------------------------------------------------
-let g:OmniSharp_server_type = 'roslyn'
+let g:mucomplete#user_mappings = { 'snip' : "\<plug>snipMateShow" }
+let g:mucomplete#chains = {
+  \ 'default' : ['snip', 'path', 'omni', 'keyn', 'dict'],
+  \ }
+" Remap so can be used <C-J>
+imap <_> <plug>(MUcompleteCycFwd)
+imap <expr> <C-J> (pumvisible() ? "\<c-y>" : "")
+\               . "\<plug>snipMateNextOrTrigger"
 
 " ------------------------------------------------------------------------------
 " Salve Config
@@ -448,11 +436,10 @@ let g:SignatureMarkTextHLDynamic = 1
 let g:SignatureMarkerTextHLDynamic = 1
 
 " ------------------------------------------------------------------------------
-" Sneak config
+" Snipmate Config
 " ------------------------------------------------------------------------------
-let g:sneak#streak = 1
-let g:sneak#use_ic_scs = 1
-let g:sneak#absolute_dir = 1
+let g:snipMate = {}
+let g:snipMate['no_match_completion_feedkeys_chars'] = ''
 
 " ------------------------------------------------------------------------------
 " Syntastic Config
@@ -496,17 +483,6 @@ let g:vimwiki_list = [
     \ 'path': '~/Dropbox/vimwiki/',
     \ 'syntax': 'markdown', 'ext': '.md',
     \ }]
-
-" ------------------------------------------------------------------------------
-" Zeavim Config
-" ------------------------------------------------------------------------------
-let g:zv_file_types = {
-      \   'cs'     : 'net',
-      \   'python' : 'python',
-      \ }
-let g:zv_zeal_executable = has('win32') ?
-      \ 'C:\Program Files (x86)\Zeal\zeal.exe' :
-      \ 'path/to/zeal'
 
 " }}}
 

@@ -2,7 +2,7 @@ import os
 
 from subprocess import call
 
-file_to_link_map = {
+all_os_files = {
     'ag/agignore': '~/.agignore',
 
     'bash/bash_aliases': '~/.bash_aliases',
@@ -10,13 +10,15 @@ file_to_link_map = {
     'bash/bashrc': '~/.bashrc',
     'bash/fzfrc': '~/.fzfrc',
 
-    'cmd/env.cmd': '~/.env.cmd',
-
     'universal-ctags/ctags': '~/.ctags',
 
-    'vim/UltiSnips/': '~/.vim/UltiSnips',
+    'vim/snippets/': '~/.vim/snippets',
     'vim/ftplugin/': '~/.vim/ftplugin',
-    'vim/vimrc': '~/.vimrc',
+    'vim/vimrc': '~/.vimrc'
+}
+
+windows_files = {
+    'cmd/env.cmd': '~/.env.cmd',
     'visual-studio/vsvimrc': '~/.vsvimrc'
 }
 
@@ -34,15 +36,22 @@ print(f'directory: {os.getcwd()}')
 
 directory = os.path.abspath(os.getcwd())
 
-for key, val in file_to_link_map.items():
+os_name = os.name
+
+target_files = all_os_files.copy()
+if os_name == 'nt':
+    target_files.update(windows_files)
+
+for key, val in target_files.items():
     command = ''
-    if os.name == 'nt':
+    if os_name == 'nt':
         options = '/D' if is_directory(key) else ''
         link_name = fix_dos_path(val)
         target = directory + '\\' + fix_dos_path(key)
         command = dos_format.format(options=options, link_name=link_name, target=target)
     else:
-        command = unix_format.format(target=key, link_name=key)
+        target = directory + f'/{key}'
+        command = unix_format.format(target=target, link_name=val)
 
     print(command)
     call(command, shell=True)
