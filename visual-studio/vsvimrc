@@ -48,6 +48,7 @@ nnoremap <leader>fm :vsc Edit.CollapsetoDefinitions<CR>
 
 " Grep
 nnoremap <leader>gg :vsc Edit.FindinFiles<CR>
+vnoremap <leader>gg :vsc Edit.FindinFiles<CR>
 
 " Make
 nnoremap <leader>mm :vsc Build.BuildSolution<CR>
