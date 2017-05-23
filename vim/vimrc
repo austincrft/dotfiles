@@ -290,7 +290,6 @@ Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
 " TypeScript
 Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
 Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
-    \ | Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 
 " }}}
 
@@ -299,7 +298,6 @@ Plug 'scrooloose/syntastic'
 
 " Tags
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
-Plug 'ludovicchabant/vim-gutentags'
 
 " Testing
 Plug 'janko-m/vim-test'
@@ -445,8 +443,6 @@ let g:snipMate['no_match_completion_feedkeys_chars'] = ''
 " Syntastic Config
 " ------------------------------------------------------------------------------
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_cs_checkers = ['syntax', 'semantic', 'issues']
-let g:syntastic_fsharp_checkers = ['syntax']
 
 " ------------------------------------------------------------------------------
 " Test Config
