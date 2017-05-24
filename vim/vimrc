@@ -55,7 +55,6 @@ set linebreak
 " ------------------------------------------------------------------------------
 " Search Config
 " ------------------------------------------------------------------------------
-set hlsearch
 set incsearch
 set ignorecase
 set smartcase
@@ -228,7 +227,6 @@ Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'tommcdo/vim-exchange'
 Plug 'sjl/gundo.vim'
-Plug 'romainl/vim-cool'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
