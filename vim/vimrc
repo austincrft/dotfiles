@@ -222,6 +222,7 @@ call plug#begin('~/.vim/plugged')
 " Editor features
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
@@ -530,10 +531,8 @@ nnoremap <leader>pT :Start! ctags -R<CR>|                " Async ctags generate
 nnoremap <leader>gg :Grepper<CR>|                        " Grep
 
 " Quickfix
-nnoremap <leader>co :botright copen<CR>|                 " Open (full width)
-nnoremap <leader>cc :cclose<CR>|                         " Close
-nnoremap <leader>cj :cnext<CR>|                          " Next
-nnoremap <leader>ck :cprevious<CR>|                      " Previous
+nnoremap <leader>qo :botright copen<CR>|                 " Open (full width)
+nnoremap <leader>qq :cclose<CR>|                         " Close
 
 " Substitute & Global
 nnoremap <leader>ss :%s/|                                " Substitute
