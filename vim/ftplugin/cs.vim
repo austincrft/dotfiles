@@ -12,6 +12,6 @@ nnoremap <leader>mfu :OmniSharpFindUsages<CR>|
 nnoremap <leader>mt :OmniSharpTypeLookup<CR>|
 nnoremap <leader>mT :OmniSharpRunAllTests<CR>|
 " Fold methods
-nnoremap <leader>fm ZMzrzr<CR>|
+nnoremap <leader>fm zMzrzr<CR>|
 nnoremap [m :OmniSharpNavigateUp<CR>|
 nnoremap ]m :OmniSharpNavigateDown<CR>|
