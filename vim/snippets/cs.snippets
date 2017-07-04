@@ -36,9 +36,9 @@ snippet enum
 
 # {{{ properties
 
-snippet prop
+snippet proppub
 	public ${1:int} ${2:MyProperty} { get; set; }
-snippet propprivate
+snippet proppriv
 	public ${1:int} ${2:MyProperty} { get; private set; }
 
 # }}}
@@ -68,10 +68,11 @@ snippet if
 snippet ife
 	if (${1})
 	{
-		${VISUAL}${0}
+		${VISUAL}${2}
 	}
 	else
 	{
+		${0}
 	}
 snippet elif
 	else if (${1})
@@ -128,7 +129,7 @@ snippet throw
 # {{{ full methods
 
 snippet ctor
-	public ${1:`Filename()`}()
+	public ${1:`Filename()`}(${2})
 	{
 		${0}
 	}
