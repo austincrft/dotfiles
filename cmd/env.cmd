@@ -12,8 +12,9 @@ DOSKEY ll=ls -l %ls_options% $*
 :: find
 DOSKEY find="C:\Program Files\Git\usr\bin\find.exe" $*
 
-:: fzf
-DOSKEY fzf="C:\Users\acraft\Downloads\fzf-0.16.6-windows_amd64\fzf.exe" $*
+:: Python
+set PYTHONHOME=C:\Python27
+set PYTHONPATH=C:\Python27\Lib
 
 :: Work-Specific Aliases
 CALL %USERPROFILE%\work\aliases.cmd 2> nul
