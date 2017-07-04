@@ -74,7 +74,7 @@ if ! shopt -oq posix; then
 fi
 
 # Go Config
-export GOPATH=~/gocode
+export GOPATH=/src/golang
 
 # fzf Config
 if [[ -f ~/.fzf.bash ]]; then
