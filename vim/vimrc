@@ -228,6 +228,8 @@ Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'tommcdo/vim-exchange'
 Plug 'sjl/gundo.vim'
+Plug 'jpalardy/vim-slime'
+Plug 'christoomey/vim-tmux-navigator'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
@@ -434,6 +436,11 @@ let g:salve_auto_start_repl = 1
 " ------------------------------------------------------------------------------
 let g:SignatureMarkTextHLDynamic = 1
 let g:SignatureMarkerTextHLDynamic = 1
+
+" ------------------------------------------------------------------------------
+" Slime Config
+" ------------------------------------------------------------------------------
+let g:slime_target = "tmux"
 
 " ------------------------------------------------------------------------------
 " Snipmate Config
