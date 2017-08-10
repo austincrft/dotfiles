@@ -3,8 +3,8 @@ setlocal colorcolumn=100
 setlocal textwidth=100
 
 " Mappings
-nnoremap <leader>mg :TsuquyomiDefinition<CR>|
-nnoremap <leader>mr :TsuquyomiStartServer<CR><bar>:TsuquyomiStopServer<CR>|
-nnoremap <leader>mfu :TsuquyomiReferences<CR>|
+nnoremap <buffer> <leader>mg :TsuquyomiDefinition<CR>|
+nnoremap <buffer> <leader>mr :TsuquyomiStartServer<CR><bar>:TsuquyomiStopServer<CR>|
+nnoremap <buffer> <leader>mfu :TsuquyomiReferences<CR>|
 " Fold methods
-nnoremap <leader>fm zMzrzr<CR>|
+nnoremap <buffer> <leader>fm zMzrzr<CR>|

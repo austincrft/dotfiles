@@ -9,7 +9,7 @@ setlocal colorcolumn=79
 setlocal textwidth=79
 
 " Mappings
-nnoremap <leader>md :call jedi#show_documentation()<CR>|
-nnoremap <leader>mg :call jedi#goto_assignments()<CR>|
-nnoremap <leader>mfu :call jedi#usages()<CR>|
-nnoremap <leader>mr :call jedi#rename()<CR>|
+nnoremap <buffer> <leader>md :call jedi#show_documentation()<CR>|
+nnoremap <buffer> <leader>mg :call jedi#goto_assignments()<CR>|
+nnoremap <buffer> <leader>mfu :call jedi#usages()<CR>|
+nnoremap <buffer> <leader>mr :call jedi#rename()<CR>|
