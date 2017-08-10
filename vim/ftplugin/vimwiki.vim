@@ -6,5 +6,5 @@ command! -nargs=0 -complete=command AddTitle call AddTitle()
 
 
 " Map to obscure thing so it doesn't override my buffer nav mappings
-nmap <C-J> <Plug>VimwikiNextLink
-nmap <C-K> <Plug>VimwikiPrevLink
+nmap <buffer> <C-J> <Plug>VimwikiNextLink
+nmap <buffer> <C-K> <Plug>VimwikiPrevLink
