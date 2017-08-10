@@ -16,5 +16,11 @@ DOSKEY find="C:\Program Files\Git\usr\bin\find.exe" $*
 set PYTHONHOME=C:\Python27
 set PYTHONPATH=C:\Python27\Lib
 
+:: Cake
+DOSKEY cake=powershell .\build.ps1
+
+:: notify
+DOSKEY notify=$* ^& msg %USERNAME% "Command finished"
+
 :: Work-Specific Aliases
 CALL %USERPROFILE%\work\aliases.cmd 2> nul
