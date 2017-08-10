@@ -74,7 +74,7 @@ if ! shopt -oq posix; then
 fi
 
 # Go Config
-export GOPATH=~/gocode
+export GOPATH=/src/golang
 
 # fzf Config
 if [[ -f ~/.fzf.bash ]]; then
@@ -85,5 +85,7 @@ fi
 # OS X GNU Tools
 if [[ $platform == 'darwin' ]]; then
     PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-    MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+    gnuman=/usr/local/opt/coreutils/libexec/gnuman
+    findman=/usr/local/opt/findutils/share/man
+    MANPATH="$gnuman:$findman:${MANPATH-/usr/share/man}"
 fi

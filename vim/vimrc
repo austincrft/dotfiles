@@ -235,11 +235,14 @@ call plug#begin('~/.vim/plugged')
 " Editor features
 Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'sjl/gundo.vim'
 Plug 'sk1418/QFGrep'
+Plug 'jpalardy/vim-slime'
+Plug 'christoomey/vim-tmux-navigator'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
@@ -276,6 +279,9 @@ Plug 'juliosueiras/cakebuild.vim', { 'for': 'cake' }
 
 " FSharp
 Plug 'fsharp/vim-fsharp', { 'for': 'fsharp', 'do': 'make' }
+
+" Go
+Plug 'fatih/vim-go', { 'for': 'go' }
 
 " HTML
 Plug 'alvan/vim-closetag'
@@ -396,13 +402,13 @@ let g:filebeagle_suppress_keymaps = 1
 " ------------------------------------------------------------------------------
 " Goyo Config
 " ------------------------------------------------------------------------------
-let g:goyo_width = 80
+let g:goyo_width=80
 
 " ------------------------------------------------------------------------------
 " Grepper Config
 " ------------------------------------------------------------------------------
-nmap gs  <plug>(GrepperOperator)
-xmap gs  <plug>(GrepperOperator)
+nmap gs <plug>(GrepperOperator)
+xmap gs <plug>(GrepperOperator)
 let g:grepper = {
       \ 'tools': ['ag', 'git'],
       \ 'switch': 0,
@@ -440,6 +446,11 @@ let g:salve_auto_start_repl = 1
 " ------------------------------------------------------------------------------
 let g:SignatureMarkTextHLDynamic = 1
 let g:SignatureMarkerTextHLDynamic = 1
+
+" ------------------------------------------------------------------------------
+" Slime Config
+" ------------------------------------------------------------------------------
+let g:slime_target = "tmux"
 
 " ------------------------------------------------------------------------------
 " Snipmate Config
