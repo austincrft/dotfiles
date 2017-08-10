@@ -35,6 +35,11 @@ let mapleader=' '
 " Leader Mappings
 " ------------------------------------------------------------------------------
 
+" System Clipboard
+vnoremap <leader>c "+y
+nnoremap <leader>v "+p
+vnoremap <leader>v "+p
+
 " Buffers
 nnoremap <leader><Tab> :vsc Window.NextDocumentWindowNav<CR>
 nnoremap <leader>bo :vsc File.CloseAllButThis<CR>
