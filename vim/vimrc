@@ -25,6 +25,7 @@ set nowb                       " No write-backup
 set laststatus=2               " Always show statusline
 set t_Co=16                    " Set terminal color to 16
 set colorcolumn=80             " Highlight column 80
+set textwidth=80               " Textwidth at column 80
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
 set wildmenu                   " Tab through commands
@@ -47,6 +48,7 @@ set shiftwidth=4
 " ------------------------------------------------------------------------------
 set autoindent
 set smartindent
+set breakindent
 set smarttab
 set expandtab
 set nowrap
@@ -174,8 +176,19 @@ function! ReadCommand(msgcmd)
     " Paste to buffer
     silent put=message
 endfunction
-
 command! -nargs=+ -complete=command ReadCommand call ReadCommand(<q-args>)
+
+" Cake command
+function! Cake()
+    if has('win32')
+        execute 'AsyncRun powershell .\build.ps1'
+    else
+        execute 'AsyncRun ./build.sh'
+    endif
+
+    execute 'copen'
+endfunction
+command! -nargs=0 -complete=command Cake call Cake()
 
 " }}}
 
@@ -225,8 +238,8 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
-Plug 'tommcdo/vim-exchange'
 Plug 'sjl/gundo.vim'
+Plug 'sk1418/QFGrep'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
@@ -249,20 +262,17 @@ Plug 'godlygeek/tabular'
 Plug 'ntpeters/vim-better-whitespace'
 
 " Git
-Plug 'tpope/vim-fugitive' ", !has('win32') ? {} : { 'on': [] }
-
-" Testing
-Plug 'janko-m/vim-test'
+Plug 'tpope/vim-fugitive'
 
 " Languages {{{
 
 " Clojure
 Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
-Plug 'tpope/vim-salve'
 
 " CSharp
 Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
+Plug 'juliosueiras/cakebuild.vim', { 'for': 'cake' }
 
 " FSharp
 Plug 'fsharp/vim-fsharp', { 'for': 'fsharp', 'do': 'make' }
@@ -302,7 +312,6 @@ Plug 'janko-m/vim-test'
 
 " Tools
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
-Plug 'justinmk/vim-sneak'
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-dispatch'
 Plug 'skywind3000/asyncrun.vim'
@@ -347,7 +356,7 @@ autocmd FileType dosbatch setlocal commentstring=::\ %s
 " ------------------------------------------------------------------------------
 " Completion Config
 " ------------------------------------------------------------------------------
-autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+" autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
@@ -387,7 +396,7 @@ let g:filebeagle_suppress_keymaps = 1
 " ------------------------------------------------------------------------------
 " Goyo Config
 " ------------------------------------------------------------------------------
-let g:goyo_width=120
+let g:goyo_width = 80
 
 " ------------------------------------------------------------------------------
 " Grepper Config
@@ -395,9 +404,10 @@ let g:goyo_width=120
 nmap gs  <plug>(GrepperOperator)
 xmap gs  <plug>(GrepperOperator)
 let g:grepper = {
-      \ 'tools': ['ag', 'git', 'grep'],
+      \ 'tools': ['ag', 'git'],
+      \ 'switch': 0,
       \ 'ag': {
-      \   'grepprg': 'ag --vimgrep --nocolor --column --ignore tags'
+      \   'grepprg': 'ag --vimgrep'
       \ }
       \}
 
@@ -486,6 +496,11 @@ let g:vimwiki_list = [
 " Leader Mappings
 " ------------------------------------------------------------------------------
 
+" System Clipboard
+vnoremap <leader>c "+y|                                  " Copy
+nnoremap <leader>v "+p|                                  " Paste (normal)
+vnoremap <leader>v "+p|                                  " Paste (visual)
+
 " Buffer
 nnoremap <leader><Tab> :e#<CR>|                          " Switch to last buffer
 nnoremap <leader>bb :CtrlPBuffer<CR>|                    " Fuzzy-search buffers
@@ -527,10 +542,10 @@ nnoremap <leader>pT :Start! ctags -R<CR>|                " Async ctags generate
 nnoremap <leader>gg :Grepper<CR>|                        " Grep
 
 " Quickfix
-nnoremap <leader>co :botright copen<CR>|                 " Open (full width)
-nnoremap <leader>cc :cclose<CR>|                         " Close
-nnoremap <leader>cj :cnext<CR>|                          " Next
-nnoremap <leader>ck :cprevious<CR>|                      " Previous
+nnoremap <leader>qo :botright copen<CR>|                 " Open (full width)
+nnoremap <leader>qc :cclose<CR>|                         " Close
+nnoremap <leader>qj :cnext<CR>|                          " Next
+nnoremap <leader>qk :cprevious<CR>|                      " Previous
 
 " Substitute & Global
 nnoremap <leader>ss :%s/|                                " Substitute
