@@ -1,4 +1,4 @@
-" Set local foldmarker
+﻿" Set local foldmarker
 " vim:fdm=marker
 
 " Editor {{{
@@ -111,15 +111,6 @@ endif
 " Functions {{{
 
 " ------------------------------------------------------------------------------
-" Alias command
-" ------------------------------------------------------------------------------
-function! SetupCommandAlias(from, to)
-  exec 'cnoreabbrev <expr> '.a:from
-       \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
-       \ .'? ("'.a:to.'") : ("'.a:from.'"))'
-endfunction
-
-" ------------------------------------------------------------------------------
 " Escape XML
 " ------------------------------------------------------------------------------
 function! EscapeXml(unescape)
@@ -189,6 +180,12 @@ function! Cake()
     execute 'copen'
 endfunction
 command! -nargs=0 -complete=command Cake call Cake()
+
+function! InsertDate()
+    execute "put =strftime('%Y-%m-%d')"
+    execute 'norm! kJ'
+endfunction
+command! -nargs=0 -complete=command InsertDate call InsertDate()
 
 " }}}
 
@@ -514,7 +511,7 @@ vnoremap <leader>v "+p|                                  " Paste (visual)
 
 " Buffer
 nnoremap <leader><Tab> :e#<CR>|                          " Switch to last buffer
-nnoremap <leader>bb :CtrlPBuffer<CR>|                    " Fuzzy-search buffers
+nnoremap <leader>bb :CtrlPBuffer<CR>|                    " Search buffers
 nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffers
 nnoremap <leader>bD :BufOnly<CR>:bd<CR>|                 " Delete all buffers
 
@@ -569,13 +566,9 @@ nnoremap <leader>SS :setlocal nospell<CR>|               " Disable spelling
 nnoremap <leader>Sf z=|                                  " Fix word
 
 " Tags
-nnoremap <leader>tt :CtrlPTag<CR>|                       " Fuzzy-search tags
-nnoremap <leader>ts :tselect<CR>|                        " View list
-nnoremap <leader>tj :tnext<CR>|                          " Next
-nnoremap <leader>tk :tprev<CR>|                          " Previous
-nnoremap <leader>tf :tfirst<CR>|                         " First
-nnoremap <leader>tl :tlast<CR>|                          " Last
-nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
+nnoremap <leader>tt :CtrlPTag<CR>|                       " Search tags
+nnoremap <leader>tb :CtrlPBufTag<CR>|                    " Search tags in buffer
+nnoremap <leader>tB :TagbarOpenAutoClose<CR>|            " Open Tagbar
 
 " Windows
 nnoremap <leader>wv :vsplit<CR>|                         " Split vertically
