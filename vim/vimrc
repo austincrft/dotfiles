@@ -26,14 +26,15 @@ set laststatus=2               " Always show statusline
 set t_Co=16                    " Set terminal color to 16
 set colorcolumn=80             " Highlight column 80
 set textwidth=80               " Textwidth at column 80
+set formatoptions-=t           " Don't auto-wrap at textwidth
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
 set wildmenu                   " Tab through commands
 set cryptmethod=blowfish2      " Better encryption
 set mouse=a                    " Mouse support
+set diffopt+=vertical          " Prefer vertical diff
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
-autocmd FocusLost * silent! wa " Automatically save file
 filetype plugin indent on      " Enable filetypes
 
 " ------------------------------------------------------------------------------
@@ -53,6 +54,7 @@ set smarttab
 set expandtab
 set nowrap
 set linebreak
+set listchars=eol:¬,tab:→-,trail:·,extends:>,precedes:<
 
 " ------------------------------------------------------------------------------
 " Search Config
@@ -169,23 +171,70 @@ function! ReadCommand(msgcmd)
 endfunction
 command! -nargs=+ -complete=command ReadCommand call ReadCommand(<q-args>)
 
-" Cake command
-function! Cake()
-    if has('win32')
-        execute 'AsyncRun powershell .\build.ps1'
-    else
-        execute 'AsyncRun ./build.sh'
-    endif
-
-    execute 'copen'
-endfunction
-command! -nargs=0 -complete=command Cake call Cake()
-
+" ------------------------------------------------------------------------------
+" InsertDate Command
+" ------------------------------------------------------------------------------
 function! InsertDate()
     execute "put =strftime('%Y-%m-%d')"
     execute 'norm! kJ'
 endfunction
 command! -nargs=0 -complete=command InsertDate call InsertDate()
+
+" ------------------------------------------------------------------------------
+" RunCtags Command
+" ------------------------------------------------------------------------------
+function! RunCtags()
+    execute 'AsyncRun ctags -R'
+    execute 'botright copen'
+endfunction
+
+" ------------------------------------------------------------------------------
+" Ag Command
+" ------------------------------------------------------------------------------
+function! Ag(text)
+    execute 'AsyncRun! ag --vimgrep "' . a:text . '"'
+    execute 'botright copen'
+endfunction
+command! -nargs=1 -complete=command Ag call Ag(<f-args>)
+
+" ------------------------------------------------------------------------------
+" Scratch Command
+" ------------------------------------------------------------------------------
+function! Scratch()
+    execute 'top 15sp'
+    execute 'enew'
+    execute 'setlocal buftype=nofile'
+    execute 'setlocal bufhidden=hide'
+    execute 'setlocal noswapfile'
+    execute 'file [Scratch]'
+endfunction
+command! -nargs=0 -complete=command Scratch call Scratch()
+
+" ------------------------------------------------------------------------------
+" DeleteInactiveBufs Command
+" source: https://stackoverflow.com/a/7321131/3661319
+" ------------------------------------------------------------------------------
+function! DeleteInactiveBufs()
+    " From tabpagebuflist() help, get a list of all buffers in all tabs
+    let tablist = []
+    for i in range(tabpagenr('$'))
+        call extend(tablist, tabpagebuflist(i + 1))
+    endfor
+
+    " Below originally inspired by Hara Krishna Dara and Keith Roberts
+    " http://tech.groups.yahoo.com/group/vim/message/56425
+    let nWipeouts = 0
+    for i in range(1, bufnr('$'))
+        if bufexists(i) && !getbufvar(i,"&mod") && index(tablist, i) == -1
+        " bufno exists AND isn't modified AND isn't in the list of buffers open
+        " in windows and tabs
+            silent exec 'bwipeout' i
+            let nWipeouts = nWipeouts + 1
+        endif
+    endfor
+    echomsg nWipeouts . ' buffer(s) wiped out'
+endfunction
+command! -nargs=0 -complete=command DeleteInactiveBufs call DeleteInactiveBufs()
 
 " }}}
 
@@ -243,8 +292,7 @@ Plug 'christoomey/vim-tmux-navigator'
 
 " File browsing
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'mhinz/vim-grepper'
-Plug 'jeetsukumaran/vim-filebeagle'
+Plug 'tpope/vim-vinegar'
 
 " Terminal fuzzy-searching (no Windows support yet)
 if (!has('win32'))
@@ -359,7 +407,7 @@ autocmd FileType dosbatch setlocal commentstring=::\ %s
 " ------------------------------------------------------------------------------
 " Completion Config
 " ------------------------------------------------------------------------------
-" autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
@@ -389,30 +437,11 @@ let g:fsharp_test_runner = 'nunit-console'
 let g:fsharp_only_check_errors_on_write = 1
 let g:fsharp_map_keys = 0
 let g:fsharp_completion_helptext = 0
-" let g:fsharpbinding_debug=1
-
-" ------------------------------------------------------------------------------
-" FileBeagle Config
-" ------------------------------------------------------------------------------
-let g:filebeagle_suppress_keymaps = 1
 
 " ------------------------------------------------------------------------------
 " Goyo Config
 " ------------------------------------------------------------------------------
 let g:goyo_width=80
-
-" ------------------------------------------------------------------------------
-" Grepper Config
-" ------------------------------------------------------------------------------
-nmap gs <plug>(GrepperOperator)
-xmap gs <plug>(GrepperOperator)
-let g:grepper = {
-      \ 'tools': ['ag', 'git'],
-      \ 'switch': 0,
-      \ 'ag': {
-      \   'grepprg': 'ag --vimgrep'
-      \ }
-      \}
 
 " ------------------------------------------------------------------------------
 " Jedi Config
@@ -447,12 +476,13 @@ let g:SignatureMarkerTextHLDynamic = 1
 " ------------------------------------------------------------------------------
 " Slime Config
 " ------------------------------------------------------------------------------
-let g:slime_target = "tmux"
+let g:slime_target = 'tmux'
 
 " ------------------------------------------------------------------------------
 " Snipmate Config
 " ------------------------------------------------------------------------------
-let g:snipMate = {}
+" Prevents errors after sourcing .vimrc
+let g:snipMate = get(g:, 'snipMate', {})
 let g:snipMate['no_match_completion_feedkeys_chars'] = ''
 
 " ------------------------------------------------------------------------------
@@ -465,15 +495,6 @@ let g:syntastic_always_populate_loc_list = 1
 " ------------------------------------------------------------------------------
 let test#strategy = 'asnycrun'
 let g:test#runner_commands=['Jasmine']
-
-" ------------------------------------------------------------------------------
-" UltiSnips Config
-" ------------------------------------------------------------------------------
-let g:UltiSnipsSnippetsDir = '~/.vim/UltiSnips'
-let g:UltiSnipsExpandTrigger = '<C-J>'
-let g:UltiSnipsListSnippets = '<C-K>'
-let g:UltiSnipsJumpForwardTrigger = '<C-J>'
-let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
 
 " ------------------------------------------------------------------------------
 " Vimwiki Config
@@ -500,20 +521,15 @@ let g:vimwiki_list = [
 
 " Leader Mappings {{{
 
-" ------------------------------------------------------------------------------
-" Leader Mappings
-" ------------------------------------------------------------------------------
-
 " System Clipboard
 vnoremap <leader>c "+y|                                  " Copy
 nnoremap <leader>v "+p|                                  " Paste (normal)
 vnoremap <leader>v "+p|                                  " Paste (visual)
 
 " Buffer
-nnoremap <leader><Tab> :e#<CR>|                          " Switch to last buffer
-nnoremap <leader>bb :CtrlPBuffer<CR>|                    " Search buffers
-nnoremap <leader>bo :BufOnly<CR>|                        " Delete inactive buffers
-nnoremap <leader>bD :BufOnly<CR>:bd<CR>|                 " Delete all buffers
+nnoremap <leader><Tab> :b#<CR>|                          " Switch to last buffer
+nnoremap <leader>bo :BufOnly<CR>|                        " Keep only this buffer
+nnoremap <leader>bO :DeleteInactiveBufs<CR>|             " Delete buffers
 
 " Formatting
 nnoremap <leader>fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
@@ -531,7 +547,7 @@ nnoremap <leader>ek :lprevious<CR>|                      " Previous
 " Meta
 nnoremap <leader>_d :e $MYVIMRC<CR>|                     " Edit .vimrc
 nnoremap <leader>_r :source $MYVIMRC<CR>|                " Reload .vimrc
-nnoremap <leader>_f :FileBeagle ~/.vim/ftplugin<CR>|     " Open ftplugins
+nnoremap <leader>_f :Explore $HOME/.vim/ftplugin<CR>|    " Open ftplugins
 nnoremap <leader>_b :call ToggleBackground()<CR>|        " Toggle background
 
 " Make
@@ -541,13 +557,14 @@ nnoremap <leader>mm :Make<CR>|                           " Make
 nnoremap <leader>uu :GundoToggle<CR>|                    " View undo tree
 
 " Project
-nnoremap <leader>pt :FileBeagle<CR>|                     " Open cwd
-nnoremap <leader>pf :FileBeagleBufferDir<CR>|            " Open buffer directory
+nnoremap <leader>pt :Explore .<CR>|                      " Open cwd
+nnoremap <leader>pf :Explore<CR>|                        " Open buffer directory
 nnoremap <leader>pc :pclose<CR>|                         " Close preview-window
-nnoremap <leader>pT :Start! ctags -R<CR>|                " Async ctags generate
+nnoremap <leader>pT :call RunCtags()<CR>|                " Async ctags generate
 
 " Grep
-nnoremap <leader>gg :Grepper<CR>|                        " Grep
+nnoremap <leader>gg :Ag |                                " Grep
+vnoremap <leader>gg "zy:Ag <C-R>z |                      " Visual grep
 
 " Quickfix
 nnoremap <leader>qo :botright copen<CR>|                 " Open (full width)
