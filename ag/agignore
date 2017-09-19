@@ -63,3 +63,6 @@ _pkginfo.txt
 # JavaScript
 *.min.js
 mods/
+
+## CSS
+*.map
