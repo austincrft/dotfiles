@@ -72,8 +72,7 @@ let mapleader=' '
 " ------------------------------------------------------------------------------
 " Normal Mappings
 " ------------------------------------------------------------------------------
-nnoremap <Tab> :bnext<CR>|   " Tab forward through buffers
-nnoremap <S-Tab> :bprev<CR>| " Shift-Tab backwards through buffers
+nnoremap gb :ls<CR>:buffer<Space>
 
 " ------------------------------------------------------------------------------
 " Visual Mappings
@@ -191,11 +190,12 @@ endfunction
 " ------------------------------------------------------------------------------
 " Ag Command
 " ------------------------------------------------------------------------------
-function! Ag(text)
-    execute 'AsyncRun! ag --vimgrep "' . a:text . '"'
+function! Ag(text, ...)
+    let a:filetype = get(a:, 1, '')
+    execute 'AsyncRun! ag --vimgrep ' . a:filetype . ' "' . a:text . '"'
     execute 'botright copen'
 endfunction
-command! -nargs=1 -complete=command Ag call Ag(<f-args>)
+command! -nargs=* -complete=command Ag call Ag(<f-args>)
 
 " ------------------------------------------------------------------------------
 " Scratch Command
@@ -383,7 +383,7 @@ call plug#end()
 " ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
-let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#hunks#enabled = 0
 let g:airline_powerline_fonts = 1
 
@@ -461,6 +461,11 @@ let g:mucomplete#chains = {
 imap <_> <plug>(MUcompleteCycFwd)
 imap <expr> <C-J> (pumvisible() ? "\<c-y>" : "")
 \               . "\<plug>snipMateNextOrTrigger"
+
+" ------------------------------------------------------------------------------
+" Netrw Config
+" ------------------------------------------------------------------------------
+let g:netrw_localrmdir='rm -r' " Ability to remove non-empty directories
 
 " ------------------------------------------------------------------------------
 " Salve Config
