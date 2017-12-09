@@ -61,7 +61,7 @@ nnoremap <leader>mm :vsc Build.BuildSolution<CR>
 " Mode
 nnoremap <leader>mt :vsc TestExplorer.RunAllTests<CR>
 nnoremap <leader>mfu :vsc Edit.FindAllReferences<CR>
-nnoremap <leader>mfi :vsc Edit.GoToImplementation<CR>
+nnoremap <leader>mfi :vsc Edit.GoToImplementation<CR><ESC>
 
 " Substitute & Global
 nnoremap <leader>ss :%s/
