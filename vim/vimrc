@@ -24,6 +24,7 @@ set nobackup                   " No backup
 set nowb                       " No write-backup
 set laststatus=2               " Always show statusline
 set t_Co=16                    " Set terminal color to 16
+set t_md=                      " Turn off bold fonts
 set colorcolumn=80             " Highlight column 80
 set textwidth=80               " Textwidth at column 80
 set formatoptions-=t           " Don't auto-wrap at textwidth
@@ -244,6 +245,14 @@ function! AsyncRunWithQf(cmd)
 endfunction
 command! -nargs=1 -complete=command AsyncRunWithQf call AsyncRunWithQf(<f-args>)
 
+" ------------------------------------------------------------------------------
+" CopyFilePath Command
+" ------------------------------------------------------------------------------
+function! CopyFilePath()
+     let @+ = expand('%:p')
+endfunction
+command! -nargs=0 -complete=command CopyFilePath call CopyFilePath()
+
 " }}}
 
 " {{{ Misc Config
@@ -268,6 +277,7 @@ if !empty($CONEMUBUILD)
     " Backspace
     inoremap <Char-0x07F> <BS>
     nnoremap <Char-0x07F> <BS>
+    cnoremap <Char-0x07F> <BS>
 endif
 
 " }}}
@@ -323,45 +333,45 @@ Plug 'tpope/vim-fugitive'
 " Languages {{{
 
 " Clojure
-Plug 'tpope/vim-fireplace', { 'for': 'clojure' }
+Plug 'tpope/vim-fireplace', { 'for': ['clojure', 'markdown'] }
 
 " CSharp
-Plug 'OrangeT/vim-csharp', { 'for': 'cs' }
+Plug 'OrangeT/vim-csharp', { 'for': ['cs', 'markdown'] }
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 Plug 'juliosueiras/cakebuild.vim', { 'for': 'cake' }
 
 " FSharp
-Plug 'fsharp/vim-fsharp', { 'for': 'fsharp', 'do': 'make' }
+Plug 'fsharp/vim-fsharp', { 'for': ['fsharp', 'markdown'], 'do': 'make' }
 
 " Go
-Plug 'fatih/vim-go', { 'for': 'go' }
+Plug 'fatih/vim-go', { 'for': ['go', 'markdown'] }
 
 " HTML
 Plug 'alvan/vim-closetag'
 
 " JavaScript
-Plug 'ternjs/tern_for_vim', { 'for': 'javascript', 'do': 'npm install' }
+Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'markdown'], 'do': 'npm install' }
 
 " Markdown
-Plug 'plasticboy/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
+Plug 'tpope/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
 
 " Powershell
-Plug 'PProvost/vim-ps1', { 'for': 'ps1' }
+Plug 'PProvost/vim-ps1', { 'for': ['ps1', 'markdown'] }
 
 " Python
 Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 
 " Scala
-Plug 'derekwyatt/vim-scala', { 'for': 'scala' }
+Plug 'derekwyatt/vim-scala', { 'for': ['scala', 'markdown'] }
 
 " TypeScript
-Plug 'leafgarland/typescript-vim', { 'for': 'typescript' }
+Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'markdown'] }
 Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
 
 " }}}
 
 " Linting
-Plug 'scrooloose/syntastic'
+Plug 'w0rp/ale'
 
 " Tags
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
@@ -391,9 +401,12 @@ call plug#end()
 " ------------------------------------------------------------------------------
 " Airline Config
 " ------------------------------------------------------------------------------
-" let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#hunks#enabled = 0
-let g:airline_powerline_fonts = 1
+
+" ------------------------------------------------------------------------------
+" Ale Config
+" ------------------------------------------------------------------------------
+let g:ale_lint_on_text_changed = 'never'
 
 " ------------------------------------------------------------------------------
 " CloseTag Config
@@ -411,6 +424,7 @@ colorscheme solarized
 " ------------------------------------------------------------------------------
 autocmd FileType cs setlocal commentstring=//\ %s
 autocmd FileType dosbatch setlocal commentstring=::\ %s
+autocmd FileType sql setlocal commentstring=--\ %s
 
 " ------------------------------------------------------------------------------
 " Completion Config
@@ -449,7 +463,7 @@ let g:fsharp_completion_helptext = 0
 " ------------------------------------------------------------------------------
 " Goyo Config
 " ------------------------------------------------------------------------------
-let g:goyo_width=80
+let g:goyo_width=81
 
 " ------------------------------------------------------------------------------
 " Jedi Config
@@ -474,12 +488,13 @@ imap <expr> <C-J> (pumvisible() ? "\<c-y>" : "")
 " ------------------------------------------------------------------------------
 " Netrw Config
 " ------------------------------------------------------------------------------
-let g:netrw_localrmdir='rm -r' " Ability to remove non-empty directories
+let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 
+"
 " ------------------------------------------------------------------------------
-" Salve Config
+" OmniSharp Config
 " ------------------------------------------------------------------------------
-let g:salve_auto_start_repl = 1
+let g:OmniSharp_server_type = 'v1'
 
 " ------------------------------------------------------------------------------
 " Signature Config
@@ -500,9 +515,23 @@ let g:snipMate = get(g:, 'snipMate', {})
 let g:snipMate['no_match_completion_feedkeys_chars'] = ''
 
 " ------------------------------------------------------------------------------
-" Syntastic Config
+" Tagbar Config
 " ------------------------------------------------------------------------------
-let g:syntastic_always_populate_loc_list = 1
+let g:tagbar_type_typescript = {
+  \ 'kinds': [
+    \ 'n:namespace:0:1',
+    \ 'e:enums:0:1',
+    \ 'M:module:0:1',
+    \ 'I:import:0:1',
+    \ 'f:function:0:1',
+    \ 't:type:0:1',
+    \ 'i:interface:0:1',
+    \ 'c:class:0:1',
+    \ 'm:member:0:1',
+    \ 'v:variable:0:1',
+  \ ],
+  \ 'sort' : 0
+\ }
 
 " ------------------------------------------------------------------------------
 " Test Config
@@ -551,10 +580,9 @@ nnoremap <leader>fA :setlocal formatoptions-=a<CR>|      " Disable auto-format
 nnoremap <leader>fw :call ToggleWrap()<CR>|              " Toggle wrap
 
 " Linting (Errors)
-nnoremap <leader>ee :SyntasticCheck<CR>|                 " Error check
-nnoremap <leader>et :SyntasticToggleMode<CR>|            " Toggle syntastic
 nnoremap <leader>eo :lopen<CR>|                          " Open
 nnoremap <leader>ec :lclose<CR>|                         " Close
+nnoremap <leader>ee :ll<CR>|                             " Current
 nnoremap <leader>ej :lnext<CR>|                          " Next
 nnoremap <leader>ek :lprevious<CR>|                      " Previous
 
@@ -597,9 +625,7 @@ nnoremap <leader>SS :setlocal nospell<CR>|               " Disable spelling
 nnoremap <leader>Sf z=|                                  " Fix word
 
 " Tags
-nnoremap <leader>tt :CtrlPTag<CR>|                       " Search tags
-nnoremap <leader>tb :CtrlPBufTag<CR>|                    " Search tags in buffer
-nnoremap <leader>tB :TagbarOpenAutoClose<CR>|            " Open Tagbar
+nnoremap <leader>tt :TagbarOpenAutoClose<CR>|            " Open Tagbar
 
 " Windows
 nnoremap <leader>wv :vsplit<CR>|                         " Split vertically
