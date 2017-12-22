@@ -19,8 +19,11 @@ set PYTHONPATH=C:\Python27\Lib
 :: Cake
 DOSKEY cake=powershell .\build.ps1
 
-:: notify
-DOSKEY notify=$* ^& msg %USERNAME% "Command finished"
+:: Toast Notification
+DOSKEY notify=$* $T powershell -Command "&{New-BurntToastNotification -Text 'Console command finished'}"
+
+:: Empty Recycle Bin
+DOSKEY empty-recycle=rd /s c:\$Recycle.Bin
 
 :: Work-Specific Aliases
 CALL %USERPROFILE%\work\aliases.cmd 2> nul
