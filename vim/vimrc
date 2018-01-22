@@ -74,6 +74,10 @@ let mapleader=' '
 " Normal Mappings
 " ------------------------------------------------------------------------------
 nnoremap gb :ls<CR>:buffer<Space>
+if (!has('win32'))
+    nnoremap <C-P> :FZF<CR>
+endif
+
 
 " ------------------------------------------------------------------------------
 " Visual Mappings
@@ -199,6 +203,15 @@ endfunction
 command! -nargs=* -complete=command Ag call Ag(<f-args>)
 
 " ------------------------------------------------------------------------------
+" AgG Command
+" ------------------------------------------------------------------------------
+function! AgG(text, filePattern)
+    execute 'AsyncRun! ag --vimgrep -G ' . a:filePattern . ' "' . a:text . '"'
+    execute 'botright copen'
+endfunction
+command! -nargs=* -complete=command AgG call AgG(<f-args>)
+
+" ------------------------------------------------------------------------------
 " Scratch Command
 " ------------------------------------------------------------------------------
 function! Scratch()
@@ -295,15 +308,16 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'sjl/gundo.vim'
 Plug 'sk1418/QFGrep'
 Plug 'jpalardy/vim-slime'
-Plug 'christoomey/vim-tmux-navigator'
 
 " File browsing
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tpope/vim-vinegar'
 
-" Terminal fuzzy-searching (no Windows support yet)
+" Terminal fuzzy-searching
 if (!has('win32'))
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'junegunn/fzf.vim'
+else
+    Plug 'ctrlpvim/ctrlp.vim'
 endif
 
 " Auto-Complete
@@ -339,7 +353,9 @@ Plug 'fatih/vim-go', { 'for': ['go', 'markdown'] }
 Plug 'alvan/vim-closetag'
 
 " JavaScript
+Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'markdown'], 'do': 'npm install' }
+Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': 'javascript' }
 
 " Markdown
 Plug 'tpope/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
@@ -450,6 +466,29 @@ let g:fsharp_map_keys = 0
 let g:fsharp_completion_helptext = 0
 
 " ------------------------------------------------------------------------------
+" FZF Config
+" ------------------------------------------------------------------------------
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+" ------------------------------------------------------------------------------
+" File Extension Config
+" ------------------------------------------------------------------------------
+autocmd BufRead,BufNewFile,BufEnter *.js set filetype=javascript
+
+" ------------------------------------------------------------------------------
 " Goyo Config
 " ------------------------------------------------------------------------------
 let g:goyo_width=81
@@ -477,11 +516,17 @@ imap <expr> <C-J> (pumvisible() ? "\<c-y>" : "")
 " Netrw Config
 " ------------------------------------------------------------------------------
 let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
-"
+
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
 let g:OmniSharp_server_type = 'v1'
+
+" ------------------------------------------------------------------------------
+" Prettier Config
+" ------------------------------------------------------------------------------
+let g:prettier#autoformat = 1
+let g:prettier#exec_cmd_async = 1
 
 " ------------------------------------------------------------------------------
 " Signature Config
@@ -592,8 +637,13 @@ nnoremap <leader>pc :pclose<CR>|                         " Close preview-window
 nnoremap <leader>pT :call RunCtags()<CR>|                " Async ctags generate
 
 " Grep
-nnoremap <leader>gg :Ag |                                " Grep
-vnoremap <leader>gg "zy:Ag <C-R>z |                      " Visual grep
+nnoremap <leader>gg :Ag |                                 " Grep
+vnoremap <leader>gg "zy:Ag <C-R>z |                       " Visual grep
+nnoremap <leader>gG :AgG |                                " Grep
+vnoremap <leader>gG "zy:AgG <C-R>z |                      " Visual grep
+
+" Git
+nnoremap <leader>gs :GFiles?<CR>|                         " Git status
 
 " Quickfix
 nnoremap <leader>qo :botright copen<CR>|                 " Open (full width)
@@ -603,8 +653,11 @@ nnoremap <leader>qk :cprevious<CR>|                      " Previous
 
 " Substitute & Global
 nnoremap <leader>ss :%s/|                                " Substitute
+vnoremap <leader>ss "zy:%s/<C-R>z/|                      " Substitute
 nnoremap <leader>sg :%g/|                                " Global
+vnoremap <leader>sg "zy:%g/<C-R>z/|                      " Global
 nnoremap <leader>sG :%g!/|                               " Inverse Global
+vnoremap <leader>sG "zy:%g!/<C-R>z/|                     " Inverse Global
 
 " Spelling
 nnoremap <leader>Ss :setlocal spell spelllang=en_us<CR>| " Activate spelling
