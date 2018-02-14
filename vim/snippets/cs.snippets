@@ -128,6 +128,12 @@ snippet throw
 
 # {{{ full methods
 
+snippet meth
+	${1:public} ${2:void} ${3:MethodName}(${4})
+	{
+		${0}
+	}
+
 snippet ctor
 	public ${1:`Filename()`}(${2})
 	{
@@ -148,7 +154,8 @@ snippet ///
 # {{{ testing
 
 snippet unittest
-	public void ${1}_${2}_${3}()
+	[TestMethod]
+	public void ${1:Method}_${2:Scenario}_${3:Result}()
 	{
 		// Arrange
 		${4}
