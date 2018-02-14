@@ -34,6 +34,8 @@ set wildmenu                   " Tab through commands
 set cryptmethod=blowfish2      " Better encryption
 set mouse=a                    " Mouse support
 set diffopt+=vertical          " Prefer vertical diff
+set fileencoding=utf8          " UTF-8 file encoding
+set bomb                       " Include byte order mark
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 filetype plugin indent on      " Enable filetypes
@@ -78,7 +80,6 @@ if (!has('win32'))
     nnoremap <C-P> :FZF<CR>
 endif
 
-
 " ------------------------------------------------------------------------------
 " Visual Mappings
 " ------------------------------------------------------------------------------
@@ -102,6 +103,13 @@ autocmd BufWinEnter *
 "  Configure Directories
 " ------------------------------------------------------------------------------
 set runtimepath=$HOME/.vim,$VIMRUNTIME
+
+" ------------------------------------------------------------------------------
+"  Configure Environment
+" ------------------------------------------------------------------------------
+if !has('win32')
+    let $BASH_ENV = "~/.bash_aliases"
+endif
 
 " ------------------------------------------------------------------------------
 " Persistent Undo -- Keep undo history across sessions by storing in file
@@ -321,7 +329,6 @@ else
 endif
 
 " Auto-Complete
-Plug 'lifepillar/vim-mucomplete'
 Plug 'garbas/vim-snipmate'
     \ | Plug 'marcweber/vim-addon-mw-utils'
     \ | Plug 'tomtom/tlib_vim'
@@ -369,6 +376,9 @@ Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 " Scala
 Plug 'derekwyatt/vim-scala', { 'for': ['scala', 'markdown'] }
 
+" SQL
+Plug 'vim-scripts/dbext.vim', { 'for': 'sql' }
+
 " TypeScript
 Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'markdown'] }
 Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
@@ -379,6 +389,7 @@ Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
 Plug 'w0rp/ale'
 
 " Tags
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
 " Testing
@@ -412,6 +423,7 @@ let g:airline#extensions#hunks#enabled = 0
 " Ale Config
 " ------------------------------------------------------------------------------
 let g:ale_lint_on_text_changed = 'never'
+let g:ale_linters = {'cs': []}
 
 " ------------------------------------------------------------------------------
 " CloseTag Config
@@ -434,10 +446,23 @@ autocmd FileType sql setlocal commentstring=--\ %s
 " ------------------------------------------------------------------------------
 " Completion Config
 " ------------------------------------------------------------------------------
-autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+" autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
+
+" Omni complete
+imap <Tab>o <C-X><C-O>
+" Key complete
+imap <Tab>k <C-N>
+" Tag complete
+imap <Tab>t <C-X><C-]>
+" File complete
+imap <Tab>f <C-X><C-F>
+" Snippet complete
+imap <Tab>s <Plug>snipMateShow
+" Line complete
+imap <Tab>l <C-X><C-L>
 
 " ------------------------------------------------------------------------------
 " CtrlP Config
@@ -501,18 +526,6 @@ let g:jedi#popup_on_dot = 0
 let g:jedi#auto_initialization = 0
 
 " ------------------------------------------------------------------------------
-" MUcomplete Config
-" ------------------------------------------------------------------------------
-let g:mucomplete#user_mappings = { 'snip' : "\<plug>snipMateShow" }
-let g:mucomplete#chains = {
-  \ 'default' : ['snip', 'path', 'omni', 'keyn', 'dict'],
-  \ }
-" Remap so can be used <C-J>
-imap <_> <plug>(MUcompleteCycFwd)
-imap <expr> <C-J> (pumvisible() ? "\<c-y>" : "")
-\               . "\<plug>snipMateNextOrTrigger"
-
-" ------------------------------------------------------------------------------
 " Netrw Config
 " ------------------------------------------------------------------------------
 let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
@@ -521,6 +534,7 @@ let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 " OmniSharp Config
 " ------------------------------------------------------------------------------
 let g:OmniSharp_server_type = 'v1'
+let g:Omnisharp_start_server = 0
 
 " ------------------------------------------------------------------------------
 " Prettier Config
@@ -544,11 +558,15 @@ let g:slime_target = 'tmux'
 " ------------------------------------------------------------------------------
 " Prevents errors after sourcing .vimrc
 let g:snipMate = get(g:, 'snipMate', {})
+" Don't insert anything when a snippet isn't found
 let g:snipMate['no_match_completion_feedkeys_chars'] = ''
+" Mappings
+smap <C-J> <Plug>snipMateNextOrTrigger
 
 " ------------------------------------------------------------------------------
 " Tagbar Config
 " ------------------------------------------------------------------------------
+let g:tagbar_width = 70
 let g:tagbar_type_typescript = {
   \ 'kinds': [
     \ 'n:namespace:0:1',
@@ -665,7 +683,7 @@ nnoremap <leader>SS :setlocal nospell<CR>|               " Disable spelling
 nnoremap <leader>Sf z=|                                  " Fix word
 
 " Tags
-nnoremap <leader>tt :TagbarOpenAutoClose<CR>|            " Open Tagbar
+nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
 
 " Windows
 nnoremap <leader>wv :vsplit<CR>|                         " Split vertically
