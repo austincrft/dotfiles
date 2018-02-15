@@ -34,8 +34,6 @@ set wildmenu                   " Tab through commands
 set cryptmethod=blowfish2      " Better encryption
 set mouse=a                    " Mouse support
 set diffopt+=vertical          " Prefer vertical diff
-set fileencoding=utf8          " UTF-8 file encoding
-set bomb                       " Include byte order mark
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 filetype plugin indent on      " Enable filetypes
