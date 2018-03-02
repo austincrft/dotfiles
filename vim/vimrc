@@ -27,7 +27,7 @@ set t_Co=16                    " Set terminal color to 16
 set t_md=                      " Turn off bold fonts
 set colorcolumn=80             " Highlight column 80
 set textwidth=80               " Textwidth at column 80
-set formatoptions-=t           " Don't auto-wrap at textwidth
+set formatoptions-=tc          " Don't auto-wrap at textwidth or comments
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
 set wildmenu                   " Tab through commands
@@ -566,7 +566,8 @@ smap <C-J> <Plug>snipMateNextOrTrigger
 " ------------------------------------------------------------------------------
 " Tagbar Config
 " ------------------------------------------------------------------------------
-let g:tagbar_width = 70
+let g:tagbar_vertical = 30
+let g:tagbar_map_showproto = 'o'
 let g:tagbar_type_typescript = {
   \ 'kinds': [
     \ 'n:namespace:0:1',
@@ -677,12 +678,8 @@ vnoremap <leader>sg "zy:%g/<C-R>z/|                      " Global
 nnoremap <leader>sG :%g!/|                               " Inverse Global
 vnoremap <leader>sG "zy:%g!/<C-R>z/|                     " Inverse Global
 
-" Spelling
-nnoremap <leader>Ss :setlocal spell spelllang=en_us<CR>| " Activate spelling
-nnoremap <leader>SS :setlocal nospell<CR>|               " Disable spelling
-nnoremap <leader>Sf z=|                                  " Fix word
-
 " Tags
+nnoremap <leader>tt :Tags<CR>|                           " Fuzzy-search tags
 nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
 
 " Windows
