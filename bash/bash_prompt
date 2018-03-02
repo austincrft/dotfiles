@@ -83,7 +83,11 @@ set_prompts() {
     PS1+="\[$reset\]: "
     PS1+="\[$green\]\w" # working directory
 
-    if ! grep -q Microsoft /proc/sys/kernel/osrelease; then
+    if [[ -f /proc/sys/kernel/osrelease ]]; then
+        if ! grep -q Microsoft /proc/sys/kernel/osrelease; then
+            PS1+="\$(prompt_git \"$reset on $cyan\")" # git repository details
+        fi
+    else
         PS1+="\$(prompt_git \"$reset on $cyan\")" # git repository details
     fi
 
