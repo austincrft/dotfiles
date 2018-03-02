@@ -12,22 +12,22 @@ snippet namespace
 		{VISUAL}${0}
 	}
 snippet class
-	class ${1:MyClass}
+	public class ${1:`Filename()`}
 	{
 		${0}
 	}
 snippet struct
-	struct ${1:MyStruct}
+	public struct ${1:MyStruct}
 	{
 		${0}
 	}
 snippet interface
-	interface I${1:Interface}
+	public interface I${1:Interface}
 	{
 		${0}
 	}
 snippet enum
-	enum ${1:MyEnum}
+	public enum ${1:MyEnum}
 	{
 		${2:Item}
 	};
