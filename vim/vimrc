@@ -123,6 +123,31 @@ endif
 " Functions {{{
 
 " ------------------------------------------------------------------------------
+" Get C# Namespace
+" ------------------------------------------------------------------------------
+function! GetCSharpNamespace(filename, levels)
+    let l:directory = fnamemodify(a:filename, ':h') . '/'
+
+    let l:c = 0
+    let l:traversed = []
+
+    while l:c <= a:levels
+        let l:dir_name = fnamemodify(resolve(fnamemodify(l:directory, ':h')), ':t')
+        let l:traversed = l:traversed + [l:dir_name]
+
+        let l:matches = globpath(l:directory, '*.csproj', 0, 1)
+        if !empty(l:matches)
+            break
+        endif
+
+        let l:directory = l:directory . '../'
+        let l:c += 1
+    endwhile
+
+    return join(reverse(traversed), '.')
+endfunction
+
+" ------------------------------------------------------------------------------
 " Escape XML
 " ------------------------------------------------------------------------------
 function! EscapeXml(unescape)
@@ -449,19 +474,6 @@ autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
 
-" Omni complete
-imap <Tab>o <C-X><C-O>
-" Key complete
-imap <Tab>k <C-N>
-" Tag complete
-imap <Tab>t <C-X><C-]>
-" File complete
-imap <Tab>f <C-X><C-F>
-" Snippet complete
-imap <Tab>s <Plug>snipMateShow
-" Line complete
-imap <Tab>l <C-X><C-L>
-
 " ------------------------------------------------------------------------------
 " CtrlP Config
 " ------------------------------------------------------------------------------
@@ -558,8 +570,7 @@ let g:slime_target = 'tmux'
 let g:snipMate = get(g:, 'snipMate', {})
 " Don't insert anything when a snippet isn't found
 let g:snipMate['no_match_completion_feedkeys_chars'] = ''
-" Mappings
-smap <C-J> <Plug>snipMateNextOrTrigger
+let g:snipMate.snippet_version = 1
 
 " ------------------------------------------------------------------------------
 " Tagbar Config
@@ -679,15 +690,6 @@ vnoremap <leader>sG "zy:%g!/<C-R>z/|                     " Inverse Global
 " Tags
 nnoremap <leader>tt :Tags<CR>|                           " Fuzzy-search tags
 nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
-
-" Windows
-nnoremap <leader>wv :vsplit<CR>|                         " Split vertically
-nnoremap <leader>wh :split<CR>|                          " Split horizontally
-nnoremap <leader>w= <C-w>=|                              " Reset size
-nnoremap <leader>h <C-w>h|                               " Navigate left
-nnoremap <leader>j <C-w>j|                               " Navigate down
-nnoremap <leader>k <C-w>k|                               " Navigate up
-nnoremap <leader>l <C-w>l|                               " Navigate right
 
 " }}}
 
