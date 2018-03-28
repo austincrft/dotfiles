@@ -13,31 +13,30 @@ snippet namespace
 	}
 snippet class
 	public class ${1:`Filename()`}
-	{
-		${0}
+	{${0}
 	}
 snippet struct
 	public struct ${1:`Filename()`}
-	{
-		${0}
+	{${0}
 	}
 snippet interface
 	public interface I${1:`Filename()`}
-	{
-		${0}
+	{${0}
 	}
 snippet enum
 	public enum ${1:`Filename()`}
 	{
-		${2:Item}
-	};
+		${2:Item}${0}
+	}
 
 # }}}
 
-# {{{ properties
+# {{{ properties and fields
 
 snippet prop
-	public ${1:int} ${2:MyProperty} { get; set; }
+	public ${1:int} ${2:MyProperty} { get; set; }${0}
+snippet readonly
+	private readonly ${1:int} ${2:field};${0}
 
 # }}}
 

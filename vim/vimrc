@@ -34,6 +34,8 @@ set wildmenu                   " Tab through commands
 set cryptmethod=blowfish2      " Better encryption
 set mouse=a                    " Mouse support
 set diffopt+=vertical          " Prefer vertical diff
+set exrc                       " Allow project-specific vimrc
+set secure                     " Force safety in project-specific vimrc
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 filetype plugin indent on      " Enable filetypes
@@ -441,6 +443,7 @@ call plug#end()
 " Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#hunks#enabled = 0
+let g:airline_symbols_ascii = 1
 
 " ------------------------------------------------------------------------------
 " Ale Config
