@@ -4,7 +4,7 @@ setlocal softtabstop=2
 setlocal shiftwidth=2
 
 " Formatting
-set equalprg=xmllint\ --format\ -
+setlocal equalprg=xmllint\ --format\ -
 
 " Mappings
 vnoremap <buffer> <leader>me :call EscapeXml(0)<CR>| " Escape character codes
