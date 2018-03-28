@@ -4,4 +4,4 @@ setlocal softtabstop=2
 setlocal shiftwidth=2
 
 " Formatting
-set equalprg=python\ -m\ json.tool
+setlocal equalprg=python\ -m\ json.tool
