@@ -27,13 +27,15 @@ set t_Co=16                    " Set terminal color to 16
 set t_md=                      " Turn off bold fonts
 set colorcolumn=80             " Highlight column 80
 set textwidth=80               " Textwidth at column 80
-set formatoptions-=t           " Don't auto-wrap at textwidth
+set formatoptions-=tc          " Don't auto-wrap at textwidth or comments
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
 set wildmenu                   " Tab through commands
 set cryptmethod=blowfish2      " Better encryption
 set mouse=a                    " Mouse support
 set diffopt+=vertical          " Prefer vertical diff
+set exrc                       " Allow project-specific vimrc
+set secure                     " Force safety in project-specific vimrc
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 filetype plugin indent on      " Enable filetypes
@@ -74,6 +76,9 @@ let mapleader=' '
 " Normal Mappings
 " ------------------------------------------------------------------------------
 nnoremap gb :ls<CR>:buffer<Space>
+if (!has('win32'))
+    nnoremap <C-P> :FZF<CR>
+endif
 
 " ------------------------------------------------------------------------------
 " Visual Mappings
@@ -100,6 +105,13 @@ autocmd BufWinEnter *
 set runtimepath=$HOME/.vim,$VIMRUNTIME
 
 " ------------------------------------------------------------------------------
+"  Configure Environment
+" ------------------------------------------------------------------------------
+if !has('win32')
+    let $BASH_ENV = "~/.bash_aliases"
+endif
+
+" ------------------------------------------------------------------------------
 " Persistent Undo -- Keep undo history across sessions by storing in file
 " ------------------------------------------------------------------------------
 if has('persistent_undo')
@@ -111,6 +123,31 @@ endif
 " }}}
 
 " Functions {{{
+
+" ------------------------------------------------------------------------------
+" Get C# Namespace
+" ------------------------------------------------------------------------------
+function! GetCSharpNamespace(filename, levels)
+    let l:directory = fnamemodify(a:filename, ':h') . '/'
+
+    let l:c = 0
+    let l:traversed = []
+
+    while l:c <= a:levels
+        let l:dir_name = fnamemodify(resolve(fnamemodify(l:directory, ':h')), ':t')
+        let l:traversed = l:traversed + [l:dir_name]
+
+        let l:matches = globpath(l:directory, '*.csproj', 0, 1)
+        if !empty(l:matches)
+            break
+        endif
+
+        let l:directory = l:directory . '../'
+        let l:c += 1
+    endwhile
+
+    return join(reverse(traversed), '.')
+endfunction
 
 " ------------------------------------------------------------------------------
 " Escape XML
@@ -196,6 +233,15 @@ function! Ag(text, ...)
     execute 'AsyncRunWithQf ag --vimgrep ' . a:filetype . ' "' . a:text . '"'
 endfunction
 command! -nargs=* -complete=command Ag call Ag(<f-args>)
+
+" ------------------------------------------------------------------------------
+" AgG Command
+" ------------------------------------------------------------------------------
+function! AgG(text, filePattern)
+    execute 'AsyncRun! ag --vimgrep -G ' . a:filePattern . ' "' . a:text . '"'
+    execute 'botright copen'
+endfunction
+command! -nargs=* -complete=command AgG call AgG(<f-args>)
 
 " ------------------------------------------------------------------------------
 " Scratch Command
@@ -306,19 +352,19 @@ Plug 'michaeljsmith/vim-indent-object'
 Plug 'sjl/gundo.vim'
 Plug 'sk1418/QFGrep'
 Plug 'jpalardy/vim-slime'
-Plug 'christoomey/vim-tmux-navigator'
 
 " File browsing
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'tpope/vim-vinegar'
 
-" Terminal fuzzy-searching (no Windows support yet)
+" Terminal fuzzy-searching
 if (!has('win32'))
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+    Plug 'junegunn/fzf.vim'
+else
+    Plug 'ctrlpvim/ctrlp.vim'
 endif
 
 " Auto-Complete
-Plug 'lifepillar/vim-mucomplete'
 Plug 'garbas/vim-snipmate'
     \ | Plug 'marcweber/vim-addon-mw-utils'
     \ | Plug 'tomtom/tlib_vim'
@@ -350,7 +396,9 @@ Plug 'fatih/vim-go', { 'for': ['go', 'markdown'] }
 Plug 'alvan/vim-closetag'
 
 " JavaScript
+Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'markdown'], 'do': 'npm install' }
+Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': 'javascript' }
 
 " Markdown
 Plug 'tpope/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
@@ -364,6 +412,9 @@ Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 " Scala
 Plug 'derekwyatt/vim-scala', { 'for': ['scala', 'markdown'] }
 
+" SQL
+Plug 'vim-scripts/dbext.vim', { 'for': 'sql' }
+
 " TypeScript
 Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'markdown'] }
 Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
@@ -374,6 +425,7 @@ Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
 Plug 'w0rp/ale'
 
 " Tags
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
 " Testing
@@ -402,11 +454,13 @@ call plug#end()
 " Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#hunks#enabled = 0
+let g:airline_symbols_ascii = 1
 
 " ------------------------------------------------------------------------------
 " Ale Config
 " ------------------------------------------------------------------------------
 let g:ale_lint_on_text_changed = 'never'
+let g:ale_linters = {'cs': []}
 
 " ------------------------------------------------------------------------------
 " CloseTag Config
@@ -429,7 +483,7 @@ autocmd FileType sql setlocal commentstring=--\ %s
 " ------------------------------------------------------------------------------
 " Completion Config
 " ------------------------------------------------------------------------------
-autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+" autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
@@ -461,6 +515,29 @@ let g:fsharp_map_keys = 0
 let g:fsharp_completion_helptext = 0
 
 " ------------------------------------------------------------------------------
+" FZF Config
+" ------------------------------------------------------------------------------
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
+" ------------------------------------------------------------------------------
+" File Extension Config
+" ------------------------------------------------------------------------------
+autocmd BufRead,BufNewFile,BufEnter *.js set filetype=javascript
+
+" ------------------------------------------------------------------------------
 " Goyo Config
 " ------------------------------------------------------------------------------
 let g:goyo_width=81
@@ -474,27 +551,21 @@ let g:jedi#auto_initialization = 0
 let g:jedi#show_call_signatures = 0
 
 " ------------------------------------------------------------------------------
-" MUcomplete Config
-" ------------------------------------------------------------------------------
-let g:mucomplete#user_mappings = { 'snip' : "\<plug>snipMateShow" }
-let g:mucomplete#chains = {
-  \ 'default' : ['snip', 'path', 'omni', 'keyn', 'dict'],
-  \ }
-" Remap so can be used <C-J>
-imap <_> <plug>(MUcompleteCycFwd)
-imap <expr> <C-J> (pumvisible() ? "\<c-y>" : "")
-\               . "\<plug>snipMateNextOrTrigger"
-
-" ------------------------------------------------------------------------------
 " Netrw Config
 " ------------------------------------------------------------------------------
 let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 
-"
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
 let g:OmniSharp_server_type = 'v1'
+let g:Omnisharp_start_server = 0
+
+" ------------------------------------------------------------------------------
+" Prettier Config
+" ------------------------------------------------------------------------------
+let g:prettier#autoformat = 1
+let g:prettier#exec_cmd_async = 1
 
 " ------------------------------------------------------------------------------
 " Signature Config
@@ -512,11 +583,15 @@ let g:slime_target = 'tmux'
 " ------------------------------------------------------------------------------
 " Prevents errors after sourcing .vimrc
 let g:snipMate = get(g:, 'snipMate', {})
+" Don't insert anything when a snippet isn't found
 let g:snipMate['no_match_completion_feedkeys_chars'] = ''
+let g:snipMate.snippet_version = 1
 
 " ------------------------------------------------------------------------------
 " Tagbar Config
 " ------------------------------------------------------------------------------
+let g:tagbar_vertical = 30
+let g:tagbar_map_showproto = 'o'
 let g:tagbar_type_typescript = {
   \ 'kinds': [
     \ 'n:namespace:0:1',
@@ -605,8 +680,13 @@ nnoremap <leader>pc :pclose<CR>|                         " Close preview-window
 nnoremap <leader>pT :call RunCtags()<CR>|                " Async ctags generate
 
 " Grep
-nnoremap <leader>gg :Ag |                                " Grep
-vnoremap <leader>gg "zy:Ag <C-R>z |                      " Visual grep
+nnoremap <leader>gg :Ag |                                 " Grep
+vnoremap <leader>gg "zy:Ag <C-R>z |                       " Visual grep
+nnoremap <leader>gG :AgG |                                " Grep
+vnoremap <leader>gG "zy:AgG <C-R>z |                      " Visual grep
+
+" Git
+nnoremap <leader>gs :GFiles?<CR>|                         " Git status
 
 " Quickfix
 nnoremap <leader>qo :botright copen<CR>|                 " Open (full width)
@@ -616,25 +696,15 @@ nnoremap <leader>qk :cprevious<CR>|                      " Previous
 
 " Substitute & Global
 nnoremap <leader>ss :%s/|                                " Substitute
+vnoremap <leader>ss "zy:%s/<C-R>z/|                      " Substitute
 nnoremap <leader>sg :%g/|                                " Global
+vnoremap <leader>sg "zy:%g/<C-R>z/|                      " Global
 nnoremap <leader>sG :%g!/|                               " Inverse Global
-
-" Spelling
-nnoremap <leader>Ss :setlocal spell spelllang=en_us<CR>| " Activate spelling
-nnoremap <leader>SS :setlocal nospell<CR>|               " Disable spelling
-nnoremap <leader>Sf z=|                                  " Fix word
+vnoremap <leader>sG "zy:%g!/<C-R>z/|                     " Inverse Global
 
 " Tags
-nnoremap <leader>tt :TagbarOpenAutoClose<CR>|            " Open Tagbar
-
-" Windows
-nnoremap <leader>wv :vsplit<CR>|                         " Split vertically
-nnoremap <leader>wh :split<CR>|                          " Split horizontally
-nnoremap <leader>w= <C-w>=|                              " Reset size
-nnoremap <leader>h <C-w>h|                               " Navigate left
-nnoremap <leader>j <C-w>j|                               " Navigate down
-nnoremap <leader>k <C-w>k|                               " Navigate up
-nnoremap <leader>l <C-w>l|                               " Navigate right
+nnoremap <leader>tt :Tags<CR>|                           " Fuzzy-search tags
+nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
 
 " }}}
 
