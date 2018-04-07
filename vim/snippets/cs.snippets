@@ -7,39 +7,36 @@
 # {{{ classes and structs
 
 snippet namespace
-	namespace ${1:MyNamespace}
+	namespace ${1:`GetCSharpNamespace(@%, 10)`}
 	{
-		{VISUAL}${0}
+		${0}
 	}
 snippet class
-	class ${1:MyClass}
-	{
-		${0}
+	public class ${1:`Filename()`}
+	{${0}
 	}
 snippet struct
-	struct ${1:MyStruct}
-	{
-		${0}
+	public struct ${1:`Filename()`}
+	{${0}
 	}
 snippet interface
-	interface I${1:Interface}
-	{
-		${0}
+	public interface I${1:`Filename()`}
+	{${0}
 	}
 snippet enum
-	enum ${1:MyEnum}
+	public enum ${1:`Filename()`}
 	{
-		${2:Item}
-	};
+		${2:Item}${0}
+	}
 
 # }}}
 
-# {{{ properties
+# {{{ properties and fields
 
-snippet proppub
-	public ${1:int} ${2:MyProperty} { get; set; }
-snippet proppriv
-	public ${1:int} ${2:MyProperty} { get; private set; }
+snippet prop
+	public ${1:int} ${2:MyProperty} { get; set; }${0}
+snippet readonly
+	private readonly ${1:int} ${2:field};${0}
 
 # }}}
 
@@ -48,12 +45,12 @@ snippet proppriv
 snippet for
 	for (var ${1:i} = 0; ${1} < ${2:10}; ${1}++)
 	{
-		{VISUAL}${0}
+		${0}
 	}
 snippet foreach
 	foreach (var ${1:item} in ${2:items})
 	{
-		{VISUAL}${0}
+		${0}
 	}
 
 # }}}
@@ -63,35 +60,37 @@ snippet foreach
 snippet if
 	if (${1})
 	{
-		{VISUAL}${0}
-	}
-snippet ife
-	if (${1})
-	{
-		{VISUAL}${2}
-	}
-	else
-	{
-		${0}
-	}
+		${2}
+	}${0}
 snippet elif
 	else if (${1})
 	{
-		${0}
-	}
+		${2}
+	}${0}
+snippet else
+	else
+	{
+		${1}
+	}${0}
+snippet ifn
+	if (${1} == null)
+	{
+		${2}
+	}${0}
 snippet ifnn
 	if (${1} != null)
 	{
-		{VISUAL}${0}
-	}
+		${2}
+	}${0}
 snippet switch
 	switch (${1:statement})
 	{
 		case ${2:value}:
+			${3}
 			break;
-
 		default:
-			${0}break;
+			${0}
+			break;
 	}
 snippet case
 	case ${1:value}:
@@ -105,7 +104,7 @@ snippet case
 snippet using
 	using (${1:resource})
 	{
-		{VISUAL}${0}
+		${0}
 	}
 
 # }}}
@@ -115,7 +114,7 @@ snippet using
 snippet try
 	try
 	{
-		{VISUAL}${0}
+		${0}
 	}
 	catch (${1:Exception} ${2:e})
 	{
@@ -127,6 +126,12 @@ snippet throw
 # }}}
 
 # {{{ full methods
+
+snippet meth
+	${1:public} ${2:void} ${3:MethodName}(${4})
+	{
+		${0}
+	}
 
 snippet ctor
 	public ${1:`Filename()`}(${2})
@@ -147,8 +152,21 @@ snippet ///
 
 # {{{ testing
 
+snippet init
+	[TestInitialize]
+	public void Initialize()
+	{
+		${0}
+	}
+snippet cleanup
+	[TestCleanup]
+	public void Cleanup()
+	{
+		${0}
+	}
 snippet unittest
-	public void ${1}_${2}_${3}()
+	[TestMethod]
+	public void ${1:Method}_${2:Scenario}_${3:Result}()
 	{
 		// Arrange
 		${4}

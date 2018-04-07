@@ -89,3 +89,10 @@ if [[ $platform == 'darwin' ]]; then
     findman=/usr/local/opt/findutils/share/man
     MANPATH="$gnuman:$findman:${MANPATH-/usr/share/man}"
 fi
+
+# X Server Copy for WSL
+if [[ -f /proc/sys/kernel/osrelease ]]; then
+    if grep -q Microsoft /proc/sys/kernel/osrelease; then
+        export DISPLAY=localhost:0.0
+    fi
+fi
