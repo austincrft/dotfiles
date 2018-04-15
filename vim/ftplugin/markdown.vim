@@ -1,2 +1,3 @@
 " Don't auto-insert linebreaks at textwidth
-set formatoptions-=t
+setlocal formatoptions-=t
+setlocal formatoptions-=c
