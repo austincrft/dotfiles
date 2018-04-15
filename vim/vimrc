@@ -35,6 +35,8 @@ set wildmenu                   " Tab through commands
 set cryptmethod=blowfish2      " Better encryption
 set mouse=a                    " Mouse support
 set diffopt+=vertical          " Prefer vertical diff
+set exrc                       " Allow project-specific vimrc
+set secure                     " Force safety in project-specific vimrc
 syntax on                      " Turn on syntax
 syntax enable                  " Enable syntax
 filetype plugin indent on      " Enable filetypes
@@ -101,7 +103,14 @@ autocmd BufWinEnter *
 " ------------------------------------------------------------------------------
 "  Configure Directories
 " ------------------------------------------------------------------------------
-set runtimepath=$HOME/.vim,$VIMRUNTIME
+set runtimepath=$HOME/.vim,$HOME/.vim/after,$VIMRUNTIME
+
+" ------------------------------------------------------------------------------
+"  Configure Environment
+" ------------------------------------------------------------------------------
+if !has('win32')
+    let $BASH_ENV = "~/.bash_aliases"
+endif
 
 " ------------------------------------------------------------------------------
 " Persistent Undo -- Keep undo history across sessions by storing in file
@@ -130,6 +139,31 @@ endif
 " }}}
 
 " Functions {{{
+
+" ------------------------------------------------------------------------------
+" Get C# Namespace
+" ------------------------------------------------------------------------------
+function! GetCSharpNamespace(filename, levels)
+    let l:directory = fnamemodify(a:filename, ':h') . '/'
+
+    let l:c = 0
+    let l:traversed = []
+
+    while l:c <= a:levels
+        let l:dir_name = fnamemodify(resolve(fnamemodify(l:directory, ':h')), ':t')
+        let l:traversed = l:traversed + [l:dir_name]
+
+        let l:matches = globpath(l:directory, '*.csproj', 0, 1)
+        if !empty(l:matches)
+            break
+        endif
+
+        let l:directory = l:directory . '../'
+        let l:c += 1
+    endwhile
+
+    return join(reverse(traversed), '.')
+endfunction
 
 " ------------------------------------------------------------------------------
 " Escape XML
@@ -212,8 +246,7 @@ endfunction
 " ------------------------------------------------------------------------------
 function! Ag(text, ...)
     let a:filetype = get(a:, 1, '')
-    execute 'AsyncRun! ag --vimgrep ' . a:filetype . ' "' . a:text . '"'
-    execute 'botright copen'
+    execute 'AsyncRunWithQf ag --vimgrep ' . a:filetype . ' "' . a:text . '"'
 endfunction
 command! -nargs=* -complete=command Ag call Ag(<f-args>)
 
@@ -265,6 +298,18 @@ function! DeleteInactiveBufs()
 endfunction
 command! -nargs=0 -complete=command DeleteInactiveBufs call DeleteInactiveBufs()
 
+" ------------------------------------------------------------------------------
+" AsyncRunWithQf Command
+" ------------------------------------------------------------------------------
+function! AsyncRunWithQf(cmd)
+    execute 'AsyncRun! ' . a:cmd
+    execute 'botright copen'
+endfunction
+command! -nargs=1 -complete=command AsyncRunWithQf call AsyncRunWithQf(<f-args>)
+
+" ------------------------------------------------------------------------------
+" CopyFilePath Command
+" ------------------------------------------------------------------------------
 function! CopyFilePath()
      let @+ = expand('%:p')
 endfunction
@@ -336,7 +381,6 @@ else
 endif
 
 " Auto-Complete
-Plug 'lifepillar/vim-mucomplete'
 Plug 'garbas/vim-snipmate'
     \ | Plug 'marcweber/vim-addon-mw-utils'
     \ | Plug 'tomtom/tlib_vim'
@@ -384,6 +428,9 @@ Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 " Scala
 Plug 'derekwyatt/vim-scala', { 'for': ['scala', 'markdown'] }
 
+" SQL
+Plug 'vim-scripts/dbext.vim', { 'for': 'sql' }
+
 " TypeScript
 Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'markdown'] }
 Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
@@ -394,6 +441,7 @@ Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
 Plug 'w0rp/ale'
 
 " Tags
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
 " Testing
@@ -422,11 +470,13 @@ call plug#end()
 " Airline Config
 " ------------------------------------------------------------------------------
 let g:airline#extensions#hunks#enabled = 0
+let g:airline_symbols_ascii = 1
 
 " ------------------------------------------------------------------------------
 " Ale Config
 " ------------------------------------------------------------------------------
 let g:ale_lint_on_text_changed = 'never'
+let g:ale_linters = {'cs': []}
 
 " ------------------------------------------------------------------------------
 " CloseTag Config
@@ -452,7 +502,7 @@ autocmd FileType sql setlocal commentstring=--\ %s
 " ------------------------------------------------------------------------------
 " Completion Config
 " ------------------------------------------------------------------------------
-autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+" autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
@@ -517,18 +567,7 @@ let g:goyo_width=81
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#popup_on_dot = 0
 let g:jedi#auto_initialization = 0
-
-" ------------------------------------------------------------------------------
-" MUcomplete Config
-" ------------------------------------------------------------------------------
-let g:mucomplete#user_mappings = { 'snip' : "\<plug>snipMateShow" }
-let g:mucomplete#chains = {
-  \ 'default' : ['snip', 'path', 'omni', 'keyn', 'dict'],
-  \ }
-" Remap so can be used <C-J>
-imap <_> <plug>(MUcompleteCycFwd)
-imap <expr> <C-J> (pumvisible() ? "\<c-y>" : "")
-\               . "\<plug>snipMateNextOrTrigger"
+let g:jedi#show_call_signatures = 0
 
 " ------------------------------------------------------------------------------
 " Netrw Config
@@ -539,6 +578,7 @@ let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 " OmniSharp Config
 " ------------------------------------------------------------------------------
 let g:OmniSharp_server_type = 'v1'
+let g:Omnisharp_start_server = 0
 
 " ------------------------------------------------------------------------------
 " Prettier Config
@@ -562,11 +602,15 @@ let g:slime_target = 'tmux'
 " ------------------------------------------------------------------------------
 " Prevents errors after sourcing .vimrc
 let g:snipMate = get(g:, 'snipMate', {})
+" Don't insert anything when a snippet isn't found
 let g:snipMate['no_match_completion_feedkeys_chars'] = ''
+let g:snipMate.snippet_version = 1
 
 " ------------------------------------------------------------------------------
 " Tagbar Config
 " ------------------------------------------------------------------------------
+let g:tagbar_vertical = 30
+let g:tagbar_map_showproto = 'o'
 let g:tagbar_type_typescript = {
   \ 'kinds': [
     \ 'n:namespace:0:1',
@@ -675,22 +719,9 @@ vnoremap <leader>sg "zy:%g/<C-R>z/|                      " Global
 nnoremap <leader>sG :%g!/|                               " Inverse Global
 vnoremap <leader>sG "zy:%g!/<C-R>z/|                     " Inverse Global
 
-" Spelling
-nnoremap <leader>Ss :setlocal spell spelllang=en_us<CR>| " Activate spelling
-nnoremap <leader>SS :setlocal nospell<CR>|               " Disable spelling
-nnoremap <leader>Sf z=|                                  " Fix word
-
 " Tags
-nnoremap <leader>tt :TagbarOpenAutoClose<CR>|            " Open Tagbar
-
-" Windows
-nnoremap <leader>wv :vsplit<CR>|                         " Split vertically
-nnoremap <leader>wh :split<CR>|                          " Split horizontally
-nnoremap <leader>w= <C-w>=|                              " Reset size
-nnoremap <leader>h <C-w>h|                               " Navigate left
-nnoremap <leader>j <C-w>j|                               " Navigate down
-nnoremap <leader>k <C-w>k|                               " Navigate up
-nnoremap <leader>l <C-w>l|                               " Navigate right
+nnoremap <leader>tt :Tags<CR>|                           " Fuzzy-search tags
+nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
 
 " }}}
 
