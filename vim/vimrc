@@ -28,6 +28,7 @@ set t_md=                      " Turn off bold fonts
 set colorcolumn=80             " Highlight column 80
 set textwidth=80               " Textwidth at column 80
 set formatoptions-=t           " Don't auto-wrap at textwidth
+set formatoptions-=o           " Don't auto-insert comment character
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
 set wildmenu                   " Tab through commands
@@ -78,7 +79,6 @@ if (!has('win32'))
     nnoremap <C-P> :FZF<CR>
 endif
 
-
 " ------------------------------------------------------------------------------
 " Visual Mappings
 " ------------------------------------------------------------------------------
@@ -110,6 +110,21 @@ if has('persistent_undo')
     silent !mkdir ~/.vim/backups > /dev/null 2>&1
     set undodir=~/.vim/backups
     set undofile
+endif
+
+" ------------------------------------------------------------------------------
+" GVIM
+" ------------------------------------------------------------------------------
+if has("gui_running")
+    set guifont=ProggyCleanTT:h12
+    set lines=45
+    set columns=125
+    set encoding=utf-8
+
+    set guioptions-=m
+    set guioptions-=T
+    set guioptions-=r
+    set guioptions-=L
 endif
 
 " }}}
@@ -421,6 +436,9 @@ let g:closetag_filenames = '*.html,*.xml,*.config'
 " ------------------------------------------------------------------------------
 " Color Scheme
 " ------------------------------------------------------------------------------
+let g:solarized_bold = 0
+let g:solarized_underline = 0
+let g:solarized_italic = 0
 set background=dark
 colorscheme solarized
 
@@ -607,8 +625,6 @@ nnoremap <leader>bo :BufOnly<CR>|                        " Keep only this buffer
 nnoremap <leader>bO :DeleteInactiveBufs<CR>|             " Delete buffers
 
 " Formatting
-nnoremap <leader>fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
-nnoremap <leader>fA :setlocal formatoptions-=a<CR>|      " Disable auto-format
 nnoremap <leader>fw :call ToggleWrap()<CR>|              " Toggle wrap
 
 " Linting (Errors)
