@@ -91,6 +91,8 @@ if [[ $platform == 'darwin' ]]; then
 fi
 
 # X Server Copy for WSL
-if grep -q Microsoft /proc/sys/kernel/osrelease; then
-    export DISPLAY=localhost:0.0
+if [[ -f /proc/sys/kernel/osrelease ]]; then
+    if grep -q Microsoft /proc/sys/kernel/osrelease; then
+        export DISPLAY=localhost:0.0
+    fi
 fi
