@@ -102,7 +102,7 @@ autocmd BufWinEnter *
 " ------------------------------------------------------------------------------
 "  Configure Directories
 " ------------------------------------------------------------------------------
-set runtimepath=$HOME/.vim,$VIMRUNTIME
+set runtimepath=$HOME/.vim,$HOME/.vim/after,$VIMRUNTIME
 
 " ------------------------------------------------------------------------------
 "  Configure Environment

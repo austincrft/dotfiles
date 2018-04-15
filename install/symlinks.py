@@ -13,7 +13,7 @@ all_os_files = {
     'universal-ctags/ctags': '~/.ctags',
 
     'vim/snippets/': '~/.vim/snippets',
-    'vim/ftplugin/': '~/.vim/ftplugin',
+    'vim/ftplugin/': '~/.vim/after/ftplugin',
     'vim/vimrc': '~/.vimrc'
 }
 
