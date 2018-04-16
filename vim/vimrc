@@ -367,7 +367,6 @@ Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'sjl/gundo.vim'
 Plug 'sk1418/QFGrep'
-Plug 'jpalardy/vim-slime'
 
 " File browsing
 Plug 'tpope/vim-vinegar'
@@ -452,7 +451,6 @@ Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-dispatch'
 Plug 'skywind3000/asyncrun.vim'
-Plug 'vim-scripts/BufOnly.vim'
 Plug 'vimwiki/vimwiki'
 
 " Visuals
@@ -665,7 +663,6 @@ vnoremap <leader>v "+p|                                  " Paste (visual)
 
 " Buffer
 nnoremap <leader><Tab> :b#<CR>|                          " Switch to last buffer
-nnoremap <leader>bo :BufOnly<CR>|                        " Keep only this buffer
 nnoremap <leader>bO :DeleteInactiveBufs<CR>|             " Delete buffers
 
 " Formatting
@@ -681,7 +678,7 @@ nnoremap <leader>ek :lprevious<CR>|                      " Previous
 " Meta
 nnoremap <leader>_d :e $MYVIMRC<CR>|                     " Edit .vimrc
 nnoremap <leader>_r :source $MYVIMRC<CR>|                " Reload .vimrc
-nnoremap <leader>_f :Explore $HOME/.vim/ftplugin<CR>|    " Open ftplugins
+nnoremap <leader>_f :Explore $HOME/.vim/after/ftplugin<CR>
 nnoremap <leader>_b :call ToggleBackground()<CR>|        " Toggle background
 
 " Make
@@ -693,23 +690,16 @@ nnoremap <leader>uu :GundoToggle<CR>|                    " View undo tree
 " Project
 nnoremap <leader>pt :Explore .<CR>|                      " Open cwd
 nnoremap <leader>pf :Explore<CR>|                        " Open buffer directory
-nnoremap <leader>pc :pclose<CR>|                         " Close preview-window
-nnoremap <leader>pT :call RunCtags()<CR>|                " Async ctags generate
 
 " Grep
-nnoremap <leader>gg :Ag |                                 " Grep
-vnoremap <leader>gg "zy:Ag <C-R>z |                       " Visual grep
-nnoremap <leader>gG :AgG |                                " Grep
-vnoremap <leader>gG "zy:AgG <C-R>z |                      " Visual grep
-
-" Git
-nnoremap <leader>gs :GFiles?<CR>|                         " Git status
+nnoremap <leader>gg :Ag |                                " Grep
+vnoremap <leader>gg "zy:Ag <C-R>z |                      " Visual grep
+nnoremap <leader>gG :AgG |                               " Grep
+vnoremap <leader>gG "zy:AgG <C-R>z |                     " Visual grep
 
 " Quickfix
 nnoremap <leader>qo :botright copen<CR>|                 " Open (full width)
 nnoremap <leader>qc :cclose<CR>|                         " Close
-nnoremap <leader>qj :cnext<CR>|                          " Next
-nnoremap <leader>qk :cprevious<CR>|                      " Previous
 
 " Substitute & Global
 nnoremap <leader>ss :%s/|                                " Substitute
