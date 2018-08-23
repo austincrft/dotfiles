@@ -90,9 +90,13 @@ if [[ $platform == 'darwin' ]]; then
     MANPATH="$gnuman:$findman:${MANPATH-/usr/share/man}"
 fi
 
-# X Server Copy for WSL
 if [[ -f /proc/sys/kernel/osrelease ]]; then
+    # Windows Subsystem for Linux Settings
     if grep -q Microsoft /proc/sys/kernel/osrelease; then
+        # X Server Copy for WSL
         export DISPLAY=localhost:0.0
+
+        # Connect WSL to docker for Windows
+        export DOCKER_HOST=tcp://0.0.0.0:2375
     fi
 fi
