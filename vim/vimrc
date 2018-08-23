@@ -1,4 +1,4 @@
-﻿" Set local foldmarker
+" Set local foldmarker
 " vim:fdm=marker
 
 " Editor {{{
@@ -500,7 +500,7 @@ autocmd FileType sql setlocal commentstring=--\ %s
 " ------------------------------------------------------------------------------
 " Completion Config
 " ------------------------------------------------------------------------------
-" autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
@@ -575,8 +575,9 @@ let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
-let g:OmniSharp_server_type = 'v1'
-let g:Omnisharp_start_server = 0
+let g:OmniSharp_loglevel = 'info'
+let g:OmniSharp_start_server = 0
+let g:OmniSharp_server_type = 'roslyn'
 
 " ------------------------------------------------------------------------------
 " Prettier Config
@@ -611,16 +612,14 @@ let g:tagbar_vertical = 30
 let g:tagbar_map_showproto = 'o'
 let g:tagbar_type_typescript = {
   \ 'kinds': [
-    \ 'n:namespace:0:1',
-    \ 'e:enums:0:1',
-    \ 'M:module:0:1',
-    \ 'I:import:0:1',
-    \ 'f:function:0:1',
-    \ 't:type:0:1',
-    \ 'i:interface:0:1',
-    \ 'c:class:0:1',
-    \ 'm:member:0:1',
-    \ 'v:variable:0:1',
+  \ "n:namespace:0:1",
+  \ "c:class:0:1",
+  \ "e:enum:0:1",
+  \ "i:interface:0:1",
+  \ "m:member:0:3",
+  \ "f:function:0:2",
+  \ "v:variable:0:2",
+  \ "V:varlambda:0:2"
   \ ],
   \ 'sort' : 0
 \ }
@@ -711,6 +710,7 @@ vnoremap <leader>sG "zy:%g!/<C-R>z/|                     " Inverse Global
 
 " Tags
 nnoremap <leader>tt :Tags<CR>|                           " Fuzzy-search tags
+nnoremap <leader>tl :BTags<CR>|                          " Fuzzy-search tags
 nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
 
 " }}}
