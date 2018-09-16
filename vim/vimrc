@@ -1,4 +1,4 @@
-﻿" Set local foldmarker
+" Set local foldmarker
 " vim:fdm=marker
 
 " Editor {{{
@@ -27,7 +27,8 @@ set t_Co=16                    " Set terminal color to 16
 set t_md=                      " Turn off bold fonts
 set colorcolumn=80             " Highlight column 80
 set textwidth=80               " Textwidth at column 80
-set formatoptions-=tc          " Don't auto-wrap at textwidth or comments
+set formatoptions-=t           " Don't auto-wrap at textwidth
+set formatoptions-=o           " Don't auto-insert comment character
 set cursorline                 " Highlight current line
 set completeopt=menuone        " Complete option (don't show preview)
 set wildmenu                   " Tab through commands
@@ -102,7 +103,14 @@ autocmd BufWinEnter *
 " ------------------------------------------------------------------------------
 "  Configure Directories
 " ------------------------------------------------------------------------------
-set runtimepath=$HOME/.vim,$VIMRUNTIME
+set runtimepath=$HOME/.vim,$HOME/.vim/after,$VIMRUNTIME
+
+" ------------------------------------------------------------------------------
+"  Configure Environment
+" ------------------------------------------------------------------------------
+if !has('win32')
+    let $BASH_ENV = "~/.bash_aliases"
+endif
 
 " ------------------------------------------------------------------------------
 "  Configure Environment
@@ -118,6 +126,21 @@ if has('persistent_undo')
     silent !mkdir ~/.vim/backups > /dev/null 2>&1
     set undodir=~/.vim/backups
     set undofile
+endif
+
+" ------------------------------------------------------------------------------
+" GVIM
+" ------------------------------------------------------------------------------
+if has("gui_running")
+    set guifont=ProggyCleanTT:h12
+    set lines=45
+    set columns=125
+    set encoding=utf-8
+
+    set guioptions-=m
+    set guioptions-=T
+    set guioptions-=r
+    set guioptions-=L
 endif
 
 " }}}
@@ -351,7 +374,6 @@ Plug 'tpope/vim-repeat'
 Plug 'michaeljsmith/vim-indent-object'
 Plug 'sjl/gundo.vim'
 Plug 'sk1418/QFGrep'
-Plug 'jpalardy/vim-slime'
 
 " File browsing
 Plug 'tpope/vim-vinegar'
@@ -436,7 +458,6 @@ Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'kshenoy/vim-signature'
 Plug 'tpope/vim-dispatch'
 Plug 'skywind3000/asyncrun.vim'
-Plug 'vim-scripts/BufOnly.vim'
 Plug 'vimwiki/vimwiki'
 
 " Visuals
@@ -470,6 +491,9 @@ let g:closetag_filenames = '*.html,*.xml,*.config'
 " ------------------------------------------------------------------------------
 " Color Scheme
 " ------------------------------------------------------------------------------
+let g:solarized_bold = 0
+let g:solarized_underline = 0
+let g:solarized_italic = 0
 set background=dark
 colorscheme solarized
 
@@ -483,7 +507,7 @@ autocmd FileType sql setlocal commentstring=--\ %s
 " ------------------------------------------------------------------------------
 " Completion Config
 " ------------------------------------------------------------------------------
-" autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
@@ -558,8 +582,9 @@ let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
-let g:OmniSharp_server_type = 'v1'
-let g:Omnisharp_start_server = 0
+let g:OmniSharp_loglevel = 'info'
+let g:OmniSharp_start_server = 0
+let g:OmniSharp_server_type = 'roslyn'
 
 " ------------------------------------------------------------------------------
 " Prettier Config
@@ -594,16 +619,14 @@ let g:tagbar_vertical = 30
 let g:tagbar_map_showproto = 'o'
 let g:tagbar_type_typescript = {
   \ 'kinds': [
-    \ 'n:namespace:0:1',
-    \ 'e:enums:0:1',
-    \ 'M:module:0:1',
-    \ 'I:import:0:1',
-    \ 'f:function:0:1',
-    \ 't:type:0:1',
-    \ 'i:interface:0:1',
-    \ 'c:class:0:1',
-    \ 'm:member:0:1',
-    \ 'v:variable:0:1',
+  \ "n:namespace:0:1",
+  \ "c:class:0:1",
+  \ "e:enum:0:1",
+  \ "i:interface:0:1",
+  \ "m:member:0:3",
+  \ "f:function:0:2",
+  \ "v:variable:0:2",
+  \ "V:varlambda:0:2"
   \ ],
   \ 'sort' : 0
 \ }
@@ -646,12 +669,9 @@ vnoremap <leader>v "+p|                                  " Paste (visual)
 
 " Buffer
 nnoremap <leader><Tab> :b#<CR>|                          " Switch to last buffer
-nnoremap <leader>bo :BufOnly<CR>|                        " Keep only this buffer
 nnoremap <leader>bO :DeleteInactiveBufs<CR>|             " Delete buffers
 
 " Formatting
-nnoremap <leader>fa :setlocal formatoptions+=a<CR>|      " Activate auto-format
-nnoremap <leader>fA :setlocal formatoptions-=a<CR>|      " Disable auto-format
 nnoremap <leader>fw :call ToggleWrap()<CR>|              " Toggle wrap
 
 " Linting (Errors)
@@ -664,7 +684,7 @@ nnoremap <leader>ek :lprevious<CR>|                      " Previous
 " Meta
 nnoremap <leader>_d :e $MYVIMRC<CR>|                     " Edit .vimrc
 nnoremap <leader>_r :source $MYVIMRC<CR>|                " Reload .vimrc
-nnoremap <leader>_f :Explore $HOME/.vim/ftplugin<CR>|    " Open ftplugins
+nnoremap <leader>_f :Explore $HOME/.vim/after/ftplugin<CR>
 nnoremap <leader>_b :call ToggleBackground()<CR>|        " Toggle background
 
 " Make
@@ -676,23 +696,16 @@ nnoremap <leader>uu :GundoToggle<CR>|                    " View undo tree
 " Project
 nnoremap <leader>pt :Explore .<CR>|                      " Open cwd
 nnoremap <leader>pf :Explore<CR>|                        " Open buffer directory
-nnoremap <leader>pc :pclose<CR>|                         " Close preview-window
-nnoremap <leader>pT :call RunCtags()<CR>|                " Async ctags generate
 
 " Grep
-nnoremap <leader>gg :Ag |                                 " Grep
-vnoremap <leader>gg "zy:Ag <C-R>z |                       " Visual grep
-nnoremap <leader>gG :AgG |                                " Grep
-vnoremap <leader>gG "zy:AgG <C-R>z |                      " Visual grep
-
-" Git
-nnoremap <leader>gs :GFiles?<CR>|                         " Git status
+nnoremap <leader>gg :Ag |                                " Grep
+vnoremap <leader>gg "zy:Ag <C-R>z |                      " Visual grep
+nnoremap <leader>gG :AgG |                               " Grep
+vnoremap <leader>gG "zy:AgG <C-R>z |                     " Visual grep
 
 " Quickfix
 nnoremap <leader>qo :botright copen<CR>|                 " Open (full width)
 nnoremap <leader>qc :cclose<CR>|                         " Close
-nnoremap <leader>qj :cnext<CR>|                          " Next
-nnoremap <leader>qk :cprevious<CR>|                      " Previous
 
 " Substitute & Global
 nnoremap <leader>ss :%s/|                                " Substitute
@@ -704,6 +717,7 @@ vnoremap <leader>sG "zy:%g!/<C-R>z/|                     " Inverse Global
 
 " Tags
 nnoremap <leader>tt :Tags<CR>|                           " Fuzzy-search tags
+nnoremap <leader>tl :BTags<CR>|                          " Fuzzy-search tags
 nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
 
 " }}}
