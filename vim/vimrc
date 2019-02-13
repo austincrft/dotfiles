@@ -393,16 +393,9 @@ Plug 'tpope/vim-fugitive'
 
 " Languages {{{
 
-" Clojure
-Plug 'tpope/vim-fireplace', { 'for': ['clojure', 'markdown'] }
-
 " CSharp
 Plug 'OrangeT/vim-csharp', { 'for': ['cs', 'markdown'] }
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
-Plug 'juliosueiras/cakebuild.vim', { 'for': 'cake' }
-
-" FSharp
-Plug 'fsharp/vim-fsharp', { 'for': ['fsharp', 'markdown'], 'do': 'make' }
 
 " Go
 Plug 'fatih/vim-go', { 'for': ['go', 'markdown'] }
@@ -412,8 +405,7 @@ Plug 'alvan/vim-closetag'
 
 " JavaScript
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
-Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'markdown'], 'do': 'npm install' }
-Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': 'javascript' }
+Plug 'prettier/vim-prettier', { 'do': 'npm ci', 'for': ['javascript', 'typescript'] }
 
 " Markdown
 Plug 'tpope/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
@@ -423,12 +415,6 @@ Plug 'PProvost/vim-ps1', { 'for': ['ps1', 'markdown'] }
 
 " Python
 Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-
-" Scala
-Plug 'derekwyatt/vim-scala', { 'for': ['scala', 'markdown'] }
-
-" SQL
-Plug 'vim-scripts/dbext.vim', { 'for': 'sql' }
 
 " TypeScript
 Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'markdown'] }
@@ -449,9 +435,7 @@ Plug 'janko-m/vim-test'
 " Tools
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'kshenoy/vim-signature'
-Plug 'tpope/vim-dispatch'
 Plug 'skywind3000/asyncrun.vim'
-Plug 'vimwiki/vimwiki'
 
 " Visuals
 Plug 'altercation/vim-colors-solarized'
@@ -475,6 +459,12 @@ let g:airline_symbols_ascii = 1
 " ------------------------------------------------------------------------------
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_linters = {'cs': []}
+let g:ale_fixers = {
+\   'typescript': [
+\       'prettier',
+\       'tslint',
+\   ],
+\}
 
 " ------------------------------------------------------------------------------
 " CloseTag Config
@@ -495,6 +485,7 @@ colorscheme solarized
 " ------------------------------------------------------------------------------
 autocmd FileType cs setlocal commentstring=//\ %s
 autocmd FileType dosbatch setlocal commentstring=::\ %s
+autocmd FileType json setlocal commentstring=//\ %s
 autocmd FileType sql setlocal commentstring=--\ %s
 
 " ------------------------------------------------------------------------------
@@ -575,14 +566,13 @@ let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
-let g:OmniSharp_loglevel = 'info'
-let g:OmniSharp_start_server = 0
-let g:OmniSharp_server_type = 'roslyn'
+" let g:OmniSharp_server_path = '/mnt/c/OmniSharp/omnisharp.http-win-x64/OmniSharp.exe'
+" let g:OmniSharp_translate_cygwin_wsl = 1
 
 " ------------------------------------------------------------------------------
 " Prettier Config
 " ------------------------------------------------------------------------------
-let g:prettier#autoformat = 1
+let g:prettier#autoformat = 0
 let g:prettier#exec_cmd_async = 1
 
 " ------------------------------------------------------------------------------
