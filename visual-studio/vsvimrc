@@ -36,6 +36,9 @@ let mapleader=' '
 " Leader Mappings
 " ------------------------------------------------------------------------------
 
+" Show tooltip
+nnoremap <leader><leader> :vsc Edit.QuickInfo<CR>
+
 " System Clipboard
 vnoremap <leader>c "+y
 nnoremap <leader>v "+p
@@ -61,7 +64,6 @@ nnoremap <leader>mm :vsc Build.BuildSolution<CR>
 
 " Mode
 nnoremap <leader>mr :vsc Refactor.Rename<CR>
-nnoremap <leader>mt :vsc TestExplorer.RunAllTests<CR>
 nnoremap <leader>mfu :vsc Edit.FindAllReferences<CR>
 nnoremap <leader>mfi :vsc Edit.GoToImplementation<CR>
 
@@ -74,8 +76,10 @@ nnoremap <leader>ss :%s/
 nnoremap <leader>sg :%g/
 nnoremap <leader>sG :%g!/
 
-" Tags
-nnoremap <leader>tt :vsc Edit.NavigateTo<CR>
+" Tests
+nnoremap <leader>tt :vsc TestExplorer.RunAllTestsInContext<CR>
+nnoremap <leader>ta :vsc TestExplorer.RunAllTests<CR>
+nnoremap <leader>td :vsc DebugTestsInCurrentContext<CR>
 
 " Windows
 nnoremap <leader>wv :vsplit<CR>
