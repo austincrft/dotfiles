@@ -6,7 +6,8 @@ setlocal textwidth=100
 nnoremap <buffer> <leader>mg :TsuDefinition<CR>|
 nnoremap <buffer> <leader>mfu :TsuReferences<CR>|
 nnoremap <buffer> <leader>mfi :TsuImplementation<CR>|
-nnoremap <buffer> <leader>mfr :TsuRenameSymbol<CR>|
+nnoremap <buffer> <leader>mr :TsuRenameSymbol<CR>|
+nnoremap <buffer> <leader>mt : <C-u>echo tsuquyomi#hint()<CR>
 
 " Fold methods
 nnoremap <buffer> <leader>fm zMzrzr<CR>|
