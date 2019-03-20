@@ -1,0 +1,69 @@
+# vim:fdm=marker
+
+#
+# PowerShell Snippets for Snipmate
+#
+
+snippet param
+	param(
+		${0}
+	)
+
+snippet help
+	<#
+
+	.SYNOPSIS
+	${1}
+
+	.DESCRIPTION
+	${2}
+
+	.EXAMPLE
+	${3}
+
+	.NOTES
+	${4}
+
+	.PARAMETER ${5:ParameterName}
+	${6}
+
+	#>${0}
+
+snippet erroraction
+	\$ErrorActionPreference = "Stop"
+
+snippet if
+	if (${1}) {
+		${2}
+	}${0}
+
+snippet elif
+	elseif (${1}) {
+		${2}
+	}${0}
+
+snippet else
+	else {
+		${1}
+	}${0}
+
+snippet foreach
+	foreach (${1:\$item} in ${2:\$items}) {
+		${3}
+	}${0}
+
+snippet function
+	function ${1:FunctionName}(${2}) {
+		${3}
+	}${0}
+
+snippet wo
+	Write-Output ${0}
+
+snippet on
+	> \$null${0}
+
+snippet mandatory
+	[Parameter(Mandatory=\$true)]${0}
+snippet so
+	| Select-Object -Property *

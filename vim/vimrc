@@ -1,4 +1,4 @@
-﻿" Set local foldmarker
+" Set local foldmarker
 " vim:fdm=marker
 
 " Editor {{{
@@ -393,16 +393,9 @@ Plug 'tpope/vim-fugitive'
 
 " Languages {{{
 
-" Clojure
-Plug 'tpope/vim-fireplace', { 'for': ['clojure', 'markdown'] }
-
 " CSharp
 Plug 'OrangeT/vim-csharp', { 'for': ['cs', 'markdown'] }
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
-Plug 'juliosueiras/cakebuild.vim', { 'for': 'cake' }
-
-" FSharp
-Plug 'fsharp/vim-fsharp', { 'for': ['fsharp', 'markdown'], 'do': 'make' }
 
 " Go
 Plug 'fatih/vim-go', { 'for': ['go', 'markdown'] }
@@ -412,8 +405,7 @@ Plug 'alvan/vim-closetag'
 
 " JavaScript
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
-Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'markdown'], 'do': 'npm install' }
-Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'for': 'javascript' }
+Plug 'prettier/vim-prettier', { 'do': 'npm ci', 'for': ['javascript', 'typescript'] }
 
 " Markdown
 Plug 'tpope/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
@@ -423,12 +415,6 @@ Plug 'PProvost/vim-ps1', { 'for': ['ps1', 'markdown'] }
 
 " Python
 Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-
-" Scala
-Plug 'derekwyatt/vim-scala', { 'for': ['scala', 'markdown'] }
-
-" SQL
-Plug 'vim-scripts/dbext.vim', { 'for': 'sql' }
 
 " TypeScript
 Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'markdown'] }
@@ -449,9 +435,7 @@ Plug 'janko-m/vim-test'
 " Tools
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'kshenoy/vim-signature'
-Plug 'tpope/vim-dispatch'
 Plug 'skywind3000/asyncrun.vim'
-Plug 'vimwiki/vimwiki'
 
 " Visuals
 Plug 'altercation/vim-colors-solarized'
@@ -475,6 +459,14 @@ let g:airline_symbols_ascii = 1
 " ------------------------------------------------------------------------------
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_linters = {'cs': []}
+let g:ale_fixers = {
+\   'typescript': [
+\       'prettier',
+\       'tslint',
+\   ],
+\}
+nnoremap ]e :ALENext<CR>
+nnoremap [e :ALEPrevious<CR>
 
 " ------------------------------------------------------------------------------
 " CloseTag Config
@@ -495,12 +487,13 @@ colorscheme solarized
 " ------------------------------------------------------------------------------
 autocmd FileType cs setlocal commentstring=//\ %s
 autocmd FileType dosbatch setlocal commentstring=::\ %s
+autocmd FileType json setlocal commentstring=//\ %s
 autocmd FileType sql setlocal commentstring=--\ %s
 
 " ------------------------------------------------------------------------------
 " Completion Config
 " ------------------------------------------------------------------------------
-" autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
+autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
 autocmd FileType python setlocal omnifunc=jedi#completions
 autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
@@ -575,13 +568,13 @@ let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
-let g:OmniSharp_server_type = 'v1'
-let g:Omnisharp_start_server = 0
+" let g:OmniSharp_server_path = '/mnt/c/OmniSharp/omnisharp.http-win-x64/OmniSharp.exe'
+" let g:OmniSharp_translate_cygwin_wsl = 1
 
 " ------------------------------------------------------------------------------
 " Prettier Config
 " ------------------------------------------------------------------------------
-let g:prettier#autoformat = 1
+let g:prettier#autoformat = 0
 let g:prettier#exec_cmd_async = 1
 
 " ------------------------------------------------------------------------------
@@ -611,16 +604,14 @@ let g:tagbar_vertical = 30
 let g:tagbar_map_showproto = 'o'
 let g:tagbar_type_typescript = {
   \ 'kinds': [
-    \ 'n:namespace:0:1',
-    \ 'e:enums:0:1',
-    \ 'M:module:0:1',
-    \ 'I:import:0:1',
-    \ 'f:function:0:1',
-    \ 't:type:0:1',
-    \ 'i:interface:0:1',
-    \ 'c:class:0:1',
-    \ 'm:member:0:1',
-    \ 'v:variable:0:1',
+  \ "n:namespace:0:1",
+  \ "c:class:0:1",
+  \ "e:enum:0:1",
+  \ "i:interface:0:1",
+  \ "m:member:0:3",
+  \ "f:function:0:2",
+  \ "v:variable:0:2",
+  \ "V:varlambda:0:2"
   \ ],
   \ 'sort' : 0
 \ }
@@ -701,6 +692,10 @@ vnoremap <leader>gG "zy:AgG <C-R>z |                     " Visual grep
 nnoremap <leader>qo :botright copen<CR>|                 " Open (full width)
 nnoremap <leader>qc :cclose<CR>|                         " Close
 
+" Location List
+nnoremap <leader>lo :botright lopen<CR>|                 " Open (full width)
+nnoremap <leader>lc :lclose<CR>|                         " Close
+
 " Substitute & Global
 nnoremap <leader>ss :%s/|                                " Substitute
 vnoremap <leader>ss "zy:%s/<C-R>z/|                      " Substitute
@@ -711,6 +706,7 @@ vnoremap <leader>sG "zy:%g!/<C-R>z/|                     " Inverse Global
 
 " Tags
 nnoremap <leader>tt :Tags<CR>|                           " Fuzzy-search tags
+nnoremap <leader>tl :BTags<CR>|                          " Fuzzy-search tags
 nnoremap <leader>tb :TagbarOpenAutoClose<CR>|            " Open Tagbar
 
 " }}}

@@ -8,14 +8,15 @@
 
 snippet namespace
 	namespace ${1:MyNamespace} {
-		{VISUAL}${0}
+		${0}
 	}
-snippet class class ${1:MyClass}
+snippet class
+	export class ${1:`Filename()`}
 	{
 		${0}
 	}
 snippet interface
-	interface ${1:Interface} {
+	export interface ${1:Interface} {
 		${0}
 	}
 
@@ -34,11 +35,11 @@ snippet proppriv
 
 snippet forin
 	for (let ${1:idx} in ${2:collection}) {
-		{VISUAL}${0}
+		${0}
 	}
 snippet forof
 	for (let ${1:item} of ${2:collection}) {
-		{VISUAL}${0}
+		${0}
 	}
 
 # }}}
@@ -47,11 +48,11 @@ snippet forof
 
 snippet if
 	if (${1}) {
-		{VISUAL}${0}
+		${0}
 	}
 snippet ife
 	if (${1}) {
-		{VISUAL}${2}
+		${2}
 	} else {
 		${0}
 	}
@@ -66,7 +67,7 @@ snippet elif
 
 snippet try
 	try {
-		{VISUAL}${0}
+		${0}
 	}
 	catch (${1:Exception} ${2:e}) {
 		throw;
@@ -81,5 +82,14 @@ snippet ctor
 	{
 		${0}
 	}
+
+# }}}
+
+# {{{ misc
+
+snippet cl
+	console.log(${0});
+snippet rcomment
+	{/* ${0} */}
 
 # }}}
