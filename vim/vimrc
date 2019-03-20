@@ -125,7 +125,7 @@ endif
 " GVIM
 " ------------------------------------------------------------------------------
 if has("gui_running")
-    set guifont=ProggyCleanTT:h12
+    set guifont=ProggyCleanTT:h16
     set lines=45
     set columns=125
     set encoding=utf-8
