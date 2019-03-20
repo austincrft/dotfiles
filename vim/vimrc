@@ -472,6 +472,8 @@ let g:ale_fixers = {
 \       'tslint',
 \   ],
 \}
+nnoremap ]e :ALENext<CR>
+nnoremap [e :ALEPrevious<CR>
 
 " ------------------------------------------------------------------------------
 " CloseTag Config
@@ -696,6 +698,10 @@ vnoremap <leader>gG "zy:AgG <C-R>z |                     " Visual grep
 " Quickfix
 nnoremap <leader>qo :botright copen<CR>|                 " Open (full width)
 nnoremap <leader>qc :cclose<CR>|                         " Close
+
+" Location List
+nnoremap <leader>lo :botright lopen<CR>|                 " Open (full width)
+nnoremap <leader>lc :lclose<CR>|                         " Close
 
 " Substitute & Global
 nnoremap <leader>ss :%s/|                                " Substitute
