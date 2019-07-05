@@ -234,19 +234,11 @@ endfunction
 command! -nargs=0 -complete=command InsertDate call InsertDate()
 
 " ------------------------------------------------------------------------------
-" RunCtags Command
-" ------------------------------------------------------------------------------
-function! RunCtags()
-    execute 'AsyncRun ctags -R'
-    execute 'botright copen'
-endfunction
-
-" ------------------------------------------------------------------------------
 " Ag Command
 " ------------------------------------------------------------------------------
 function! Ag(text, ...)
-    let a:filetype = get(a:, 1, '')
-    execute 'AsyncRunWithQf ag --vimgrep ' . a:filetype . ' "' . a:text . '"'
+    let filetype = get(a:, 1, '')
+    execute 'AsyncRunWithQf ag --vimgrep ' . filetype . ' "' . a:text . '"'
 endfunction
 command! -nargs=* -complete=command Ag call Ag(<f-args>)
 
@@ -429,9 +421,6 @@ Plug 'w0rp/ale'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
-" Testing
-Plug 'janko-m/vim-test'
-
 " Tools
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'kshenoy/vim-signature'
@@ -516,15 +505,6 @@ if has('win32')
 endif
 
 " ------------------------------------------------------------------------------
-" FSharp Config
-" ------------------------------------------------------------------------------
-let g:fsharp_xbuild_path = 'msbuild'
-let g:fsharp_test_runner = 'nunit-console'
-let g:fsharp_only_check_errors_on_write = 1
-let g:fsharp_map_keys = 0
-let g:fsharp_completion_helptext = 0
-
-" ------------------------------------------------------------------------------
 " FZF Config
 " ------------------------------------------------------------------------------
 let g:fzf_colors =
@@ -541,6 +521,8 @@ let g:fzf_colors =
   \ 'marker':  ['fg', 'Keyword'],
   \ 'spinner': ['fg', 'Label'],
   \ 'header':  ['fg', 'Comment'] }
+
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
 " ------------------------------------------------------------------------------
 " File Extension Config
@@ -566,12 +548,6 @@ let g:jedi#show_call_signatures = 0
 let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 
 " ------------------------------------------------------------------------------
-" OmniSharp Config
-" ------------------------------------------------------------------------------
-" let g:OmniSharp_server_path = '/mnt/c/OmniSharp/omnisharp.http-win-x64/OmniSharp.exe'
-" let g:OmniSharp_translate_cygwin_wsl = 1
-
-" ------------------------------------------------------------------------------
 " Prettier Config
 " ------------------------------------------------------------------------------
 let g:prettier#autoformat = 0
@@ -582,11 +558,6 @@ let g:prettier#exec_cmd_async = 1
 " ------------------------------------------------------------------------------
 let g:SignatureMarkTextHLDynamic = 1
 let g:SignatureMarkerTextHLDynamic = 1
-
-" ------------------------------------------------------------------------------
-" Slime Config
-" ------------------------------------------------------------------------------
-let g:slime_target = 'tmux'
 
 " ------------------------------------------------------------------------------
 " Snipmate Config
@@ -615,12 +586,6 @@ let g:tagbar_type_typescript = {
   \ ],
   \ 'sort' : 0
 \ }
-
-" ------------------------------------------------------------------------------
-" Test Config
-" ------------------------------------------------------------------------------
-let test#strategy = 'asnycrun'
-let g:test#runner_commands=['Jasmine']
 
 " ------------------------------------------------------------------------------
 " Vimwiki Config

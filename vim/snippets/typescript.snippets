@@ -89,7 +89,48 @@ snippet ctor
 
 snippet cl
 	console.log(${0});
-snippet rcomment
-	{/* ${0} */}
 
+# }}}
+
+# {{{ react
+
+snippet rcomment
+	{/* $VISUAL */}
+snippet ownprops
+	interface OwnProps {
+	}${0}
+snippet stateprops
+	interface StateProps {
+	}${0}
+snippet dispatchprops
+	interface DispatchProps {
+	}${0}
+snippet combineprops
+	type ${1:CombinedProps} = ${2:OwnProps &} ${3:StateProps &} ${4:DispatchProps}${0};
+snippet mapstatetoprops
+	const mapStateToProps = (state: ${1:ApplicationState}): StateProps => ({
+	  ${0}
+	});
+snippet mapdispatchtoprops
+	const mapDispatchToProps = (dispatch: Dispatch<${1:RootAction}>): DispatchProps => ({
+	  ${0}
+	});
+snippet connect
+	export default connect(
+	  mapStateToProps,
+	  mapDispatchToProps
+	)(${0});
+
+# }}}
+
+# {{{ testing
+
+snippet describe
+	describe('${1}', () => {
+	  ${0}
+	});
+snippet it
+	it('${1}', async () => {
+	  ${0}
+	});
 # }}}
