@@ -28,3 +28,7 @@ fi
 if [[ -f ~/work/bash_aliases ]]; then
     source ~/work/bash_aliases
 fi
+
+if [[ -x "$(command -v fuck)" ]]; then
+    eval $(thefuck --alias)
+fi
