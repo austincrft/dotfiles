@@ -348,6 +348,9 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" NOTE: For WSL, you might need to run this to force unix line-endings
+" find . -type f -name "*.vim" -print0 | xargs -0 dos2unix --force
+
 call plug#begin('~/.vim/plugged')
 
 " Editor features
@@ -546,6 +549,11 @@ let g:jedi#show_call_signatures = 0
 " Netrw Config
 " ------------------------------------------------------------------------------
 let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
+
+" ------------------------------------------------------------------------------
+" OmniSharp Config
+" ------------------------------------------------------------------------------
+let g:OmniSharp_server_stdio = 1
 
 " ------------------------------------------------------------------------------
 " Prettier Config
