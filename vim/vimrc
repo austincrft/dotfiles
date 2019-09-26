@@ -389,7 +389,6 @@ Plug 'tpope/vim-fugitive'
 " Languages {{{
 
 " CSharp
-Plug 'OrangeT/vim-csharp', { 'for': ['cs', 'markdown'] }
 Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
 " Go
@@ -449,9 +448,14 @@ let g:airline_symbols_ascii = 1
 " ------------------------------------------------------------------------------
 " Ale Config
 " ------------------------------------------------------------------------------
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_linters = {'cs': []}
+" let g:ale_lint_on_text_changed = 'never'
+let g:ale_fix_on_save = 1
+let g:ale_linters = {'cs': ['OmniSharp']}
 let g:ale_fixers = {
+\   'javascript': [
+\       'prettier',
+\       'eslint',
+\   ],
 \   'typescript': [
 \       'prettier',
 \       'tslint',
@@ -554,6 +558,26 @@ let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 " OmniSharp Config
 " ------------------------------------------------------------------------------
 let g:OmniSharp_server_stdio = 1
+let g:OmniSharp_highlight_types = 2
+let g:OmniSharp_highlight_debug = 1
+
+let g:OmniSharp_highlight_groups = {
+\ 'csUserIdentifier': [
+\   'constant name', 'enum member name', 'field name', 'identifier',
+\   'property name', 'static symbol'],
+\ 'csUserInterface': ['interface name'],
+\ 'csUserMethod': ['extension method name', 'method name'],
+\ 'Statement': ['keyword'],
+\ 'csUserType': ['class name', 'enum name', 'struct name']
+\}
+
+if has('unix')
+    let uname = system('uname -a')
+    if uname =~ 'Microsoft'
+        let g:OmniSharp_server_path = '/mnt/c/Users/austincraft/.omnisharp/OmniSharp.exe'
+        let g:OmniSharp_translate_cygwin_wsl = 1
+    endif
+endif
 
 " ------------------------------------------------------------------------------
 " Prettier Config
@@ -650,10 +674,6 @@ nnoremap <leader>mm :Make<CR>|                           " Make
 
 " Undo
 nnoremap <leader>uu :GundoToggle<CR>|                    " View undo tree
-
-" Project
-nnoremap <leader>pt :Explore .<CR>|                      " Open cwd
-nnoremap <leader>pf :Explore<CR>|                        " Open buffer directory
 
 " Grep
 nnoremap <leader>gg :Ag |                                " Grep
