@@ -1,0 +1,114 @@
+# vim:fdm=marker
+
+#
+# JavaScript Snippets for Snipmate
+#
+
+# {{{ branching
+
+snippet if
+	if (${1}) {
+		${0}
+	}
+snippet else
+	else {
+		${0}
+	}
+snippet ife
+	if (${1}) {
+		${2}
+	} else {
+		${0}
+	}
+snippet elif
+	else if (${1}) {
+		${0}
+	}
+
+# }}}
+
+# {{{ exception handling
+
+snippet try
+	try {
+		${0}
+	}
+	catch (${1:exception}) {
+		throw;
+	}
+
+# }}}
+
+# {{{ misc
+
+snippet cl
+	console.log(${0});
+snippet exportdefault
+	export default ${0}
+
+# }}}
+
+# {{{ react
+
+snippet importreact
+	import React from 'react';
+snippet fcomponent
+	const ${1:ComponentName} = () => {
+		return (
+			${0:<div>foo bar</div>}
+		);
+	}
+
+	export default ${1};
+snippet importproptypes
+	import PropTypes from 'prop-types';
+snippet proptypes
+	${1:Component}.propTypes = {
+		${0}
+	}
+snippet usestate
+	const [${1:state}, set${2:State}] = useState(${0})
+snippet useeffect
+	useEffect(() => {
+		${0}
+	});
+snippet rcomment
+	{/* $VISUAL */}
+snippet ownprops
+	interface OwnProps {
+	}${0}
+snippet stateprops
+	interface StateProps {
+	}${0}
+snippet dispatchprops
+	interface DispatchProps {
+	}${0}
+snippet combineprops
+	type ${1:CombinedProps} = ${2:OwnProps &} ${3:StateProps &} ${4:DispatchProps}${0};
+snippet mapstatetoprops
+	const mapStateToProps = (state) => ({
+		${0}
+	});
+snippet mapdispatchtoprops
+	const mapDispatchToProps = (dispatch) => ({
+		${0}
+	});
+snippet connect
+	export default connect(
+		mapStateToProps,
+		mapDispatchToProps
+	)(${0});
+
+# }}}
+
+# {{{ testing
+
+snippet describe
+	describe('${1}', () => {
+		${0}
+	});
+snippet it
+	it('${1}', async () => {
+		${0}
+	});
+# }}}
