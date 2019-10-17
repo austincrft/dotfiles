@@ -94,6 +94,22 @@ snippet cl
 
 # {{{ react
 
+snippet importreact
+	import React from 'react';
+snippet fcomponent
+	const ${1:ComponentName}: React.FC = () => {
+		return (
+			${0:<div>foo bar</div>}
+		);
+	}
+
+	export default ${1};
+snippet usestate
+	const [${1:state}, set${2:State}] = useState(${0});
+snippet useeffect
+	useEffect(() => {
+		${0}
+	});
 snippet rcomment
 	{/* $VISUAL */}
 snippet ownprops
@@ -108,17 +124,17 @@ snippet dispatchprops
 snippet combineprops
 	type ${1:CombinedProps} = ${2:OwnProps &} ${3:StateProps &} ${4:DispatchProps}${0};
 snippet mapstatetoprops
-	const mapStateToProps = (state: ${1:ApplicationState}): StateProps => ({
-	  ${0}
+	const mapStateToProps = (state) => ({
+		${0}
 	});
 snippet mapdispatchtoprops
-	const mapDispatchToProps = (dispatch: Dispatch<${1:RootAction}>): DispatchProps => ({
-	  ${0}
+	const mapDispatchToProps = (dispatch) => ({
+		${0}
 	});
 snippet connect
 	export default connect(
-	  mapStateToProps,
-	  mapDispatchToProps
+		mapStateToProps,
+		mapDispatchToProps
 	)(${0});
 
 # }}}

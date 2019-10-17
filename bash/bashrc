@@ -93,6 +93,9 @@ fi
 if [[ -f /proc/sys/kernel/osrelease ]]; then
     # Windows Subsystem for Linux Settings
     if grep -q Microsoft /proc/sys/kernel/osrelease; then
+        # Set WINHOME env variable
+        export WINHOME=$(cmd.exe /C "cd /D %USERPROFILE% && bash.exe -c pwd")
+
         # X Server Copy for WSL
         export DISPLAY=localhost:0.0
 

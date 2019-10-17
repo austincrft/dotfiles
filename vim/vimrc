@@ -354,7 +354,6 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " Editor features
-Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-surround'
@@ -375,6 +374,7 @@ else
 endif
 
 " Auto-Complete
+Plug 'lifepillar/vim-mucomplete'
 Plug 'garbas/vim-snipmate'
     \ | Plug 'marcweber/vim-addon-mw-utils'
     \ | Plug 'tomtom/tlib_vim'
@@ -385,6 +385,9 @@ Plug 'ntpeters/vim-better-whitespace'
 
 " Git
 Plug 'tpope/vim-fugitive'
+
+" Testing
+Plug 'janko/vim-test'
 
 " Languages {{{
 
@@ -406,9 +409,6 @@ Plug 'tpope/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
 
 " Powershell
 Plug 'PProvost/vim-ps1', { 'for': ['ps1', 'markdown'] }
-
-" Python
-Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 
 " TypeScript
 Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'markdown'] }
@@ -458,7 +458,7 @@ let g:ale_fixers = {
 \   ],
 \   'typescript': [
 \       'prettier',
-\       'tslint',
+\       'eslint',
 \   ],
 \}
 nnoremap ]e :ALENext<CR>
@@ -490,8 +490,6 @@ autocmd FileType sql setlocal commentstring=--\ %s
 " Completion Config
 " ------------------------------------------------------------------------------
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
-autocmd FileType python setlocal omnifunc=jedi#completions
-autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
 
 " ------------------------------------------------------------------------------
@@ -542,24 +540,37 @@ autocmd BufRead,BufNewFile,BufEnter *.js set filetype=javascript
 let g:goyo_width=81
 
 " ------------------------------------------------------------------------------
-" Jedi Config
-" ------------------------------------------------------------------------------
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#popup_on_dot = 0
-let g:jedi#auto_initialization = 0
-let g:jedi#show_call_signatures = 0
-
-" ------------------------------------------------------------------------------
 " Netrw Config
 " ------------------------------------------------------------------------------
 let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
+
+" ------------------------------------------------------------------------------
+" MUComplete Config
+" ------------------------------------------------------------------------------
+" Make SnipMate & MUComplete play nice
+inoremap <plug>MyEnter <cr>
+imap <silent> <expr> <plug>MyCR (pumvisible()
+    \ ? "\<c-y>\<plug>snipMateTrigger"
+    \ : "\<plug>MyEnter")
+imap <cr> <plug>MyCR
+
+" Set MUComplete chain priority
+let g:mucomplete#chains = { 'default': ['path', 'snip', 'omni', 'keyn'] }
+
+" Allow omni completion after keyword or dot
+let g:mucomplete#can_complete = {
+\ 'default': {
+\    'omni': { t -> strlen(&l:omnifunc) > 0 && t =~# '\%(\k\|\.\)$' }
+\    }
+\  }
+
 
 " ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
 let g:OmniSharp_server_stdio = 1
 let g:OmniSharp_highlight_types = 2
-let g:OmniSharp_highlight_debug = 1
+let g:OmniSharp_highlight_debug = 0
 
 let g:OmniSharp_highlight_groups = {
 \ 'csUserIdentifier': [
@@ -574,7 +585,7 @@ let g:OmniSharp_highlight_groups = {
 if has('unix')
     let uname = system('uname -a')
     if uname =~ 'Microsoft'
-        let g:OmniSharp_server_path = '/mnt/c/Users/austincraft/.omnisharp/OmniSharp.exe'
+        let g:OmniSharp_server_path = $WINHOME . '/.omnisharp/OmniSharp.exe'
         let g:OmniSharp_translate_cygwin_wsl = 1
     endif
 endif
@@ -592,13 +603,15 @@ let g:SignatureMarkTextHLDynamic = 1
 let g:SignatureMarkerTextHLDynamic = 1
 
 " ------------------------------------------------------------------------------
-" Snipmate Config
+" SnipMate Config
 " ------------------------------------------------------------------------------
 " Prevents errors after sourcing .vimrc
 let g:snipMate = get(g:, 'snipMate', {})
 " Don't insert anything when a snippet isn't found
 let g:snipMate['no_match_completion_feedkeys_chars'] = ''
 let g:snipMate.snippet_version = 1
+imap <C-N> <Plug>snipMateNextOrTrigger
+smap <C-N> <Plug>snipMateNextOrTrigger
 
 " ------------------------------------------------------------------------------
 " Tagbar Config
@@ -620,25 +633,10 @@ let g:tagbar_type_typescript = {
 \ }
 
 " ------------------------------------------------------------------------------
-" Vimwiki Config
+" vim-test Config
 " ------------------------------------------------------------------------------
-let g:vimwiki_folding = 'expr'
-let g:vimwiki_global_ext = 0
-let g:vimwiki_table_mappings = 0
-let g:vimwiki_list = [
-    \ {
-    \ 'path': '~/work/vim/vimwiki',
-    \ 'syntax': 'markdown', 'ext': '.md',
-    \ 'nested_syntaxes': {
-        \ 'cs': 'cs',
-        \ 'sql': 'sql',
-        \ }
-    \ },
-    \
-    \ {
-    \ 'path': '~/Dropbox/vimwiki/',
-    \ 'syntax': 'markdown', 'ext': '.md',
-    \ }]
+let g:test#strategy = 'asyncrun'
+let g:test#csharp#xunit#file_pattern = '\.bogus_file_pattern'
 
 " }}}
 
