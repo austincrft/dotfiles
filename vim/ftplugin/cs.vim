@@ -1,4 +1,4 @@
-﻿" Set encoding
+" Set encoding
 setlocal bomb
 setlocal fileencoding=utf8
 
@@ -17,6 +17,7 @@ nnoremap <buffer> <C-]> :OmniSharpGotoDefinition<CR>
 nnoremap <buffer> <leader>mm :OmniSharpGlobalCodeCheck<CR>
 nnoremap <buffer> <leader>md :OmniSharpDocumentation<CR>
 nnoremap <buffer> <leader>mfu :OmniSharpFindUsages<CR>
+nnoremap <buffer> <leader>mf :OmniSharpGetCodeActions<CR>
 nnoremap <buffer> <leader>mfx :OmniSharpFixUsings<CR>
 nnoremap <buffer> <leader>mfi :OmniSharpFindImplementations<CR>
 nnoremap <buffer> <leader>mfm :OmniSharpFindMembers<CR>
