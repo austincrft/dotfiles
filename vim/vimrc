@@ -76,7 +76,6 @@ let mapleader=' '
 " ------------------------------------------------------------------------------
 " Normal Mappings
 " ------------------------------------------------------------------------------
-nnoremap gb :ls<CR>:buffer<Space>
 if (!has('win32'))
     nnoremap <C-P> :FZF<CR>
 endif
@@ -163,29 +162,6 @@ function! GetCSharpNamespace(filename, levels)
     endwhile
 
     return join(reverse(traversed), '.')
-endfunction
-
-" ------------------------------------------------------------------------------
-" Escape XML
-" ------------------------------------------------------------------------------
-function! EscapeXml(unescape)
-    if a:unescape == 0
-        silent! s/&/\&amp;/g
-        silent! s/"/\&quot;/g
-        silent! s/'/\&apos;/g
-        silent! s/'/\&#39;/g
-        silent! s/’/\&#8217;/g
-        silent! s/>/\&gt;/g
-        silent! s/</\&lt;/g
-    else
-        silent! s/&quot;/"/g
-        silent! s/&apos;/'/g
-        silent! s/&#39;/'/g
-        silent! s/&#8217;/’/g
-        silent! s/&gt;/>/g
-        silent! s/&lt;/</g
-        silent! s/&amp;/\&/g
-    endif
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -307,6 +283,19 @@ function! CopyFilePath()
 endfunction
 command! -nargs=0 -complete=command CopyFilePath call CopyFilePath()
 
+" ------------------------------------------------------------------------------
+" Qargs Command
+" ------------------------------------------------------------------------------
+function! QuickfixFilenames()
+  " Building a hash ensures we get each buffer only once
+  let buffer_numbers = {}
+  for quickfix_item in getqflist()
+    let buffer_numbers[quickfix_item['bufnr']] = bufname(quickfix_item['bufnr'])
+  endfor
+  return join(values(buffer_numbers))
+endfunction
+command! -nargs=0 -bar Qargs execute 'args ' . QuickfixFilenames()
+
 " }}}
 
 " {{{ Misc Config
@@ -392,7 +381,7 @@ Plug 'janko/vim-test'
 " Languages {{{
 
 " CSharp
-Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
+" Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
 " Go
 Plug 'fatih/vim-go', { 'for': ['go', 'markdown'] }
@@ -420,7 +409,6 @@ Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
 Plug 'w0rp/ale'
 
 " Tags
-Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
 " Tools
@@ -448,9 +436,9 @@ let g:airline_symbols_ascii = 1
 " ------------------------------------------------------------------------------
 " Ale Config
 " ------------------------------------------------------------------------------
-" let g:ale_lint_on_text_changed = 'never'
 let g:ale_fix_on_save = 1
 let g:ale_linters = {'cs': ['OmniSharp']}
+let g:ale_linters_ignore = {'typescript': ['tslint']}
 let g:ale_fixers = {
 \   'javascript': [
 \       'prettier',
@@ -459,6 +447,9 @@ let g:ale_fixers = {
 \   'typescript': [
 \       'prettier',
 \       'eslint',
+\   ],
+\   'scss': [
+\       'prettier',
 \   ],
 \}
 nnoremap ]e :ALENext<CR>
@@ -570,6 +561,7 @@ let g:mucomplete#can_complete = {
 " ------------------------------------------------------------------------------
 let g:OmniSharp_server_stdio = 1
 let g:OmniSharp_highlight_types = 2
+let g:OmniSharp_start_server = 0
 let g:OmniSharp_highlight_debug = 0
 
 let g:OmniSharp_highlight_groups = {
