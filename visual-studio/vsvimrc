@@ -5,13 +5,14 @@ set incsearch
 set ignorecase
 set smartcase
 
+map <C-P> :vsc Edit.GoToAll<CR>
+
 " ------------------------------------------------------------------------------
 " Normal Mappings
 " ------------------------------------------------------------------------------
 nmap <C-O> :vsc View.NavigateBackward<CR>
 nmap <C-T> :vsc View.NavigateBackward<CR>
 nmap <C-I> :vsc View.NavigateForward<CR>
-nmap gcc :vsc Edit.ToggleComment<CR>
 nnoremap <Tab> :vsc Window.NextTab<CR>
 nnoremap <S-Tab> :vsc Window.PreviousTab<CR>
 nnoremap :bd<CR> :vsc Window.CloseDocumentWindow<CR>
@@ -24,7 +25,6 @@ imap jj <Esc>
 " ------------------------------------------------------------------------------
 " Visual Mappings
 " ------------------------------------------------------------------------------
-vmap gc :vsc Edit.ToggleComment<CR>
 vnoremap @@ :norm! @@<CR>
 
 " ------------------------------------------------------------------------------
@@ -55,6 +55,8 @@ nnoremap <leader>ek :vsc View.PreviousError<CR>
 " Folds
 nnoremap <leader>fm :vsc Edit.CollapsetoDefinitions<CR>
 
+nnoremap <leader>fw :vsc Edit.ToggleWordWrap<CR>
+
 " Grep
 nnoremap <leader>gg :vsc Edit.FindinFiles<CR>
 vnoremap <leader>gg :vsc Edit.FindinFiles<CR>
@@ -80,11 +82,3 @@ nnoremap <leader>sG :%g!/
 nnoremap <leader>tt :vsc TestExplorer.RunAllTestsInContext<CR>
 nnoremap <leader>ta :vsc TestExplorer.RunAllTests<CR>
 nnoremap <leader>td :vsc DebugTestsInCurrentContext<CR>
-
-" Windows
-nnoremap <leader>wv :vsplit<CR>
-nnoremap <leader>wh :split<CR>
-nnoremap <leader>h <C-w>h
-nnoremap <leader>j <C-w>j
-nnoremap <leader>k <C-w>k
-nnoremap <leader>l <C-w>l
