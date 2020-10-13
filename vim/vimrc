@@ -42,6 +42,25 @@ syntax enable                  " Enable syntax
 filetype plugin indent on      " Enable filetypes
 
 " ------------------------------------------------------------------------------
+" Set cursor
+" ------------------------------------------------------------------------------
+" Cursor in terminal
+" https://vim.fandom.com/wiki/Configuring_the_cursor
+" 1 or 0 -> blinking block
+" 2 solid block
+" 3 -> blinking underscore
+" 4 solid underscore
+" Recent versions of xterm (282 or above) also support
+" 5 -> blinking vertical bar
+" 6 -> solid vertical bar
+if &term =~ '^xterm'
+    " normal mode
+    let &t_EI .= "\<Esc>[0 q"
+    " insert mode
+    let &t_SI .= "\<Esc>[6 q"
+endif
+
+" ------------------------------------------------------------------------------
 " Default for tabs
 " ------------------------------------------------------------------------------
 set tabstop=4
@@ -76,7 +95,6 @@ let mapleader=' '
 " ------------------------------------------------------------------------------
 " Normal Mappings
 " ------------------------------------------------------------------------------
-nnoremap gb :ls<CR>:buffer<Space>
 if (!has('win32'))
     nnoremap <C-P> :FZF<CR>
 endif
@@ -163,29 +181,6 @@ function! GetCSharpNamespace(filename, levels)
     endwhile
 
     return join(reverse(traversed), '.')
-endfunction
-
-" ------------------------------------------------------------------------------
-" Escape XML
-" ------------------------------------------------------------------------------
-function! EscapeXml(unescape)
-    if a:unescape == 0
-        silent! s/&/\&amp;/g
-        silent! s/"/\&quot;/g
-        silent! s/'/\&apos;/g
-        silent! s/'/\&#39;/g
-        silent! s/’/\&#8217;/g
-        silent! s/>/\&gt;/g
-        silent! s/</\&lt;/g
-    else
-        silent! s/&quot;/"/g
-        silent! s/&apos;/'/g
-        silent! s/&#39;/'/g
-        silent! s/&#8217;/’/g
-        silent! s/&gt;/>/g
-        silent! s/&lt;/</g
-        silent! s/&amp;/\&/g
-    endif
 endfunction
 
 " ------------------------------------------------------------------------------
@@ -307,6 +302,19 @@ function! CopyFilePath()
 endfunction
 command! -nargs=0 -complete=command CopyFilePath call CopyFilePath()
 
+" ------------------------------------------------------------------------------
+" Qargs Command
+" ------------------------------------------------------------------------------
+function! QuickfixFilenames()
+  " Building a hash ensures we get each buffer only once
+  let buffer_numbers = {}
+  for quickfix_item in getqflist()
+    let buffer_numbers[quickfix_item['bufnr']] = bufname(quickfix_item['bufnr'])
+  endfor
+  return join(values(buffer_numbers))
+endfunction
+command! -nargs=0 -bar Qargs execute 'args ' . QuickfixFilenames()
+
 " }}}
 
 " {{{ Misc Config
@@ -354,7 +362,6 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " Editor features
-Plug 'jiangmiao/auto-pairs'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-surround'
@@ -375,6 +382,7 @@ else
 endif
 
 " Auto-Complete
+Plug 'lifepillar/vim-mucomplete'
 Plug 'garbas/vim-snipmate'
     \ | Plug 'marcweber/vim-addon-mw-utils'
     \ | Plug 'tomtom/tlib_vim'
@@ -386,11 +394,13 @@ Plug 'ntpeters/vim-better-whitespace'
 " Git
 Plug 'tpope/vim-fugitive'
 
+" Testing
+Plug 'janko/vim-test'
+
 " Languages {{{
 
 " CSharp
-Plug 'OrangeT/vim-csharp', { 'for': ['cs', 'markdown'] }
-Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
+" Plug 'OmniSharp/omnisharp-vim', { 'for': 'cs' }
 
 " Go
 Plug 'fatih/vim-go', { 'for': ['go', 'markdown'] }
@@ -408,9 +418,6 @@ Plug 'tpope/vim-markdown', { 'for': ['markdown', 'vimwiki'] }
 " Powershell
 Plug 'PProvost/vim-ps1', { 'for': ['ps1', 'markdown'] }
 
-" Python
-Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-
 " TypeScript
 Plug 'leafgarland/typescript-vim', { 'for': ['typescript', 'markdown'] }
 Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
@@ -421,7 +428,6 @@ Plug 'Quramy/tsuquyomi', { 'for': 'typescript' }
 Plug 'w0rp/ale'
 
 " Tags
-Plug 'ludovicchabant/vim-gutentags'
 Plug 'majutsushi/tagbar', { 'on': 'TagbarOpenAutoClose' }
 
 " Tools
@@ -449,12 +455,20 @@ let g:airline_symbols_ascii = 1
 " ------------------------------------------------------------------------------
 " Ale Config
 " ------------------------------------------------------------------------------
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_linters = {'cs': []}
+let g:ale_fix_on_save = 1
+let g:ale_linters = {'cs': ['OmniSharp']}
+let g:ale_linters_ignore = {'typescript': ['tslint']}
 let g:ale_fixers = {
+\   'javascript': [
+\       'prettier',
+\       'eslint',
+\   ],
 \   'typescript': [
 \       'prettier',
-\       'tslint',
+\       'eslint',
+\   ],
+\   'scss': [
+\       'prettier',
 \   ],
 \}
 nnoremap ]e :ALENext<CR>
@@ -486,8 +500,6 @@ autocmd FileType sql setlocal commentstring=--\ %s
 " Completion Config
 " ------------------------------------------------------------------------------
 autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
-autocmd FileType python setlocal omnifunc=jedi#completions
-autocmd Filetype fsharp setlocal omnifunc=fsharpbinding#python#Complete
 autocmd Filetype typescript setlocal omnifunc=tsuquyomi#complete
 
 " ------------------------------------------------------------------------------
@@ -538,22 +550,56 @@ autocmd BufRead,BufNewFile,BufEnter *.js set filetype=javascript
 let g:goyo_width=81
 
 " ------------------------------------------------------------------------------
-" Jedi Config
-" ------------------------------------------------------------------------------
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#popup_on_dot = 0
-let g:jedi#auto_initialization = 0
-let g:jedi#show_call_signatures = 0
-
-" ------------------------------------------------------------------------------
 " Netrw Config
 " ------------------------------------------------------------------------------
 let g:netrw_localrmdir = 'rm -r' " Ability to remove non-empty directories
 
 " ------------------------------------------------------------------------------
+" MUComplete Config
+" ------------------------------------------------------------------------------
+" Make SnipMate & MUComplete play nice
+inoremap <plug>MyEnter <cr>
+imap <silent> <expr> <plug>MyCR (pumvisible()
+    \ ? "\<c-y>\<plug>snipMateTrigger"
+    \ : "\<plug>MyEnter")
+imap <cr> <plug>MyCR
+
+" Set MUComplete chain priority
+let g:mucomplete#chains = { 'default': ['path', 'snip', 'omni', 'keyn'] }
+
+" Allow omni completion after keyword or dot
+let g:mucomplete#can_complete = {
+\ 'default': {
+\    'omni': { t -> strlen(&l:omnifunc) > 0 && t =~# '\%(\k\|\.\)$' }
+\    }
+\  }
+
+
+" ------------------------------------------------------------------------------
 " OmniSharp Config
 " ------------------------------------------------------------------------------
 let g:OmniSharp_server_stdio = 1
+let g:OmniSharp_highlight_types = 2
+let g:OmniSharp_start_server = 0
+let g:OmniSharp_highlight_debug = 0
+
+let g:OmniSharp_highlight_groups = {
+\ 'csUserIdentifier': [
+\   'constant name', 'enum member name', 'field name', 'identifier',
+\   'property name', 'static symbol'],
+\ 'csUserInterface': ['interface name'],
+\ 'csUserMethod': ['extension method name', 'method name'],
+\ 'Statement': ['keyword'],
+\ 'csUserType': ['class name', 'enum name', 'struct name']
+\}
+
+if has('unix')
+    let uname = system('uname -a')
+    if uname =~ 'Microsoft'
+        let g:OmniSharp_server_path = $WINHOME . '/.omnisharp/OmniSharp.exe'
+        let g:OmniSharp_translate_cygwin_wsl = 1
+    endif
+endif
 
 " ------------------------------------------------------------------------------
 " Prettier Config
@@ -568,13 +614,15 @@ let g:SignatureMarkTextHLDynamic = 1
 let g:SignatureMarkerTextHLDynamic = 1
 
 " ------------------------------------------------------------------------------
-" Snipmate Config
+" SnipMate Config
 " ------------------------------------------------------------------------------
 " Prevents errors after sourcing .vimrc
 let g:snipMate = get(g:, 'snipMate', {})
 " Don't insert anything when a snippet isn't found
 let g:snipMate['no_match_completion_feedkeys_chars'] = ''
 let g:snipMate.snippet_version = 1
+imap <C-N> <Plug>snipMateNextOrTrigger
+smap <C-N> <Plug>snipMateNextOrTrigger
 
 " ------------------------------------------------------------------------------
 " Tagbar Config
@@ -596,25 +644,10 @@ let g:tagbar_type_typescript = {
 \ }
 
 " ------------------------------------------------------------------------------
-" Vimwiki Config
+" vim-test Config
 " ------------------------------------------------------------------------------
-let g:vimwiki_folding = 'expr'
-let g:vimwiki_global_ext = 0
-let g:vimwiki_table_mappings = 0
-let g:vimwiki_list = [
-    \ {
-    \ 'path': '~/work/vim/vimwiki',
-    \ 'syntax': 'markdown', 'ext': '.md',
-    \ 'nested_syntaxes': {
-        \ 'cs': 'cs',
-        \ 'sql': 'sql',
-        \ }
-    \ },
-    \
-    \ {
-    \ 'path': '~/Dropbox/vimwiki/',
-    \ 'syntax': 'markdown', 'ext': '.md',
-    \ }]
+let g:test#strategy = 'asyncrun'
+let g:test#csharp#xunit#file_pattern = '\.bogus_file_pattern'
 
 " }}}
 
@@ -650,10 +683,6 @@ nnoremap <leader>mm :Make<CR>|                           " Make
 
 " Undo
 nnoremap <leader>uu :GundoToggle<CR>|                    " View undo tree
-
-" Project
-nnoremap <leader>pt :Explore .<CR>|                      " Open cwd
-nnoremap <leader>pf :Explore<CR>|                        " Open buffer directory
 
 " Grep
 nnoremap <leader>gg :Ag |                                " Grep
