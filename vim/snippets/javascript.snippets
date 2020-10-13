@@ -1,53 +1,17 @@
 # vim:fdm=marker
 
 #
-# TypeScript Snippets for Snipmate
+# JavaScript Snippets for Snipmate
 #
-
-# {{{ classes and structs
-
-snippet namespace
-	namespace ${1:MyNamespace} {
-		${0}
-	}
-snippet class
-	export class ${1:`Filename()`}
-	{
-		${0}
-	}
-snippet interface
-	export interface ${1:Interface} {
-		${0}
-	}
-
-# }}}
-
-# {{{ properties
-
-snippet proppub
-	public ${1:name}: ${2:number};
-snippet proppriv
-	public ${1:name}: ${2:number};
-
-# }}}
-
-# {{{ loops
-
-snippet forin
-	for (let ${1:idx} in ${2:collection}) {
-		${0}
-	}
-snippet forof
-	for (let ${1:item} of ${2:collection}) {
-		${0}
-	}
-
-# }}}
 
 # {{{ branching
 
 snippet if
 	if (${1}) {
+		${0}
+	}
+snippet else
+	else {
 		${0}
 	}
 snippet ife
@@ -69,18 +33,8 @@ snippet try
 	try {
 		${0}
 	}
-	catch (${1:Exception} ${2:e}) {
+	catch (${1:exception}) {
 		throw;
-	}
-
-# }}}
-
-# {{{ full methods
-
-snippet ctor
-	public constructor(${1})
-	{
-		${0}
 	}
 
 # }}}
@@ -89,8 +43,8 @@ snippet ctor
 
 snippet cl
 	console.log(${0});
-snippet eslintignore
-	// eslint-disable-next-line
+snippet exportdefault
+	export default ${0}
 
 # }}}
 
@@ -99,13 +53,21 @@ snippet eslintignore
 snippet importreact
 	import React from 'react';
 snippet fcomponent
-	const ${1:ComponentName}: React.FC = () => {
-		return ${0:<div>foo bar</div>};
-	};
+	const ${1:ComponentName} = () => {
+		return (
+			${0:<div>foo bar</div>}
+		);
+	}
 
 	export default ${1};
+snippet importproptypes
+	import PropTypes from 'prop-types';
+snippet proptypes
+	${1:Component}.propTypes = {
+		${0}
+	}
 snippet usestate
-	const [${1:state}, set${2:State}] = useState<${3:Type}>(${0});
+	const [${1:state}, set${2:State}] = useState(${0})
 snippet useeffect
 	useEffect(() => {
 		${0}
@@ -143,10 +105,10 @@ snippet connect
 
 snippet describe
 	describe('${1}', () => {
-	  ${0}
+		${0}
 	});
 snippet it
 	it('${1}', async () => {
-	  ${0}
+		${0}
 	});
 # }}}
