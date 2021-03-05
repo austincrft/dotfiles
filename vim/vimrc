@@ -247,19 +247,6 @@ endfunction
 command! -nargs=* -complete=command AgG call AgG(<f-args>)
 
 " ------------------------------------------------------------------------------
-" Scratch Command
-" ------------------------------------------------------------------------------
-function! Scratch()
-    execute 'top 15sp'
-    execute 'enew'
-    execute 'setlocal buftype=nofile'
-    execute 'setlocal bufhidden=hide'
-    execute 'setlocal noswapfile'
-    execute 'file [Scratch]'
-endfunction
-command! -nargs=0 -complete=command Scratch call Scratch()
-
-" ------------------------------------------------------------------------------
 " DeleteInactiveBufs Command
 " source: https://stackoverflow.com/a/7321131/3661319
 " ------------------------------------------------------------------------------
@@ -315,32 +302,27 @@ function! QuickfixFilenames()
 endfunction
 command! -nargs=0 -bar Qargs execute 'args ' . QuickfixFilenames()
 
-" }}}
-
-" {{{ Misc Config
-
 " ------------------------------------------------------------------------------
-" ConEmu Config
+" Qargs Command
 " ------------------------------------------------------------------------------
-if !empty($CONEMUBUILD)
-    " Visual
-    set term=xterm
-    set encoding=utf-8
-    set termencoding=&encoding
-    set t_Co=256
-    let &t_AB="\e[48;5;%dm"
-    let &t_AF="\e[38;5;%dm"
-
-    inoremap <Esc>[62~ <C-X><C-E>
-    inoremap <Esc>[63~ <C-X><C-Y>
-    nnoremap <Esc>[62~ <C-E>
-    nnoremap <Esc>[63~ <C-Y>
-
-    " Backspace
-    inoremap <Char-0x07F> <BS>
-    nnoremap <Char-0x07F> <BS>
-    cnoremap <Char-0x07F> <BS>
-endif
+function! AleIgnoreEslint()
+  " https://stackoverflow.com/questions/54961318/vim-ale-shortcut-to-add-eslint-ignore-hint
+  let l:codes = []
+  if (!exists('b:ale_highlight_items'))
+    echo 'cannot ignore eslint rule without b:ale_highlight_items'
+    return
+  endif
+  for l:item in b:ale_highlight_items
+    if (l:item['lnum']==line('.') && l:item['linter_name']=='eslint')
+      let l:code = l:item['code']
+      call add(l:codes, l:code)
+    endif
+  endfor
+  if len(l:codes)
+    exec 'normal O// eslint-disable-next-line ' . join(l:codes, ', ')
+  endif
+endfunction
+command! -nargs=0 -complete=command ALEIgnoreEslint call AleIgnoreEslint()
 
 " }}}
 

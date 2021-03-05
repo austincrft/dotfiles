@@ -1,14 +1,5 @@
 shopt -s expand_aliases
 
-# Platform detection
-platform='unknown'
-unamestr=`uname`
-if [[ "$unamestr" == 'Linux' ]]; then
-   platform='linux'
-elif [[ "$unamestr" == 'Darwin' ]]; then
-   platform='darwin'
-fi
-
 # colors
 alias ls='ls --color=auto --group-directories-first'
 alias grep='grep --color=auto'
@@ -22,16 +13,3 @@ alias l='ls -CF'
 
 # git
 alias g='git'
-
-# OS X Notifications
-if [[ "$platform" == 'darwin' ]]; then
-    alias notify="osascript -e 'display notification \"Command finished\" with title \"Terminal\"'"
-fi
-
-if [[ -f ~/work/bash_aliases ]]; then
-    source ~/work/bash_aliases
-fi
-
-if [[ -x "$(command -v fuck)" ]]; then
-    eval $(thefuck --alias)
-fi
