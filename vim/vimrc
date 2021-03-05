@@ -77,7 +77,9 @@ set smarttab
 set expandtab
 set nowrap
 set linebreak
-set listchars=eol:¬,tab:→-,trail:·,extends:>,precedes:<
+if (!has('win32'))
+    set listchars=eol:¬,tab:→-,trail:·,extends:>,precedes:<
+end
 
 " ------------------------------------------------------------------------------
 " Search Config
