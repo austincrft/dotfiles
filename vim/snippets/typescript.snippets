@@ -112,30 +112,6 @@ snippet useeffect
 	});
 snippet rcomment
 	{/* $VISUAL */}
-snippet ownprops
-	interface OwnProps {
-	}${0}
-snippet stateprops
-	interface StateProps {
-	}${0}
-snippet dispatchprops
-	interface DispatchProps {
-	}${0}
-snippet combineprops
-	type ${1:CombinedProps} = ${2:OwnProps &} ${3:StateProps &} ${4:DispatchProps}${0};
-snippet mapstatetoprops
-	const mapStateToProps = (state) => ({
-		${0}
-	});
-snippet mapdispatchtoprops
-	const mapDispatchToProps = (dispatch) => ({
-		${0}
-	});
-snippet connect
-	export default connect(
-		mapStateToProps,
-		mapDispatchToProps
-	)(${0});
 
 # }}}
 
