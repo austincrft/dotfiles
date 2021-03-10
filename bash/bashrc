@@ -103,3 +103,8 @@ if [[ -f /proc/sys/kernel/osrelease ]]; then
         export DOCKER_HOST=tcp://0.0.0.0:2375
     fi
 fi
+
+# Import work-specific commands
+if [[ -f ~/work/bashrc ]]; then
+    source ~/work/bashrc
+fi
