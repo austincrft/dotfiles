@@ -12,7 +12,7 @@ Set-Alias -Name g -Value git
 Set-Alias -Name unzip -Value Expand-Archive
 
 # Import Work-Specific Commands/Aliases
-$workAliasScript = "$env:USERPROFILE/work/PowerShell/aliases.ps1"
+$workAliasScript = "$env:USERPROFILE/work/PowerShell/profile.ps1"
 if (Test-Path $workAliasScript) {
     . $workAliasScript
 }
