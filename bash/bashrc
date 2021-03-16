@@ -108,3 +108,8 @@ fi
 if [[ -f ~/work/bashrc ]]; then
     source ~/work/bashrc
 fi
+
+# Fuck alias
+if command -v fuck &> /dev/null; then
+    eval "$(thefuck --alias)"
+fi
