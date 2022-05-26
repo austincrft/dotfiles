@@ -1,0 +1,12 @@
+[alias]
+    a = add
+    s = status
+    d = diff
+    ps = push
+    co = checkout
+
+    # pushes and creates an upstream branch
+    psu = "!git push -u origin HEAD"
+
+    # deletes all branches except for the current one and master
+    brclean = "!git branch | grep -v 'master\\|^*' | xargs git branch -D"
