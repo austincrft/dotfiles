@@ -4,6 +4,7 @@
     d = diff
     ps = push
     co = checkout
+    ci = commit
 
     # pushes and creates an upstream branch
     psu = "!git push -u origin HEAD"
