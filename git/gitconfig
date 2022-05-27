@@ -2,6 +2,7 @@
     a = add
     s = status
     d = diff
+    b = branch
     ps = push
     co = checkout
     ci = commit
