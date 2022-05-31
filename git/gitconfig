@@ -4,6 +4,7 @@
     d = diff
     b = branch
     ps = push
+    pl = pull
     co = checkout
     ci = commit
 
