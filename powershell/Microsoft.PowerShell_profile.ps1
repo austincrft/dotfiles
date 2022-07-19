@@ -18,4 +18,4 @@ if (Test-Path $workAliasScript) {
 }
 
 # Console customization
-oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\mytheme.omp.json" | Invoke-Expression
+oh-my-posh init pwsh --config "C:\src\dotfiles\powershell\mytheme.omp.json" | Invoke-Expression
