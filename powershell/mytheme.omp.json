@@ -5,9 +5,15 @@
       "alignment": "left",
       "segments": [
         {
-          "foreground": "#ffffff",
+          "foreground": "#C591E8",
           "style": "plain",
-          "template": "<#C591E8>\u276f</><#69FF94>\u276f</>",
+          "template": ">",
+          "type": "text"
+        },
+        {
+          "foreground": "#69FF94",
+          "style": "plain",
+          "template": ">",
           "type": "text"
         },
         {
