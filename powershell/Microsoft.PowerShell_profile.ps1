@@ -13,10 +13,10 @@ Set-Alias -Name unzip -Value Expand-Archive
 Set-Alias -Name ss -Value Select-String
 Set-Alias -Name grep -Value Select-String
 
-# Import Work-Specific Commands/Aliases
-$workAliasScript = "$env:USERPROFILE/work/PowerShell/profile.ps1"
-if (Test-Path $workAliasScript) {
-    . $workAliasScript
+# Import the work-specific pwsh profile
+$WorkProfile = "$env:USERPROFILE/work/PowerShell/profile.ps1"
+if (Test-Path $WorkProfile) {
+    . $WorkProfile
 }
 
 # Console customization
