@@ -12,4 +12,4 @@
     psu = "!git push -u origin HEAD"
 
     # deletes all branches except for the current one and master
-    brclean = "!git branch | grep -v 'master\\|^*' | xargs git branch -D"
+    brclean = "!git branch | grep -v 'master\\|main\\|^*' | xargs git branch -D"
