@@ -13,3 +13,6 @@
 
     # deletes all branches except for the current one and master
     brclean = "!git branch | grep -v 'master\\|main\\|^*' | xargs git branch -D"
+
+    # undo a local commit
+    undo-commit = "!git reset HEAD~1"
