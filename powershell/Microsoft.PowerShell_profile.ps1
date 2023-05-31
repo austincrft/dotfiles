@@ -24,39 +24,39 @@ if (Test-Path $WorkProfile) {
 # Console customization
 oh-my-posh init pwsh --config "C:\src\dotfiles\powershell\mytheme.omp.json" | Invoke-Expression
 
-# Modules
-$Modules = @(
-    [PSCustomObject]@{
-        Name = "BurntToast";
-        Installed = $false;
-        Version = [Version]0.0.0.0;
-    }
-)
-
-foreach ($module in $Modules) {
-    $mod = Get-Module -ListAvailable -Name $module.Name
-    if (-not $mod) {
-        $module.Installed = $false
-        Write-Warning "Module $($module.Name) is not installed"
-    }
-    else {
-        $module.Installed = $true
-        $module.Version = $mod.Version
-        Import-Module $module.Name
-
-        $latestModule = Find-Module $module.Name -ErrorAction SilentlyContinue
-        if (-not $latestModule) {
-            Write-Warning "Module $($module.Name): Failed to check latest version"
-            continue
+# Functions
+function Test-ModuleInstallation() {
+    $modules = @(
+        [PSCustomObject]@{
+            Name = "BurntToast";
+            Installed = $false;
+            Version = [Version]0.0.0.0;
         }
-        if ($latestModule.Version -gt $module.Version) {
-            Write-Warning "Module $($module.Name): Upgrade available. Current=$($module.Version), Available=$($latestModule.Version)"
+    )
+
+    foreach ($module in $modules) {
+        $mod = Get-Module -ListAvailable -Name $module.Name
+        if (-not $mod) {
+            $module.Installed = $false
+            Write-Warning "Module $($module.Name) is not installed"
+        }
+        else {
+            $module.Installed = $true
+            $module.Version = $mod.Version
+            Import-Module $module.Name
+
+            $latestModule = Find-Module $module.Name -ErrorAction SilentlyContinue
+            if (-not $latestModule) {
+                Write-Warning "Module $($module.Name): Failed to check latest version"
+                continue
+            }
+            if ($latestModule.Version -gt $module.Version) {
+                Write-Warning "Module $($module.Name): Upgrade available. Current=$($module.Version), Available=$($latestModule.Version)"
+            }
         }
     }
 }
-Remove-Variable "module"
 
-# Functions
 function Build-Sln($sln) {
     $pattern = if ($sln) { $sln } else { "*.sln" }
     Get-ChildItem $pattern | ForEach-Object { dotnet build $_.Name }

@@ -1,0 +1,81 @@
+" ------------------------------------------------------------------------------
+" Search
+" ------------------------------------------------------------------------------
+set incsearch
+set ignorecase
+set smartcase
+map <C-P> :vsc Edit.GoToAll<CR>
+
+" ------------------------------------------------------------------------------
+" Normal Mappings
+" ------------------------------------------------------------------------------
+nnoremap <C-O> :vsc View.NavigateBackward<CR>
+nnoremap <C-T> :vsc View.NavigateBackward<CR>
+nnoremap <C-I> :vsc View.NavigateForward<CR>
+nnoremap <Tab> :vsc Window.NextTab<CR>
+nnoremap <S-Tab> :vsc Window.PreviousTab<CR>
+nnoremap :bd<CR> :vsc Window.CloseDocumentWindow<CR>
+nnoremap ]e :vsc View.NextError<CR>
+nnoremap [e :vsc View.PreviousError<CR>
+
+" ------------------------------------------------------------------------------
+" Insert Mappings
+" ------------------------------------------------------------------------------
+inoremap jj <Esc>
+
+" ------------------------------------------------------------------------------
+" Visual Mappings
+" ------------------------------------------------------------------------------
+vnoremap @@ :norm! @@<CR>
+
+" ------------------------------------------------------------------------------
+" Leader
+" ------------------------------------------------------------------------------
+let mapleader=' '
+
+" ------------------------------------------------------------------------------
+" Leader Mappings
+" ------------------------------------------------------------------------------
+" Show tooltip
+nnoremap <leader><leader> :vsc Edit.QuickInfo<CR>
+
+" System Clipboard
+vnoremap <leader>c "+y
+nnoremap <leader>v "+p
+vnoremap <leader>v "+p
+
+" Buffers
+nnoremap <leader><Tab> :vsc Window.NextDocumentWindowNav<CR>
+
+" Wrapping
+nnoremap <leader>fw :vsc Edit.ToggleWordWrap<CR>
+
+" Grep
+nnoremap <leader>gg :vsc Edit.FindinFiles<CR>
+vnoremap <leader>gg :vsc Edit.FindinFiles<CR>
+
+" Make
+nnoremap <leader>mm :vsc Build.BuildSolution<CR>
+
+" Mode
+nnoremap <leader>mr :vsc Refactor.Rename<CR>
+nnoremap <leader>mfu :vsc Edit.FindAllReferences<CR>
+nnoremap <leader>mfi :vsc Edit.GoToImplementation<CR>
+
+" Pin
+nnoremap <leader>pp :vsc Window.PinTab<CR>
+nnoremap <leader>pP :vsc Window.PinTab<CR>
+nnoremap <leader>po :vsc OtherContextMenus.EasyMDIToolWindow.CloseAllButPinned<CR>
+
+" Reveal in solution explorer
+nnoremap <leader>; :vsc SolutionExplorer.SyncWithActiveDocument<CR>
+
+" Substitute & Global
+nnoremap <leader>ss :%s/
+nnoremap <leader>sg :%g/
+nnoremap <leader>sG :%g!/
+
+" Tests
+nnoremap <leader>tt :vsc TestExplorer.RunAllTestsInContext<CR>
+nnoremap <leader>ta :vsc TestExplorer.RunAllTests<CR>
+nnoremap <leader>td :vsc DebugTestsInCurrentContext<CR>
