@@ -10,6 +10,7 @@ Set-PSReadlineOption -BellStyle None
 # Aliases
 Set-Alias -Name g -Value git
 Set-Alias -Name unzip -Value Expand-Archive
+Set-Alias -Name touch -Value New-Item
 Set-Alias -Name ss -Value Select-String
 Set-Alias -Name fromjson -Value Get-ObjectFromJson
 Set-Alias -Name toguid -Value ConvertTo-Guid
@@ -59,7 +60,21 @@ function Test-ModuleInstallation() {
 
 function Build-Sln($sln) {
     $pattern = if ($sln) { $sln } else { "*.sln" }
-    Get-ChildItem $pattern | ForEach-Object { dotnet build $_.Name }
+    $slns = @(Get-ChildItem $pattern)
+    $failingSlns = @()
+
+    foreach ($sln in $slns) {
+        dotnet build $sln.Name
+
+        if ($LASTEXITCODE -ne 0) {
+            $failingSlns += $sln.Name
+        }
+    }
+
+    if ($failingSlns) {
+        $errorMessage = "`nERROR: These slns failed to build`n`n" + (($failingSlns | ForEach-Object { "• $_" }) -join "`n")
+        Write-Host $errorMessage -ForegroundColor Red
+    }
 }
 
 function Clean-Sln($sln) {
@@ -67,22 +82,55 @@ function Clean-Sln($sln) {
     Get-ChildItem $pattern | ForEach-Object { dotnet clean $_.Name }
 }
 
-function Start-DotNetProject($ProjectDirectory) {
+function Start-DotNetProject($ProjectDirectory, [switch]$Watch) {
     if (-not $ProjectDirectory) {
         $ProjectDirectory = (Get-Location).Path
     }
 
-    Start-Process dotnet -ArgumentList "watch", "--project", "`"$projectDirectory`"", "run"
+    Start-Process dotnet -ArgumentList "run", "--project", "`"$projectDirectory`""
 }
 
-function Start-FunctionProject($ProjectDirectory) {
-    if (-not $ProjectDirectory) {
-        $ProjectDirectory = (Get-Location).Path
+function Start-DotNetProject($ProjectDirectory, $WindowTitle, [switch]$SkipWatch) {
+  $setTitleCmd = if ($WindowTitle) {
+      "-NoProfile -Command `$host.ui.RawUI.WindowTitle = '$WindowTitle';"
+    }
+    else {
+        ""
     }
 
-    Start-Process func -ArgumentList "start" -WorkingDirectory "$ProjectDirectory"
+  $dotnetRunCmd = if (-not $DotNetWatch -or $SkipWatch) {
+      "dotnet run --project '$ProjectDirectory'"
+    }
+    else {
+      "dotnet watch --project '$projectDirectory' run"
+    }
+
+  Start-Process pwsh -ArgumentList ($setTitleCmd + $dotnetRunCmd)
 }
 
 function Get-ObjectFromJsonFile($jsonFile) {
     return Get-Content $jsonFile | ConvertFrom-Json
 }
+
+function Sum {
+    [CmdletBinding()]
+    param (
+        [Parameter(ValueFromPipeline=$true)]
+        $numbers
+    )
+
+    begin {
+        $sum = [decimal]0
+    }
+
+    process {
+        foreach ($number in $numbers) {
+            $sum += $number
+        }
+    }
+
+    end {
+        return $sum
+    }
+}
+
