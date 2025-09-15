@@ -1,26 +1,9 @@
 return {
-  -- "seblyng/roslyn.nvim",
-  -- config = function()
-  --   require("roslyn").setup({
-  --     dotnet_cmd = "dotnet", -- optional, default is "dotnet"
-  --     roslyn_version = "4.9.0-3.23604.10", -- optional, latest as of now
-  --     on_attach = function(client, bufnr)
-  --       -- reuse your existing on_attach logic
-  --       local opts = { buffer = bufnr, remap = false }
-  --       local keymap = vim.keymap.set
-  --
-  --       keymap("n", "gd", vim.lsp.buf.definition, opts)
-  --       keymap("n", "K", vim.lsp.buf.hover, opts)
-  --       keymap("n", "<leader>vws", vim.lsp.buf.workspace_symbol, opts)
-  --       keymap("n", "<leader>vd", vim.diagnostic.open_float, opts)
-  --       keymap("n", "[d", vim.diagnostic.goto_next, opts)
-  --       keymap("n", "]d", vim.diagnostic.goto_prev, opts)
-  --       keymap("n", "<leader>vca", vim.lsp.buf.code_action, opts)
-  --       keymap("n", "<leader>vrr", vim.lsp.buf.references, opts)
-  --       keymap("n", "<leader>vrn", vim.lsp.buf.rename, opts)
-  --       keymap("i", "<C-h>", vim.lsp.buf.signature_help, opts)
-  --     end,
-  --     capabilities = require("cmp_nvim_lsp").default_capabilities(),
-  --   })
-  -- end,
+  {
+    "seblyng/roslyn.nvim",
+    ft = "cs", -- load when opening C# files
+    dependencies = { "neovim/nvim-lspconfig", "mason-org/mason.nvim" },
+    opts = {
+    },
+  },
 }

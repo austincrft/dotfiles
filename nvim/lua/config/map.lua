@@ -1,5 +1,6 @@
 vim.keymap.set("i", "jj", "<Esc>", { noremap = true, silent = true })
 vim.keymap.set("n", "-", ":Ex<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader><leader>", ":DiagOpenFloat<CR>", { noremap = true, silent = true })
 
 -- System Clipboard
 vim.keymap.set("v", "<leader>c", '"+y', { noremap = true, silent = true })
@@ -21,6 +22,7 @@ vim.keymap.set("n", "<leader>_r", ":source $MYVIMRC<CR>", { noremap = true, sile
 -- Quickfix
 vim.keymap.set("n", "<leader>qo", ":botright copen<CR>", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>qc", ":cclose<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>qq", ":DiagSetQuickFix<CR>", { noremap = true, silent = true })
 
 -- Location List
 vim.keymap.set("n", "<leader>lo", ":botright lopen<CR>", { noremap = true, silent = true })
