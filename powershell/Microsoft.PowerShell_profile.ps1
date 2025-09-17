@@ -82,7 +82,7 @@ function Clean-Sln($sln) {
     Get-ChildItem $pattern | ForEach-Object { dotnet clean $_.Name }
 }
 
-function Start-DotNetProject($ProjectDirectory, [switch]$Watch) {
+function Start-DotnetProject($ProjectDirectory, [switch]$Watch) {
     if (-not $ProjectDirectory) {
         $ProjectDirectory = (Get-Location).Path
     }
@@ -106,6 +106,12 @@ function Start-DotNetProject($ProjectDirectory, $WindowTitle, [switch]$SkipWatch
     }
 
   Start-Process pwsh -ArgumentList ($setTitleCmd + $dotnetRunCmd)
+}
+
+function Stop-AllDotNetProcesses {
+    $processes = @(Get-Process | Where-Object { $_.ProcessName -eq "dotnet" })
+    Write-Output "Stopping $($processes.Count) .NET processes..."
+    $processes | ForEach-Object { Stop-Process $_ }
 }
 
 function Get-ObjectFromJsonFile($jsonFile) {
