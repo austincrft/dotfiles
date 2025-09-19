@@ -8,7 +8,8 @@ return {
     "nsidorenco/neotest-vstest",
   },
   config = function()
-    require("neotest").setup({
+    local neotest = require("neotest")
+    neotest.setup({
       adapters = {
         require("neotest-vstest"),
       },
@@ -28,10 +29,14 @@ return {
         mappings = {
           watch = "<Nop>"
         },
+        open = "topleft vsplit | vertical resize 50"
       },
     })
+
+    local keymap = vim.keymap.set
+    keymap("n", "<leader>ts", function() neotest.summary.toggle() end, { desc = "Test summary" })
+    keymap("n", "<leader>tt", function() neotest.run.run() end, { desc = "Run nearest test" })
+    keymap("n", "<leader>tf", function() neotest.run.run(vim.fn.expand("%")) end, { desc = "Run tests in file" })
   end,
-  keys = {
-  },
 }
 
