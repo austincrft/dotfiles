@@ -30,8 +30,3 @@ vim.g.mapleader = " "
 vim.opt.undofile = true
 vim.opt.undodir = vim.fn.stdpath("data") .. "/undo"
 
-if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
-  vim.opt.fileformat = "dos"
-else
-  vim.opt.fileformat = "unix"
-end

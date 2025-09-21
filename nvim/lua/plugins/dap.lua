@@ -10,6 +10,10 @@ return {
         args = {'--interpreter=vscode'}
       }
 
+      vim.cmd("highlight DapStoppedColor guifg=#ffc777")
+      vim.fn.sign_define('DapStopped', {text='🡆', texthl='DapStoppedColor', linehl='DapStoppedColor', numhl=''})
+      vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})
+
       vim.keymap.set("n", "<F5>", dap.continue, { desc = "Start/continue debugging" })
       vim.keymap.set("n", "<F10>", dap.step_over, { desc = "Step over" })
       vim.keymap.set("n", "<F11>", dap.step_into, { desc = "Step into" })
