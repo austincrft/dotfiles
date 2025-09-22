@@ -1,7 +1,10 @@
 return {
   'nvim-telescope/telescope.nvim',
   branch = '0.1.x',
-  dependencies = { 'nvim-lua/plenary.nvim' },
+  dependencies = {
+    'nvim-lua/plenary.nvim',
+    "nvim-telescope/telescope-ui-select.nvim",
+  },
   config = function()
     local telescope = require("telescope")
     telescope.setup({
@@ -14,6 +17,8 @@ return {
         },
       }
     })
+
+    telescope.load_extension("ui-select")
 
     -- Key mappings
     local keymap = vim.keymap.set

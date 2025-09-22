@@ -1,7 +1,6 @@
 local keymap = vim.keymap.set
 
 keymap("i", "jj", "<Esc>", { noremap = true, silent = true })
-keymap("n", "-", ":Ex<CR>", { noremap = true, silent = true })
 keymap("n", "<leader><leader>", ":DiagOpenFloat<CR>", { noremap = true, silent = true })
 
 -- System Clipboard

@@ -1,4 +1,4 @@
 return {
-  { "tpope/vim-surround" },
-  { "tpope/vim-fugitive" },
+  { "tpope/vim-surround", dependencies = { "tpope/vim-repeat" } },
+  { "skywind3000/asyncrun.vim" },
 }
