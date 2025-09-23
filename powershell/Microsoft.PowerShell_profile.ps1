@@ -22,8 +22,53 @@ if (Test-Path $WorkProfile) {
     . $WorkProfile
 }
 
-# Console customization
-oh-my-posh init pwsh --config "C:\src\dotfiles\powershell\mytheme.omp.json" | Invoke-Expression
+function prompt {
+    # Abbreviated path for window title
+    $maxLength = 28
+    $path = (Get-Location).Path
+    if ($path.Length -le $maxLength) {
+        $title = $path
+    } else {
+        $slash = [System.IO.Path]::DirectorySeparatorChar
+        $parts = $path.Split($slash)
+        $drive = $parts[0]
+        $dirs = $parts[1..($parts.Length - 1)]
+        $prefix = "$drive$slash...$slash"
+        $title = $prefix
+
+        for ($i = 0; $i -lt $dirs.Length; $i++) {
+            $candidate = $prefix + ($dirs[$i..($dirs.Length - 1)] -join $slash)
+            if ($candidate.Length -le $maxLength) {
+                $title = $candidate
+                break
+            }
+        }
+    }
+    $host.UI.RawUI.WindowTitle = $title
+
+    # Prompt customization
+    $esc = [char]27
+    $green = "${esc}[32m"
+    $cyan = "${esc}[36m"
+    $purple = "${esc}[35m"
+    $pink = "${esc}[38;2;252;167;234m"
+    $reset = "${esc}[0m"
+
+    $cwd = Get-Location
+    $gitInfo = ""
+    if ((Get-Command git -ErrorAction SilentlyContinue) -and (Test-Path .git)) {
+        try {
+            $branch = git rev-parse --abbrev-ref HEAD 2>$null
+            if ($branch) {
+                $gitInfo = " git:($branch)"
+            }
+        }
+        catch {}
+    }
+    $time = (Get-Date).ToString("HH:mm")
+
+    return "$purple>> $cyan$cwd$pink$gitInfo $green$time$pink`n$ $reset"
+}
 
 # Functions
 function Test-ModuleInstallation() {
