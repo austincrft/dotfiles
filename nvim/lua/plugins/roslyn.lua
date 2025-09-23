@@ -1,5 +1,3 @@
-local work = require("config.work")
-
 return {
   {
     "seblyng/roslyn.nvim",
@@ -7,6 +5,7 @@ return {
     dependencies = { "neovim/nvim-lspconfig", "mason-org/mason.nvim" },
     config = function ()
       local roslyn = require("roslyn")
+      local work = require("config.work")
       roslyn.setup(work.apply_plugin_override("roslyn", {}))
 
       vim.api.nvim_create_user_command("BuildSln", function(opts)
@@ -17,7 +16,7 @@ return {
         end
 
         local args = opts.args or "--verbosity quiet"
-        vim.cmd("AsyncRun dotnet build " .. args .. " " .. sln)
+        vim.cmd("AsyncRun dotnet build " .. args .. " \"" .. sln .. "\"")
         vim.cmd("botright copen")
       end, { nargs = "*" })
 

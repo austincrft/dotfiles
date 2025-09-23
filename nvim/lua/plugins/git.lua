@@ -7,11 +7,12 @@ return {
     end
   },
   {
-    "sindrets/diffview.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function ()
-      vim.keymap.set("n", "<leader>gd", ":DiffviewOpen<CR>", { noremap = true, silent = true })
-      vim.keymap.set("n", "<leader>gD", ":DiffviewClose<CR>", { noremap = true, silent = true })
+    "jecaro/fugitive-difftool.nvim",
+    dependencies = { "tpope/vim-fugitive" },
+    config = function()
+      vim.api.nvim_create_user_command("Gdiffbranch", function()
+        vim.cmd("Git! difftool ")
+      end, {})
     end
   },
 }
