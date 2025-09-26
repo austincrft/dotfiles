@@ -1,8 +1,13 @@
 local keymap = vim.keymap.set
 
 keymap("i", "jj", "<Esc>", { noremap = true, silent = true })
-keymap("n", "-", ":Ex<CR>", { noremap = true, silent = true })
+keymap("t", "jj", "<C-\\><C-n>", { noremap = true })
 keymap("n", "<leader><leader>", ":DiagOpenFloat<CR>", { noremap = true, silent = true })
+keymap("n", "-", function()
+  local filename = vim.fn.expand("%:t")
+  vim.cmd("Ex")
+  vim.fn.search(filename, "w")
+end, { noremap = true, silent = true })
 
 -- System Clipboard
 keymap("v", "<leader>c", '"+y', { noremap = true, silent = true })
@@ -29,6 +34,9 @@ keymap("n", "<leader>lc", ":lclose<CR>", { noremap = true, silent = true })
 -- Substitute & Global
 keymap("n", "<leader>ss", ":%s/", { noremap = true })
 keymap("v", "<leader>ss", '"zy:%s/<C-R>z/', { noremap = true })
+
+-- Terminal
+keymap("n", "<leader>ot", ":TerminalTab<CR>", { noremap = true })
 
 -- Meta
 keymap("n", "<leader>_d", ":e $MYVIMRC<CR>", { noremap = true, silent = true })

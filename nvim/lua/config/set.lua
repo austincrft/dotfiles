@@ -11,6 +11,8 @@ vim.opt.wrap = false
 vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.breakindent = true
+vim.opt.foldmethod = "indent"
+vim.opt.foldlevelstart = 99
 
 vim.opt.incsearch = true
 vim.opt.hlsearch = false

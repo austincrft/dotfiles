@@ -10,7 +10,7 @@ return {
     "jecaro/fugitive-difftool.nvim",
     dependencies = { "tpope/vim-fugitive" },
     config = function()
-      vim.api.nvim_create_user_command("Gdiffbranch", function()
+      vim.api.nvim_create_user_command("GitDiffBranch", function()
         vim.cmd("Git! difftool ")
       end, {})
     end

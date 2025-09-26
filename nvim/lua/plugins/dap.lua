@@ -18,7 +18,8 @@ return {
       vim.keymap.set("n", "<F10>", dap.step_over, { desc = "Step over" })
       vim.keymap.set("n", "<F11>", dap.step_into, { desc = "Step into" })
       vim.keymap.set("n", "<F12>", dap.step_out, { desc = "Step out" })
-      vim.keymap.set("n", "<leader>b", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
+      vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
+      vim.keymap.set("n", "<leader>dB", dap.clear_breakpoints, { desc = "Toggle breakpoint" })
       vim.keymap.set("n", "<leader>dc", dap.run_to_cursor, { desc = "Run to cursor" })
       vim.keymap.set("n", "<leader>dr", dap.repl.toggle, { desc = "Toggle DAP REPL" })
       vim.keymap.set("n", "<leader>dj", dap.down, { desc = "Go down stack frame" })
@@ -77,9 +78,7 @@ return {
       "mfussenegger/nvim-dap",
       "rcarriga/nvim-dap-ui"
     },
-    config = function()
-      require("dap-helper").setup()
-    end
+    opts = {}
   },
 }
 
