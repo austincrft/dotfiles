@@ -38,7 +38,7 @@ function prompt {
 
         for ($i = 0; $i -lt $dirs.Length; $i++) {
             $candidate = $prefix + ($dirs[$i..($dirs.Length - 1)] -join $slash)
-            if ($candidate.Length -le $maxLength) {
+            if ($candidate.Length -le $maxLength -or $i -eq ($dirs.Length - 1)) {
                 $title = $candidate
                 break
             }
@@ -50,24 +50,39 @@ function prompt {
     $esc = [char]27
     $green = "${esc}[32m"
     $cyan = "${esc}[36m"
+    $yellow = "${esc}[33m"
     $purple = "${esc}[35m"
     $pink = "${esc}[38;2;252;167;234m"
     $reset = "${esc}[0m"
 
     $cwd = Get-Location
+    $time = (Get-Date).ToString("HH:mm")
     $gitInfo = ""
-    if ((Get-Command git -ErrorAction SilentlyContinue) -and (Test-Path .git)) {
+    if ((Get-Command git -ErrorAction SilentlyContinue)) {
         try {
             $branch = git rev-parse --abbrev-ref HEAD 2>$null
-            if ($branch) {
+            if ($branch -and $branch -ne "HEAD") {
                 $gitInfo = " git:($branch)"
+            }
+            else {
+                # Try to get tag name
+                $tag = git describe --tags --exact-match 2>$null
+                if ($tag) {
+                    $gitInfo = " git:(tag: $tag)"
+                }
+                else {
+                    # Fallback to commit hash
+                    $commit = git rev-parse HEAD 2>$null
+                    if ($commit) {
+                        $gitInfo = " git:(commit: $commit)"
+                    }
+                }
             }
         }
         catch {}
     }
-    $time = (Get-Date).ToString("HH:mm")
 
-    return "$purple>> $cyan$cwd$pink$gitInfo $green$time$pink`n$ $reset"
+    return "$yellow>> $cyan$cwd$purple$gitInfo $green$time$pink`n$ $reset"
 }
 
 # Functions
