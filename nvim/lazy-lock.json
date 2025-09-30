@@ -19,6 +19,7 @@
   "neotest-vstest": { "branch": "main", "commit": "796e71fcc5f265bce1d9cc18049cdb02252157ca" },
   "nvim-autopairs": { "branch": "master", "commit": "23320e75953ac82e559c610bec5a90d9c6dfa743" },
   "nvim-cmp": { "branch": "main", "commit": "b5311ab3ed9c846b585c0c15b7559be131ec4be9" },
+  "nvim-colorizer.lua": { "branch": "master", "commit": "a065833f35a3a7cc3ef137ac88b5381da2ba302e" },
   "nvim-dap": { "branch": "master", "commit": "7367cec8e8f7a0b1e4566af9a7ef5959d11206a7" },
   "nvim-dap-ui": { "branch": "master", "commit": "cf91d5e2d07c72903d052f5207511bf7ecdb7122" },
   "nvim-lspconfig": { "branch": "master", "commit": "336b388c272555d2ae94627a50df4c2f89a5e257" },

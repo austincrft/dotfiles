@@ -1,5 +1,5 @@
 require("config.set")
 require("config.map")
 require("config.lazy")
-require("config.commands")
+require("config.cmds")
 require("config.work").setup()
