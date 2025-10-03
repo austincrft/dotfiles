@@ -14,10 +14,16 @@ vim.api.nvim_create_autocmd("QuickFixCmdPost", {
   command = "botright copen"
 })
 
--- Use JSONC for JSON files
-vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
-  pattern = "*.json",
+
+-- Enable treesitter folding
+vim.api.nvim_create_autocmd("FileType", {
   callback = function()
-    vim.bo.filetype = "jsonc"
-  end
+    local parsers = require("nvim-treesitter.parsers")
+    local parser = parsers.has_parser() and parsers.get_parser()
+    if parser then
+      parser:parse()
+      vim.o.foldmethod = "expr"
+      vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+    end
+  end,
 })

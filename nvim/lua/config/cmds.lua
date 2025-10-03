@@ -3,29 +3,47 @@ vim.api.nvim_create_user_command("DiagOpenFloat", function()
   vim.diagnostic.open_float(nil, { focusable = false, border = 'rounded' })
 end, { desc = "Open diagnostic float" })
 
--- TerminalTab
-vim.api.nvim_create_user_command("TerminalTab", function()
-  -- Check if the first tab already has a terminal buffer
-  local tab = vim.api.nvim_list_tabpages()[1]
-  local has_terminal = false
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
+-- OpenTerminal
+vim.api.nvim_create_user_command("OpenTerminal", function()
+  local cur_tab = vim.api.nvim_get_current_tabpage()
+  local terminal_win = nil
+
+  -- Look for a terminal window in the current tab
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(cur_tab)) do
     local buf = vim.api.nvim_win_get_buf(win)
     if vim.bo[buf].buftype == "terminal" then
-      has_terminal = true
+      terminal_win = win
       break
     end
   end
 
-  if has_terminal then
-    vim.api.nvim_set_current_tabpage(tab)
-    vim.cmd("startinsert")
+  if terminal_win then
+    -- Focus the terminal window
+    vim.api.nvim_set_current_win(terminal_win)
+    return
+  end
+
+  -- Look for existing terminal buf
+  local terminal_buf = nil
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[buf].buftype == "terminal" then
+      terminal_buf = buf
+      break
+    end
+  end
+
+  if terminal_buf then
+    -- Open the existing terminal buf in new split
+    vim.cmd("botright split")
+    vim.api.nvim_win_set_buf(0, terminal_buf)
+    vim.cmd("resize 15")
   else
-    vim.cmd("tabnew")
-    vim.cmd("tabmove 0")
-    vim.cmd("terminal pwsh")
+    -- No terminal buf exists, open a new one
+    vim.cmd("botright split | terminal pwsh -NoLogo")
+    vim.cmd("resize 15")
     vim.cmd("startinsert")
   end
-end, { desc = "Open or switch to terminal tab" })
+end, { desc = "Open or switch to terminal window" })
 
 -- OpenSecrets
 vim.api.nvim_create_user_command("OpenSecrets", function(opts)
@@ -35,7 +53,7 @@ vim.api.nvim_create_user_command("OpenSecrets", function(opts)
     local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
     local content = table.concat(lines, "\n")
 
-    secrets_id = content:match("<UserSecretsId>([%w%-]+)</UserSecretsId>")
+    secrets_id = content:match("<UserSecretsId>([%w%-%.]+)</UserSecretsId>")
     if not secrets_id then
       vim.notify("Could not find <UserSecretsId> in csproj", vim.log.levels.ERROR)
       return

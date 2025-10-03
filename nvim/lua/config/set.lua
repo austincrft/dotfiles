@@ -32,3 +32,8 @@ vim.g.mapleader = " "
 vim.opt.undofile = true
 vim.opt.undodir = vim.fn.stdpath("data") .. "/undo"
 
+vim.filetype.add({
+  pattern = {
+    ['.*%.json'] = "jsonc",
+  },
+})

@@ -10,6 +10,36 @@ return {
         args = {'--interpreter=vscode'}
       }
 
+      dap.configurations.cs = {
+        {
+          type = "coreclr",
+          name = "launch - netcoredbg",
+          request = "launch",
+          program = function()
+            local actions = require('telescope.actions')
+            local action_state = require('telescope.actions.state')
+
+            return coroutine.create(function(coro)
+              require('telescope.builtin').find_files({
+                prompt_title = "Select DLL to Debug",
+                  find_command = { "rg", "--files", "--iglob", "*.dll", "--no-ignore" },
+                attach_mappings = function(prompt_bufnr, map)
+                  actions.select_default:replace(function()
+                    actions.close(prompt_bufnr)
+                    local selection = action_state.get_selected_entry()
+                    coroutine.resume(coro, selection.path)
+                  end)
+                  return true
+                end,
+              })
+              local dll_path = coroutine.yield()
+              return dll_path
+            end)
+          end,
+        },
+      }
+
+
       vim.cmd("highlight DapStoppedColor guifg=#ffc777")
       vim.fn.sign_define('DapStopped', {text='🡆', texthl='DapStoppedColor', linehl='DapStoppedColor', numhl=''})
       vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})

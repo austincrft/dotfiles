@@ -11,8 +11,6 @@ return {
       defaults = {
         file_ignore_patterns = {
           "%.git[/\\]",
-          "bin[/\\]",
-          "obj[/\\]",
           "node_modules[/\\]",
         },
       }
