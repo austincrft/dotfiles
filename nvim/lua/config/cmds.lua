@@ -45,30 +45,60 @@ vim.api.nvim_create_user_command("OpenTerminal", function()
   end
 end, { desc = "Open or switch to terminal window" })
 
--- OpenSecrets
-vim.api.nvim_create_user_command("OpenSecrets", function(opts)
-  -- Get the secrets id from args or open csproj
-  local secrets_id = opts.args
-  if secrets_id == "" and vim.api.nvim_buf_get_name(0):match("%.csproj$") then
-    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-    local content = table.concat(lines, "\n")
-
-    secrets_id = content:match("<UserSecretsId>([%w%-%.]+)</UserSecretsId>")
-    if not secrets_id then
-      vim.notify("Could not find <UserSecretsId> in csproj", vim.log.levels.ERROR)
-      return
-    end
-  end
-
-  if not secrets_id or secrets_id == "" then
-    vim.notify("Provide secrets ID directly or run from a csproj", vim.log.levels.ERROR)
+vim.api.nvim_create_user_command("CSharpCurrentMethod", function()
+  local ts = vim.treesitter
+  local bufnr = vim.api.nvim_get_current_buf()
+  local parser = ts.get_parser(bufnr, "c_sharp")
+  if not parser then
+    print("No C# parser installed")
     return
   end
 
-  local secrets_path = vim.fn.has("win32") == 1
-    and vim.env.APPDATA .. "/Microsoft/UserSecrets/" .. secrets_id .. "/secrets.json"
-    or "~/.microsoft/usersecrets/" .. secrets_id .. "/secrets.json"
+  local tree = parser:parse()[1]
+  local root = tree:root()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local row, col = cursor[1] - 1, cursor[2]
 
-  vim.cmd("edit " .. secrets_path)
-end, { nargs = "?", desc = "Open .NET user secrets" })
+  local found = nil
+  local function node_contains_cursor(node)
+    local start_row, start_col, end_row, end_col = node:range()
+    if row < start_row or row > end_row then return false end
+    if row == start_row and col < start_col then return false end
+    if row == end_row and col > end_col then return false end
+    return true
+  end
 
+  -- Find the innermost method_declaration node containing the cursor
+  local function find_method(node)
+    if node:type() == "method_declaration" and node_contains_cursor(node) then
+      found = node
+      for child in node:iter_children() do
+        find_method(child)
+      end
+    else
+      for child in node:iter_children() do
+        find_method(child)
+      end
+    end
+  end
+
+  find_method(root)
+
+  if found then
+    -- Use a query to get the method name identifier
+    local query = ts.query.parse("c_sharp", [[
+      (method_declaration
+        name: (identifier) @method_name)
+    ]])
+    for id, node in query:iter_captures(found, bufnr, 0, -1) do
+      if query.captures[id] == "method_name" then
+        local name = ts.get_node_text(node, bufnr)
+        print("Current method: " .. name)
+        return
+      end
+    end
+    print("Method found, but could not get name.")
+  else
+    print("Cursor is not inside a method.")
+  end
+end, { desc = "Show the C# method at the cursor" })

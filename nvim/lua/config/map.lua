@@ -41,5 +41,3 @@ keymap("n", "<leader>ot", ":OpenTerminal<CR>", { noremap = true })
 -- Meta
 keymap("n", "<leader>_d", ":e $MYVIMRC<CR>", { noremap = true, silent = true })
 keymap("n", "<leader>_r", ":source $MYVIMRC<CR>", { noremap = true, silent = true })
-
-keymap("n", "grs", ":OpenSecrets<CR>", { noremap = true, silent = true })
