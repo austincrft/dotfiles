@@ -35,5 +35,6 @@ vim.opt.undodir = vim.fn.stdpath("data") .. "/undo"
 vim.filetype.add({
   pattern = {
     ['.*%.json'] = "jsonc",
+    ['.*%.xaml'] = "xml",
   },
 })

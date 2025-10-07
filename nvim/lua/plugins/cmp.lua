@@ -12,16 +12,7 @@ return {
     local cmp = require('cmp')
     local luasnip = require('luasnip')
 
-    local disabled_filetypes = {
-      "text",
-      "codecompanion",
-    }
-
     cmp.setup({
-      enabled = function ()
-        local ft = vim.api.nvim_buf_get_option(0, "filetype")
-        return not vim.tbl_contains(disabled_filetypes, ft)
-      end,
       snippet = {
         expand = function(args)
           luasnip.lsp_expand(args.body)
@@ -56,5 +47,17 @@ return {
         { name = 'buffer' },
       })
     })
+
+    local disabled_filetypes = {
+      "text",
+      "codecompanion",
+    }
+
+    for _, ft in ipairs(disabled_filetypes) do
+      cmp.setup.filetype(ft, {
+        enabled = false,
+        sources = {},
+      })
+    end
   end
 }

@@ -22,7 +22,7 @@ return {
             return coroutine.create(function(coro)
               require('telescope.builtin').find_files({
                 prompt_title = "Select DLL to Debug",
-                  find_command = { "rg", "--files", "--iglob", "*.dll", "--no-ignore" },
+                find_command = { "rg", "--files", "--iglob", "*.dll", "--no-ignore" },
                 attach_mappings = function(prompt_bufnr, map)
                   actions.select_default:replace(function()
                     actions.close(prompt_bufnr)
