@@ -21,5 +21,6 @@ return {
     })
 
     vim.keymap.set("n", "<leader>ai", ":CodeCompanionChat<CR>", { noremap = true })
+    vim.keymap.set("v", "<leader>ai", ":CodeCompanion<CR>", { noremap = true })
   end
 }
