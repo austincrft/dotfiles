@@ -200,3 +200,72 @@ function Sum {
     }
 }
 
+function New-GeneratedPassword() {
+    $digits = "0123456789"
+    $specialChars = "#$%&+-./:<>^_|~"
+
+    $validChars = "abcdefghijklmnopqrstuvwxyz" +
+                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                  $digits +
+                  $specialChars
+
+
+    function Test-Password([char[]]$chars) {
+        $hasLowercase = $false
+        $hasUppercase = $false
+        $hasDigit = $false
+        $hasSpecialChar = $false
+
+        foreach ($char in $chars) {
+            if ($hasLowercase -and $hasUppercase -and $hasDigit -and $hasSpecialChar) {
+                return $true
+            }
+
+            if ([char]::IsDigit($char)) {
+                $hasDigit = $true
+                continue
+            }
+
+            if ([char]::IsLetter($char)) {
+                if ([char]::IsUpper($char)) {
+                    $hasUppercase = $true
+                    continue
+                }
+
+                if ([char]::IsLower($char)) {
+                    $hasLowercase = $true
+                    continue
+                }
+            }
+
+            if ($specialChars.Contains($char)) {
+                $hasSpecialChar = $true
+                continue
+            }
+        }
+
+        return $false
+    }
+
+    function New-PasswordAsCharArray([int]$Length) {
+        $password = New-Object char[] $Length
+        $bytes = new-Object byte[] $Length
+
+        while (-not (Test-Password $password)) {
+            $rng = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+            $rng.GetBytes($bytes);
+            $rng.Dispose();
+
+            for ($i = 0; $i -lt $Length; $i++) {
+                $index = $bytes[$i] % $validChars.Length
+                $password[$i] = $validChars[$index]
+            }
+        }
+
+        return $password
+    }
+
+    $password = New-PasswordAsCharArray -Length 16
+    return (-join $password)
+}
+
