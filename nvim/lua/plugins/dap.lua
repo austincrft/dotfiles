@@ -13,6 +13,14 @@ return {
       dap.configurations.cs = {
         {
           type = "coreclr",
+          name = "attach - netcoredbg",
+          request = "attach",
+          processId = function()
+            return require('dap.utils').pick_process()
+          end,
+        },
+        {
+          type = "coreclr",
           name = "launch - netcoredbg",
           request = "launch",
           program = function()
