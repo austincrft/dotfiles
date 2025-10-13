@@ -47,10 +47,21 @@ return {
         },
       }
 
-
       vim.cmd("highlight DapStoppedColor guifg=#ffc777")
       vim.fn.sign_define('DapStopped', {text='🡆', texthl='DapStoppedColor', linehl='DapStoppedColor', numhl=''})
       vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})
+
+      vim.api.nvim_create_user_command("DapExceptions", function(opts)
+        require('dap').set_exception_breakpoints({opts.args})
+      end, {
+        nargs = 1,
+        complete = function(arg_lead, _, _)
+          local options = { "all", "user-unhandled", "never" }
+          return vim.tbl_filter(function(option)
+            return option:find("^" .. vim.pesc(arg_lead))
+          end, options)
+        end,
+      })
 
       vim.keymap.set("n", "<F5>", dap.continue, { desc = "Start/continue debugging" })
       vim.keymap.set("n", "<F10>", dap.step_over, { desc = "Step over" })
@@ -58,6 +69,7 @@ return {
       vim.keymap.set("n", "<F12>", dap.step_out, { desc = "Step out" })
       vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
       vim.keymap.set("n", "<leader>dB", dap.clear_breakpoints, { desc = "Toggle breakpoint" })
+      vim.keymap.set("n", "<leader>de", ":DapExceptions ", { desc = "Exception settings" })
       vim.keymap.set("n", "<leader>dc", dap.run_to_cursor, { desc = "Run to cursor" })
       vim.keymap.set("n", "<leader>dr", dap.repl.toggle, { desc = "Toggle DAP REPL" })
       vim.keymap.set("n", "<leader>dj", dap.down, { desc = "Go down stack frame" })

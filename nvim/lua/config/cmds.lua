@@ -1,9 +1,12 @@
--- DiagOpenFloat
 vim.api.nvim_create_user_command("DiagOpenFloat", function()
   vim.diagnostic.open_float(nil, { focusable = true, border = 'rounded' })
 end, { desc = "Open diagnostic float" })
 
--- OpenTerminal
+vim.api.nvim_create_user_command("DiagSetQuickFix", function()
+  vim.diagnostic.setqflist({ open = false, severity = { min = vim.diagnostic.severity.WARN } })
+  vim.cmd("botright copen")
+end, {})
+
 vim.api.nvim_create_user_command("OpenTerminal", function()
   local cur_tab = vim.api.nvim_get_current_tabpage()
   local terminal_win = nil
