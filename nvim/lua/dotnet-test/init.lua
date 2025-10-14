@@ -3,6 +3,7 @@ local M = {}
 local config = {
   log_level = vim.log.levels.INFO,
   use_roslyn_sln = false,
+  find_target_max_iter = 10,
 }
 
 function M.setup(opts)
@@ -59,18 +60,70 @@ local function get_csharp_method()
     return
   end
 
-  -- Use a query to get the method name identifier
+  -- Get method name
   local query = ts.query.parse("c_sharp", [[
     (method_declaration
       name: (identifier) @method_name)
   ]])
+  local method_name = nil
   for id, node in query:iter_captures(found, bufnr, 0, -1) do
     if query.captures[id] == "method_name" then
-      local name = ts.get_node_text(node, bufnr)
-      return name
+      method_name = ts.get_node_text(node, bufnr)
+      break
     end
   end
-  notify("Method found, but could not get name.", vim.log.levels.ERROR)
+  if not method_name then
+    notify("Method found, but could not get name.", vim.log.levels.ERROR)
+    return
+  end
+
+  -- Walk up to collect class/struct/record and namespace names
+  local names = { method_name }
+  local parent = found:parent()
+  local namespace_found = false
+  while parent do
+    local t = parent:type()
+    if t == "class_declaration" or t == "struct_declaration" or t == "record_declaration" then
+      -- Get class/struct/record name
+      for child in parent:iter_children() do
+        if child:type() == "identifier" then
+          table.insert(names, 1, ts.get_node_text(child, bufnr))
+          break
+        end
+      end
+    elseif t == "namespace_declaration" then
+      -- Get namespace name (could be a qualified_name or identifier)
+      for child in parent:iter_children() do
+        if child:type() == "qualified_name" or child:type() == "identifier" then
+          table.insert(names, 1, ts.get_node_text(child, bufnr))
+          namespace_found = true
+          break
+        end
+      end
+    end
+    parent = parent:parent()
+  end
+
+  if not namespace_found then
+    local file_scoped_ns = nil
+    for child in root:iter_children() do
+      if child:type() == "file_scoped_namespace_declaration" then
+        for ns_child in child:iter_children() do
+          if ns_child:type() == "qualified_name" or ns_child:type() == "identifier" then
+            file_scoped_ns = ts.get_node_text(ns_child, bufnr)
+            break
+          end
+        end
+        break
+      end
+    end
+
+    if file_scoped_ns then
+      table.insert(names, 1, file_scoped_ns)
+    end
+  end
+
+  return table.concat(names, ".")
 end
 
 local function glob_any(dir, patterns)
@@ -88,14 +141,15 @@ local function find_dotnet_target()
   end
 
   local patterns = { "*.sln", "*.csproj" }
-  local start_dir = vim.fn.expand('%:p:h')
+  local buf_dir = vim.fn.expand('%:p:h')
 
   -- Walk up from buf_dir
-  local iter, max_iter = 1, 10
-  local dir, cwd = start_dir, vim.fn.getcwd()
+  local iter = 1
+  local dir = buf_dir
+  local cwd = vim.fn.getcwd()
 
-  while iter ~= max_iter + 1 and dir and dir ~= "" and dir ~= "/" and dir ~= cwd do
-    notify("Iteration " .. tostring(iter) .. ": " .. dir, vim.log.levels.DEBUG)
+  while iter ~= config.find_target_max_iter + 1 and dir and dir ~= "" and dir ~= "/" and dir ~= cwd do
+    notify("Iter " .. tostring(iter) .. ": " .. dir, vim.log.levels.DEBUG)
     local targets = glob_any(dir, patterns)
     if not #targets then
       notify("No targets found" .. dir, vim.log.levels.DEBUG)
