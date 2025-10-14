@@ -18,6 +18,7 @@ return {
     ft = { "cs" }, -- Enable only for C# files
     config = function()
       local dotnet_test = require("dotnet-test")
+      dotnet_test.setup({ log_level = vim.log.levels.DEBUG })
 
       vim.api.nvim_create_user_command("RunTest", function(opts)
         dotnet_test.run_test(opts.args)

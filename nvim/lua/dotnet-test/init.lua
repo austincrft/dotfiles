@@ -2,6 +2,7 @@ local M = {}
 
 local config = {
   log_level = vim.log.levels.INFO,
+  use_roslyn_sln = false,
 }
 
 function M.setup(opts)
@@ -10,7 +11,7 @@ end
 
 local function notify(msg, level)
   if level >= config.log_level then
-    vim.notify(msg, level)
+    vim.notify("[dotnet-test] " .. msg, level)
   end
 end
 
@@ -72,17 +73,69 @@ local function get_csharp_method()
   notify("Method found, but could not get name.", vim.log.levels.ERROR)
 end
 
+local function glob_any(dir, patterns)
+  for _, pat in ipairs(patterns) do
+    local files = vim.fn.globpath(dir, pat, false, true)
+    if #files > 0 then return files end
+  end
+  return {}
+end
+
+local function find_dotnet_target()
+  if config.use_roslyn_sln and vim.g.roslyn_nvim_selected_solution then
+    notify('Using roslyn selected sln: ' .. vim.g.roslyn_nvim_selected_solution, vim.log.levels.DEBUG)
+    return vim.g.roslyn_nvim_selected_solution
+  end
+
+  local patterns = { "*.sln", "*.csproj" }
+  local start_dir = vim.fn.expand('%:p:h')
+
+  -- Walk up from buf_dir
+  local iter, max_iter = 1, 10
+  local dir, cwd = start_dir, vim.fn.getcwd()
+
+  while iter ~= max_iter + 1 and dir and dir ~= "" and dir ~= "/" and dir ~= cwd do
+    notify("Iteration " .. tostring(iter) .. ": " .. dir, vim.log.levels.DEBUG)
+    local targets = glob_any(dir, patterns)
+    if not #targets then
+      notify("No targets found" .. dir, vim.log.levels.DEBUG)
+    else
+      if #targets == 1 then
+        return targets[1]
+      else
+        -- TODO: Show picker
+        local msg = "Multiple targets found at " .. dir .. ": " .. table.concat(targets, ", ")
+        notify(msg, vim.log.levels.DEBUG)
+        return
+      end
+    end
+    local parent = vim.fn.fnamemodify(dir, ":h")
+    if not parent or parent == dir then break end
+    dir = parent
+    iter = iter + 1
+  end
+
+  return nil
+end
+
 function M.run_test(test_name)
   local test = test_name and test_name ~= "" or get_csharp_method()
 
   if not test or test == "" then
-    notify("No test name provided.", vim.log.levels.ERROR)
     return
   end
 
-  local build_cmd = "dotnet build --verbosity quiet"
-  local test_cmd = "dotnet test --no-build --verbosity minimal --filter FullyQualifiedName~" .. test
-  vim.cmd("AsyncRun  " .. build_cmd .. " && " .. test_cmd)
+  local target = find_dotnet_target()
+  if not target then
+    notify("No .sln or .csproj found.", vim.log.levels.ERROR)
+    return
+  end
+
+  local cmds = {
+    "dotnet build \"" .. target .. "\" --verbosity quiet",
+    "dotnet test \"" .. target .. "\" --no-build --verbosity minimal --filter FullyQualifiedName~" .. test,
+  }
+  vim.cmd("AsyncRun " .. table.concat(cmds, "&& "))
   vim.cmd("botright copen")
 end
 
