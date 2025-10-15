@@ -31,7 +31,7 @@ keymap("n", "<leader>qC", ":cexpr []<CR>", { noremap = true, silent = true })
 keymap("n", "<leader>lo", ":botright lopen<CR>", { noremap = true, silent = true })
 keymap("n", "<leader>lc", ":lclose<CR>", { noremap = true, silent = true })
 
--- Substitute & Global
+-- Substitute
 keymap("n", "<leader>ss", ":%s/", { noremap = true })
 keymap("v", "<leader>ss", '"zy:%s/<C-R>z/', { noremap = true })
 

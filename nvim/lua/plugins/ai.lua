@@ -9,14 +9,13 @@ return {
     -- Disable copilot inline suggestions
     vim.g.copilot_enabled = 0
 
+    local adapter = "copilot"
+
     require("codecompanion").setup({
-      -- opts = {
-      --   log_level = "TRACE",
-      -- },
       strategies = {
-        chat = { adapter = "copilot" },
-        inline = { adapter = "copilot" },
-        agent = { adapter = "copilot" },
+        chat = { adapter = adapter },
+        inline = { adapter = adapter },
+        agent = { adapter = adapter },
       },
     })
 
