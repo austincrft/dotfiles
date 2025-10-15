@@ -221,11 +221,10 @@ function M.run_test(test_name, debug)
 
           -- Proceed with debug logic
           local dap = require('dap')
-          local uv = vim.loop
           local handle
-          local stdout = uv.new_pipe(false)
+          local stdout = vim.uv.new_pipe(false)
           notify("Starting dotnet test", vim.log.levels.DEBUG)
-          handle = uv.spawn('dotnet', {
+          handle = vim.uv.spawn('dotnet', {
             args = {
               "test", target,
               "--no-build",
