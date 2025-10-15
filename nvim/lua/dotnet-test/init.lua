@@ -11,12 +11,12 @@ function M.setup(opts)
   config = vim.tbl_extend("force", config, opts or {})
 
   if config.create_cmds then
-      vim.api.nvim_create_user_command("DotnetTestRun", function(opts)
-        M.run_test(opts.args)
+      vim.api.nvim_create_user_command("DotnetTestRun", function(run_opts)
+        M.run_test(run_opts.args)
       end, { nargs = "?", desc = "Run a .NET test" })
 
-      vim.api.nvim_create_user_command("DotnetTestDebug", function(opts)
-        M.run_test(opts.args, true)
+      vim.api.nvim_create_user_command("DotnetTestDebug", function(debug_opts)
+        M.run_test(debug_opts.args, true)
       end, { nargs = "?", desc = "Debug a .NET test" })
   end
 end
