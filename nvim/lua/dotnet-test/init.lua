@@ -206,47 +206,59 @@ function M.run_test(test_name, debug)
   local build_cmd = "dotnet build \"" .. target .. "\" --verbosity quiet"
 
   if debug then
-    local dap = require('dap')
-    local uv = vim.loop
 
-    vim.fn.system(build_cmd)
+    run_term_cmd(build_cmd)
 
-    local handle
-    local stdout = uv.new_pipe(false)
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "AsyncRunStop",
+      once = true,
+      callback = function()
+        if vim.g.asyncrun_status ~= "success" then
+          notify("Build failed, not running test.", vim.log.levels.ERROR)
+        else
+          -- Close quickfix
+          vim.cmd("cclose")
 
-    notify("Starting dotnet test", vim.log.levels.DEBUG)
-    handle = uv.spawn('dotnet', {
-      args = {
-        "test", "\"" .. target, "\"",
-        "--no-build",
-        "--filter", "FullyQualifiedName~" .. test,
-      },
-      env = { 'VSTEST_HOST_DEBUG=1' },
-      stdio = {nil, stdout, nil}
-    }, function(code, signal)
-      notify("Closing stdout and handle", vim.log.levels.DEBUG)
-      stdout:close()
-      handle:close()
-    end)
+          -- Proceed with debug logic
+          local dap = require('dap')
+          local uv = vim.loop
+          local handle
+          local stdout = uv.new_pipe(false)
+          notify("Starting dotnet test", vim.log.levels.DEBUG)
+          handle = uv.spawn('dotnet', {
+            args = {
+              "test", target,
+              "--no-build",
+              "--filter", "FullyQualifiedName~" .. test,
+            },
+            env = { 'VSTEST_HOST_DEBUG=1' },
+            stdio = {nil, stdout, nil}
+          }, function(code, signal)
+            notify("Closing stdout and handle", vim.log.levels.DEBUG)
+            stdout:close()
+            handle:close()
+          end)
 
-    stdout:read_start(function(err, data)
-      notify("Starting read. Error=" .. vim.inspect(err) .. ";Data=" .. vim.inspect(data), vim.log.levels.DEBUG)
-      if data then
-        -- Look for the test host PID
-        local test_pid = data:match('Process Id: (%d+)')
-        if test_pid then
-          notify("Attaching to test host: " .. test_pid, vim.log.levels.DEBUG)
-          vim.schedule(function()
-            dap.run({
-              type = 'coreclr',
-              name = 'Attach to Test Host',
-              request = 'attach',
-              processId = tonumber(test_pid)
-            })
+          stdout:read_start(function(err, data)
+            notify("Starting read. Error=" .. vim.inspect(err) .. ";Data=" .. vim.inspect(data), vim.log.levels.DEBUG)
+            if data then
+              local test_pid = data:match('Process Id: (%d+)')
+              if test_pid then
+                notify("Attaching to test host: " .. test_pid, vim.log.levels.DEBUG)
+                vim.schedule(function()
+                  dap.run({
+                    type = 'coreclr',
+                    name = 'Attach to Test Host',
+                    request = 'attach',
+                    processId = tonumber(test_pid)
+                  })
+                end)
+              end
+            end
           end)
         end
-      end
-    end)
+      end,
+    })
 
     return
   end
