@@ -36,10 +36,17 @@ keymap("n", "<leader>ss", ":%s/", { noremap = true })
 keymap("v", "<leader>ss", '"zy:%s/<C-R>z/', { noremap = true })
 
 -- Terminal
-keymap("n", "<leader>ot", ":OpenTerminal<CR>", { noremap = true })
+keymap("n", "<leader>tt", ":OpenTerminal<CR>", { noremap = true })
 
 -- Meta
-keymap("n", "<leader>_d", ":e $MYVIMRC<CR>", { noremap = true, silent = true })
+keymap("n", "<leader>_d", function ()
+  vim.cmd("edit " .. vim.fn.stdpath("config"))
+end, { noremap = true, silent = true })
+
 keymap("n", "<leader>_p", function ()
   vim.cmd("edit " .. vim.fn.stdpath("data") .. "/lazy")
+end, { noremap = true, silent = true })
+
+keymap("n", "<leader>_w", function ()
+  vim.cmd("edit ~/work/nvim")
 end, { noremap = true, silent = true })

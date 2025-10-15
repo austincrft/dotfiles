@@ -66,7 +66,7 @@ return {
       vim.keymap.set("n", "<F5>", dap.continue, { desc = "Start/continue debugging" })
       vim.keymap.set("n", "<F10>", dap.step_over, { desc = "Step over" })
       vim.keymap.set("n", "<F11>", dap.step_into, { desc = "Step into" })
-      vim.keymap.set("n", "<F12>", dap.step_out, { desc = "Step out" })
+      vim.keymap.set("n", "<S-F11>", dap.step_out, { desc = "Step out" })
       vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
       vim.keymap.set("n", "<leader>dB", dap.clear_breakpoints, { desc = "Toggle breakpoint" })
       vim.keymap.set("n", "<leader>de", ":DapExceptions ", { desc = "Exception settings" })
@@ -87,6 +87,8 @@ return {
       local dap = require("dap")
 
       dapui.setup()
+
+      vim.keymap.set("n", "<leader>du", dapui.toggle, { desc = "Toggle DAP UI" })
 
       -- Automatically open/close dap ui
       dap.listeners.before.attach.dapui_config = function()
