@@ -137,11 +137,6 @@ function Build-Sln($sln) {
     }
 }
 
-function Clean-Sln($sln) {
-    $pattern = if ($sln) { $sln } else { "*.sln" }
-    Get-ChildItem $pattern | ForEach-Object { dotnet clean $_.Name }
-}
-
 function Start-DotnetProject($ProjectDirectory, [switch]$Watch) {
     if (-not $ProjectDirectory) {
         $ProjectDirectory = (Get-Location).Path
