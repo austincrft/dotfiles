@@ -5,11 +5,11 @@ return {
     config = function()
       local secrets = require("dotnet-secrets")
 
-      vim.api.nvim_create_user_command("OpenSecrets", function(opts)
+      vim.api.nvim_create_user_command("DotnetSecrets", function(opts)
         secrets.open(opts.args)
       end, { nargs = "?", desc = "Open .NET user secrets" })
 
-      vim.keymap.set("n", "grs", ":OpenSecrets<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "grs", ":DotnetSecrets<CR>", { noremap = true, silent = true })
     end,
   },
   {
@@ -20,11 +20,8 @@ return {
       local dotnet_test = require("dotnet-test")
       dotnet_test.setup({ log_level = vim.log.levels.DEBUG })
 
-      vim.api.nvim_create_user_command("RunTest", function(opts)
-        dotnet_test.run_test(opts.args)
-      end, { nargs = "?", desc = "Run .NET test" })
-
-      vim.keymap.set("n", "<Leader>rt", ":RunTest<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "<Leader>rt", ":DotnetTestRun<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "<Leader>dt", ":DotnetTestDebug<CR>", { noremap = true, silent = true })
     end,
   }
 }

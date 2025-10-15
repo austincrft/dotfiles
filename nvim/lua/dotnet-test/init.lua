@@ -2,17 +2,30 @@ local M = {}
 
 local config = {
   log_level = vim.log.levels.INFO,
+  create_cmds = true,
   use_roslyn_sln = false,
   find_target_max_iter = 10,
 }
 
 function M.setup(opts)
   config = vim.tbl_extend("force", config, opts or {})
+
+  if config.create_cmds then
+      vim.api.nvim_create_user_command("DotnetTestRun", function(opts)
+        M.run_test(opts.args)
+      end, { nargs = "?", desc = "Run a .NET test" })
+
+      vim.api.nvim_create_user_command("DotnetTestDebug", function(opts)
+        M.run_test(opts.args, true)
+      end, { nargs = "?", desc = "Debug a .NET test" })
+  end
 end
 
 local function notify(msg, level)
   if level >= config.log_level then
-    vim.notify("[dotnet-test] " .. msg, level)
+    vim.schedule(function()
+      vim.notify("[dotnet-test] " .. msg, level)
+    end)
   end
 end
 
@@ -172,7 +185,12 @@ local function find_dotnet_target()
   return nil
 end
 
-function M.run_test(test_name)
+local run_term_cmd = function (cmd)
+  vim.cmd("AsyncRun " .. cmd)
+  vim.cmd("botright copen")
+end
+
+function M.run_test(test_name, debug)
   local test = test_name and test_name ~= "" or get_csharp_method()
 
   if not test or test == "" then
@@ -185,12 +203,56 @@ function M.run_test(test_name)
     return
   end
 
-  local cmds = {
-    "dotnet build \"" .. target .. "\" --verbosity quiet",
-    "dotnet test \"" .. target .. "\" --no-build --verbosity minimal --filter FullyQualifiedName~" .. test,
-  }
-  vim.cmd("AsyncRun " .. table.concat(cmds, "&& "))
-  vim.cmd("botright copen")
+  local build_cmd = "dotnet build \"" .. target .. "\" --verbosity quiet"
+
+  if debug then
+    local dap = require('dap')
+    local uv = vim.loop
+
+    vim.fn.system(build_cmd)
+
+    local handle
+    local stdout = uv.new_pipe(false)
+
+    notify("Starting dotnet test", vim.log.levels.DEBUG)
+    handle = uv.spawn('dotnet', {
+      args = {
+        "test", "\"" .. target, "\"",
+        "--no-build",
+        "--filter", "FullyQualifiedName~" .. test,
+      },
+      env = { 'VSTEST_HOST_DEBUG=1' },
+      stdio = {nil, stdout, nil}
+    }, function(code, signal)
+      notify("Closing stdout and handle", vim.log.levels.DEBUG)
+      stdout:close()
+      handle:close()
+    end)
+
+    stdout:read_start(function(err, data)
+      notify("Starting read. Error=" .. vim.inspect(err) .. ";Data=" .. vim.inspect(data), vim.log.levels.DEBUG)
+      if data then
+        -- Look for the test host PID
+        local test_pid = data:match('Process Id: (%d+)')
+        if test_pid then
+          notify("Attaching to test host: " .. test_pid, vim.log.levels.DEBUG)
+          vim.schedule(function()
+            dap.run({
+              type = 'coreclr',
+              name = 'Attach to Test Host',
+              request = 'attach',
+              processId = tonumber(test_pid)
+            })
+          end)
+        end
+      end
+    end)
+
+    return
+  end
+
+  local test_cmd = "dotnet test \"" .. target .. "\" --no-build --verbosity minimal --filter FullyQualifiedName~" .. test
+  run_term_cmd(table.concat({ build_cmd, test_cmd }, " && "))
 end
 
 return M
