@@ -15,13 +15,23 @@ return {
   {
     dir = vim.fn.stdpath("config") .. "/lua/dotnet-test",
     name = "dotnet-test",
+    dependencies = "skywind3000/asyncrun.vim",
     ft = { "cs" }, -- Enable only for C# files
     config = function()
       local dotnet_test = require("dotnet-test")
-      dotnet_test.setup({ log_level = vim.log.levels.DEBUG })
+      -- dotnet_test.setup({ log_level = vim.log.levels.DEBUG })
 
-      vim.keymap.set("n", "<Leader>rt", ":DotnetTestRun<CR>", { noremap = true, silent = true })
-      vim.keymap.set("n", "<Leader>dt", ":DotnetTestDebug<CR>", { noremap = true, silent = true })
+      vim.keymap.set("n", "<Leader>tt", function()
+        dotnet_test.run_test()
+      end, { noremap = true, silent = true })
+
+      vim.keymap.set("n", "<Leader>td", function()
+        dotnet_test.run_test({ debug = true })
+      end, { noremap = true, silent = true })
+
+      vim.keymap.set("n", "<Leader>tf", function()
+        dotnet_test.run_current_file()
+      end, { noremap = true, silent = true })
     end,
   }
 }

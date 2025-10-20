@@ -1,24 +1,17 @@
 local M = {}
 
 local config = {
-  log_level = vim.log.levels.INFO,
-  create_cmds = true,
+  log_level = vim.log.levels.WARN,
   use_roslyn_sln = false,
   find_target_max_iter = 10,
+  build = {
+    cmd_runner = nil,
+    cmd_finished_autocmd = nil
+  }
 }
 
 function M.setup(opts)
   config = vim.tbl_extend("force", config, opts or {})
-
-  if config.create_cmds then
-      vim.api.nvim_create_user_command("DotnetTestRun", function(run_opts)
-        M.run_test(run_opts.args)
-      end, { nargs = "?", desc = "Run a .NET test" })
-
-      vim.api.nvim_create_user_command("DotnetTestDebug", function(debug_opts)
-        M.run_test(debug_opts.args, true)
-      end, { nargs = "?", desc = "Debug a .NET test" })
-  end
 end
 
 local function notify(msg, level)
@@ -29,12 +22,12 @@ local function notify(msg, level)
   end
 end
 
-local function get_csharp_method()
+local function get_curr_csharp_method()
   local ts = vim.treesitter
   local bufnr = vim.api.nvim_get_current_buf()
   local parser = ts.get_parser(bufnr, "c_sharp")
   if not parser then
-    notify("No C# parser installed", vim.log.levels.ERROR)
+    notify("No treesitter parser for C# installed", vim.log.levels.ERROR)
     return
   end
 
@@ -164,7 +157,7 @@ local function find_dotnet_target()
   while iter ~= config.find_target_max_iter + 1 and dir and dir ~= "" and dir ~= "/" and dir ~= cwd do
     notify("Iter " .. tostring(iter) .. ": " .. dir, vim.log.levels.DEBUG)
     local targets = glob_any(dir, patterns)
-    if not #targets then
+    if not targets or #targets == 0 then
       notify("No targets found" .. dir, vim.log.levels.DEBUG)
     else
       if #targets == 1 then
@@ -185,18 +178,39 @@ local function find_dotnet_target()
   return nil
 end
 
-local run_term_cmd = function (cmd)
+local function run_term_cmd(cmd)
+  if config.build and config.build.cmd_runner then
+    config.build.cmd_runner(cmd)
+    return
+  end
+
   vim.cmd("AsyncRun " .. cmd)
   vim.cmd("botright copen")
 end
 
-function M.run_test(test_name, debug)
-  local test = test_name and test_name ~= "" or get_csharp_method()
-
-  if not test or test == "" then
+local function build_finished_autocmd(callback)
+  if config.build and config.build.cmd_finished_autocmd then
+    config.build.cmd_finished_autocmd(callback)
     return
   end
 
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "AsyncRunStop",
+    once = true,
+    callback = function()
+      if vim.g.asyncrun_status ~= "success" then
+        notify("Build failed, not running test.", vim.log.levels.ERROR)
+      else
+        -- Close quickfix
+        vim.cmd("cclose")
+
+        callback()
+      end
+    end,
+  })
+end
+
+function M.run_dotnet_test_cli(filter, debug)
   local target = find_dotnet_target()
   if not target then
     notify("No .sln or .csproj found.", vim.log.levels.ERROR)
@@ -206,64 +220,145 @@ function M.run_test(test_name, debug)
   local build_cmd = "dotnet build \"" .. target .. "\" --verbosity quiet"
 
   if debug then
-
+    -- Run build
     run_term_cmd(build_cmd)
 
-    vim.api.nvim_create_autocmd("User", {
-      pattern = "AsyncRunStop",
-      once = true,
-      callback = function()
-        if vim.g.asyncrun_status ~= "success" then
-          notify("Build failed, not running test.", vim.log.levels.ERROR)
-        else
-          -- Close quickfix
-          vim.cmd("cclose")
+    local function build_finished_callback()
+      local dap = require('dap')
+      local handle
+      local stdout = vim.uv.new_pipe(false)
+      notify("Starting dotnet test", vim.log.levels.DEBUG)
+      handle = vim.uv.spawn('dotnet', {
+        args = {
+          "test", target,
+          "--no-build",
+          "--filter", '"' .. filter .. '"'
+        },
+        env = { 'VSTEST_HOST_DEBUG=1' },
+        stdio = {nil, stdout, nil}
+      }, function(code, signal)
+        notify("Closing stdout and handle", vim.log.levels.DEBUG)
+        stdout:close()
+        handle:close()
+      end)
 
-          -- Proceed with debug logic
-          local dap = require('dap')
-          local handle
-          local stdout = vim.uv.new_pipe(false)
-          notify("Starting dotnet test", vim.log.levels.DEBUG)
-          handle = vim.uv.spawn('dotnet', {
-            args = {
-              "test", target,
-              "--no-build",
-              "--filter", "FullyQualifiedName~" .. test,
-            },
-            env = { 'VSTEST_HOST_DEBUG=1' },
-            stdio = {nil, stdout, nil}
-          }, function(code, signal)
-            notify("Closing stdout and handle", vim.log.levels.DEBUG)
-            stdout:close()
-            handle:close()
-          end)
-
-          stdout:read_start(function(err, data)
-            notify("Starting read. Error=" .. vim.inspect(err) .. ";Data=" .. vim.inspect(data), vim.log.levels.DEBUG)
-            if data then
-              local test_pid = data:match('Process Id: (%d+)')
-              if test_pid then
-                notify("Attaching to test host: " .. test_pid, vim.log.levels.DEBUG)
-                vim.schedule(function()
-                  dap.run({
-                    type = 'coreclr',
-                    name = 'Attach to Test Host',
-                    request = 'attach',
-                    processId = tonumber(test_pid)
-                  })
-                end)
-              end
-            end
-          end)
+      stdout:read_start(function(err, data)
+        notify("Starting read. Error=" .. vim.inspect(err) .. ";Data=" .. vim.inspect(data), vim.log.levels.DEBUG)
+        if data then
+          local test_pid = data:match('Process Id: (%d+)')
+          if test_pid then
+            notify("Attaching to test host: " .. test_pid, vim.log.levels.DEBUG)
+            vim.schedule(function()
+              dap.run({
+                type = 'coreclr',
+                name = 'Attach to Test Host',
+                request = 'attach',
+                processId = tonumber(test_pid)
+              })
+            end)
+          end
         end
-      end,
-    })
+      end)
+    end
+
+    -- Wait for build to finish
+    build_finished_autocmd(build_finished_callback)
 
     return
   end
 
-  local test_cmd = "dotnet test \"" .. target .. "\" --no-build --verbosity minimal --filter FullyQualifiedName~" .. test
+  local test_cmd = 'dotnet test "' .. target .. '" --no-build --verbosity minimal --filter "' .. filter .. '"'
   run_term_cmd(table.concat({ build_cmd, test_cmd }, " && "))
+end
+
+function M.run_test(opts)
+  opts = opts or { test_name = nil, debug = false }
+  local test = opts.test_name and opts.test_name ~= "" or get_curr_csharp_method()
+  if not test or test == "" then
+    return
+  end
+
+  local filter = "FullyQualifiedName~" .. test
+  M.run_dotnet_test_cli(filter, opts.debug)
+end
+
+local function get_curr_file_toplevel_types()
+  local ts = vim.treesitter
+  local bufnr = vim.api.nvim_get_current_buf()
+  local parser = ts.get_parser(bufnr, "c_sharp")
+  if not parser then
+    notify("No treesitter parser for C# installed", vim.log.levels.ERROR)
+    return {}
+  end
+
+  local tree = parser:parse()[1]
+  local root = tree:root()
+  local types = {}
+
+  -- Helper to get namespace name
+  local function get_namespace()
+    for child in root:iter_children() do
+      if child:type() == "namespace_declaration" then
+        for ns_child in child:iter_children() do
+          if ns_child:type() == "qualified_name" or ns_child:type() == "identifier" then
+            return ts.get_node_text(ns_child, bufnr)
+          end
+        end
+      elseif child:type() == "file_scoped_namespace_declaration" then
+        for ns_child in child:iter_children() do
+          if ns_child:type() == "qualified_name" or ns_child:type() == "identifier" then
+            return ts.get_node_text(ns_child, bufnr)
+          end
+        end
+      end
+    end
+    return nil
+  end
+
+  local namespace = get_namespace()
+
+  for child in root:iter_children() do
+    local t = child:type()
+    if t == "class_declaration" or t == "struct_declaration" or t == "record_declaration" then
+      local type_name = nil
+      for type_child in child:iter_children() do
+        if type_child:type() == "identifier" then
+          type_name = ts.get_node_text(type_child, bufnr)
+          break
+        end
+      end
+      if type_name then
+        if namespace then
+          table.insert(types, namespace .. "." .. type_name)
+        else
+          table.insert(types, type_name)
+        end
+      end
+    end
+  end
+
+  return types
+end
+
+function M.run_current_file(opts)
+  opts = opts or { debug = false }
+  local type_names = get_curr_file_toplevel_types()
+  if not type_names or #type_names == 0 then
+    notify("No top-level types found in the current file", vim.log.levels.ERROR)
+    return
+  end
+
+  notify("top-level types: " .. table.concat(type_names, ", "), vim.log.levels.DEBUG)
+
+  local filters = {}
+  for i, v in ipairs(type_names) do
+    filters[i] = "FullyQualifiedName~" .. v
+  end
+
+  local filter = table.concat(filters, " | ")
+  notify("filter: " .. filter, vim.log.levels.DEBUG)
+
+  M.run_dotnet_test_cli(filter, opts.debug)
 end
 
 return M
