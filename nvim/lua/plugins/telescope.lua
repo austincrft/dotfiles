@@ -15,6 +15,14 @@ return {
           "%.git[/\\]",
           "node_modules[/\\]",
         },
+        preview = {
+          hide_on_startup = true
+        },
+        mappings = {
+          i = {
+            ['<C-p>'] = require('telescope.actions.layout').toggle_preview
+          }
+        },
       }
     })
 
@@ -46,7 +54,9 @@ return {
    -- keymap("v", "<leader>ss", '"zy:%s/<C-R>z/', { noremap = true })
     vim.keymap.set("n", "<leader>fb", ":Telescope buffers<cr>", { desc = "Find buffers" })
     vim.keymap.set("n", "<leader>fh", ":Telescope help_tags<cr>", { desc = "Help tags" })
-    vim.keymap.set("n", "<leader>fd", function() builtin.lsp_document_symbols() end, { desc = "LSP document symbols" })
+    vim.keymap.set("n", "<leader>fd", function()
+      builtin.lsp_document_symbols({ symbol_width = 500 })
+    end, { desc = "LSP document symbols" })
   end
 }
 

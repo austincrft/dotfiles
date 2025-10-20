@@ -6,7 +6,7 @@ return {
     config = function ()
       local roslyn = require("roslyn")
       local work = require("config.work")
-      roslyn.setup(work.apply_plugin_override("roslyn", {}))
+      roslyn.setup(work.apply_plugin_override("roslyn", { filewatching = "roslyn" }))
 
       vim.api.nvim_create_user_command("BuildSln", function(opts)
         local sln = vim.g.roslyn_nvim_selected_solution
@@ -22,11 +22,5 @@ return {
 
       vim.keymap.set("n", "<leader>bb", ":BuildSln<CR>", { noremap = true })
     end
-  },
-  {
-      "khoido2003/roslyn-filewatch.nvim",
-      config = function()
-        require("roslyn_filewatch").setup({})
-     end,
   },
 }

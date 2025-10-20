@@ -36,7 +36,7 @@ keymap("n", "<leader>ss", ":%s/", { noremap = true })
 keymap("v", "<leader>ss", '"zy:%s/<C-R>z/', { noremap = true })
 
 -- Terminal
-keymap("n", "<leader>tt", ":OpenTerminal<CR>", { noremap = true })
+keymap("n", "<leader>TT", ":OpenTerminal<CR>", { noremap = true })
 
 -- Meta
 keymap("n", "<leader>_d", function ()

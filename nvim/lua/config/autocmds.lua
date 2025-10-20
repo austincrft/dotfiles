@@ -8,6 +8,20 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
+-- Enable treesitter folding
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufWinEnter" }, {
+  callback = function()
+    local parsers = require("nvim-treesitter.parsers")
+    local bufnr = vim.api.nvim_get_current_buf()
+    local parser = parsers.has_parser() and parsers.get_parser(bufnr)
+    if parser then
+      parser:parse()
+      vim.opt_local.foldmethod = "expr"
+      vim.opt_local.foldexpr = "nvim_treesitter#foldexpr()"
+    end
+  end,
+})
+
 -- Expand quickfix
 vim.api.nvim_create_autocmd("QuickFixCmdPost", {
   pattern = { "[^l]*" },
@@ -61,34 +75,9 @@ end
 vim.api.nvim_create_autocmd('FileType', {
     pattern = 'qf',
     callback = function()
-        -- Do not show quickfix in buffer lists.
-        vim.api.nvim_buf_set_option(0, 'buflisted', false)
-
-        -- Escape closes quickfix window.
-        vim.keymap.set(
-            'n',
-            '<ESC>',
-            '<CMD>cclose<CR>',
-            { buffer = true, remap = false, silent = true }
-        )
-
-        -- `dd` deletes an item from the list.
-        vim.keymap.set('n', 'dd', delete_qf_items, { buffer = true })
-        vim.keymap.set('x', 'd', delete_qf_items, { buffer = true })
+      -- `dd` deletes an item from the list.
+      vim.keymap.set('n', 'dd', delete_qf_items, { buffer = true })
+      vim.keymap.set('x', 'd', delete_qf_items, { buffer = true })
     end,
     desc = 'Quickfix tweaks',
-})
-
-
--- Enable treesitter folding
-vim.api.nvim_create_autocmd("FileType", {
-  callback = function()
-    local parsers = require("nvim-treesitter.parsers")
-    local parser = parsers.has_parser() and parsers.get_parser()
-    if parser then
-      parser:parse()
-      vim.o.foldmethod = "expr"
-      vim.o.foldexpr = "nvim_treesitter#foldexpr()"
-    end
-  end,
-})
+  })
