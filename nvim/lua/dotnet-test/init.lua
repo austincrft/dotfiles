@@ -2,7 +2,6 @@ local M = {}
 
 local config = {
   log_level = vim.log.levels.WARN,
-  use_roslyn_sln = false,
   find_target_max_iter = 10,
   build = {
     cmd_runner = nil,
@@ -141,11 +140,6 @@ local function glob_any(dir, patterns)
 end
 
 local function find_dotnet_target()
-  if config.use_roslyn_sln and vim.g.roslyn_nvim_selected_solution then
-    notify('Using roslyn selected sln: ' .. vim.g.roslyn_nvim_selected_solution, vim.log.levels.DEBUG)
-    return vim.g.roslyn_nvim_selected_solution
-  end
-
   local patterns = { "*.sln", "*.csproj" }
   local buf_dir = vim.fn.expand('%:p:h')
 
@@ -210,16 +204,17 @@ local function build_finished_autocmd(callback)
   })
 end
 
-function M.run_dotnet_test_cli(filter, debug)
-  local target = find_dotnet_target()
+function M.run_dotnet_test_cli(opts)
+  opts = opts or { filter = nil, target = nil, debug = false }
+  local target = opts.target or find_dotnet_target()
   if not target then
-    notify("No .sln or .csproj found.", vim.log.levels.ERROR)
+    notify("No .sln or .csproj provided or found.", vim.log.levels.ERROR)
     return
   end
 
   local build_cmd = "dotnet build \"" .. target .. "\" --verbosity quiet"
 
-  if debug then
+  if opts.debug then
     -- Run build
     run_term_cmd(build_cmd)
 
@@ -227,13 +222,18 @@ function M.run_dotnet_test_cli(filter, debug)
       local dap = require('dap')
       local handle
       local stdout = vim.uv.new_pipe(false)
+
       notify("Starting dotnet test", vim.log.levels.DEBUG)
+
+      local args = { "test", target, "--no-build" }
+
+      if opts.filter and opts.filter ~= "" then
+        table.insert(args, "--filter")
+        table.insert(args, '"' .. opts.filter .. '"')
+      end
+
       handle = vim.uv.spawn('dotnet', {
-        args = {
-          "test", target,
-          "--no-build",
-          "--filter", '"' .. filter .. '"'
-        },
+        args = args,
         env = { 'VSTEST_HOST_DEBUG=1' },
         stdio = {nil, stdout, nil}
       }, function(code, signal)
@@ -267,7 +267,10 @@ function M.run_dotnet_test_cli(filter, debug)
     return
   end
 
-  local test_cmd = 'dotnet test "' .. target .. '" --no-build --verbosity minimal --filter "' .. filter .. '"'
+  local test_cmd = 'dotnet test "' .. target .. '" --no-build --verbosity minimal'
+  if opts.filter and opts.filter ~= "" then
+   test_cmd = test_cmd .. ' --filter "' .. opts.filter .. '"'
+  end
   run_term_cmd(table.concat({ build_cmd, test_cmd }, " && "))
 end
 
@@ -279,7 +282,7 @@ function M.run_test(opts)
   end
 
   local filter = "FullyQualifiedName~" .. test
-  M.run_dotnet_test_cli(filter, opts.debug)
+  M.run_dotnet_test_cli({ filter = filter, debug = opts.debug })
 end
 
 local function get_curr_file_toplevel_types()
@@ -358,7 +361,17 @@ function M.run_current_file(opts)
   local filter = table.concat(filters, " | ")
   notify("filter: " .. filter, vim.log.levels.DEBUG)
 
-  M.run_dotnet_test_cli(filter, opts.debug)
+  M.run_dotnet_test_cli({ filter = filter, debug = opts.debug })
+end
+
+function M.run_target(opts)
+  opts = opts or { target = nil, debug = false }
+  local target = opts.target or vim.g.roslyn_nvim_selected_solution
+  if not target or target == "" then
+    notify("No target provided or selected in roslyn", vim.log.levels.ERROR)
+  end
+
+  M.run_dotnet_test_cli({ target = target, debug = opts.debug } )
 end
 
 return M

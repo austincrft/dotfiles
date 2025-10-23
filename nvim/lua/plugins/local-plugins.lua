@@ -32,6 +32,10 @@ return {
       vim.keymap.set("n", "<Leader>tf", function()
         dotnet_test.run_current_file()
       end, { noremap = true, silent = true })
+
+      vim.keymap.set("n", "<Leader>ts", function()
+        dotnet_test.run_target()
+      end, { noremap = true, silent = true })
     end,
   }
 }
