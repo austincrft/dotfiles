@@ -4,6 +4,9 @@ return {
     config = function()
       local dap = require("dap")
 
+      -- Stop on all breakpoints by default
+      require('dap').set_exception_breakpoints("all")
+
       dap.adapters.coreclr = {
         type = 'executable',
         command = 'netcoredbg',
