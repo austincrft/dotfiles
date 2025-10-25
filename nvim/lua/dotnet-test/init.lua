@@ -4,8 +4,12 @@ local config = {
   log_level = vim.log.levels.WARN,
   find_target_max_iter = 10,
   build = {
+    args = {},
     cmd_runner = nil,
     cmd_finished_autocmd = nil
+  },
+  test = {
+    args = {},
   }
 }
 
@@ -212,7 +216,7 @@ function M.run_dotnet_test_cli(opts)
     return
   end
 
-  local build_cmd = "dotnet build \"" .. target .. "\" --verbosity quiet"
+  local build_cmd = "dotnet build \"" .. target .. "\" " .. table.concat(config.build.args, " ")
 
   if opts.debug then
     -- Run build
@@ -267,7 +271,7 @@ function M.run_dotnet_test_cli(opts)
     return
   end
 
-  local test_cmd = 'dotnet test "' .. target .. '" --no-build --verbosity minimal'
+  local test_cmd = 'dotnet test "' .. target .. '" --no-build ' ..  table.concat(config.test.args, " ")
   if opts.filter and opts.filter ~= "" then
    test_cmd = test_cmd .. ' --filter "' .. opts.filter .. '"'
   end

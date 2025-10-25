@@ -8,6 +8,14 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
+-- Disable auto comment on newline
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.formatoptions:remove({ "c", "r", "o" })
+  end,
+})
+
 -- Enable treesitter folding
 vim.api.nvim_create_autocmd({ "BufReadPost", "BufWinEnter" }, {
   callback = function()

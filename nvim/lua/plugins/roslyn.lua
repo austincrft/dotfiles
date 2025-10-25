@@ -1,12 +1,15 @@
 return {
   {
     "seblyng/roslyn.nvim",
-    ft = "cs", -- load when opening C# files
+    ft = "cs",
     dependencies = { "neovim/nvim-lspconfig", "mason-org/mason.nvim" },
     config = function ()
       local roslyn = require("roslyn")
-      local work = require("config.work")
-      roslyn.setup(work.apply_plugin_override("roslyn", { filewatching = "roslyn" }))
+      roslyn.setup({
+        filewatching = "roslyn",
+        lock_target = true,
+        broad_search = true,
+      })
 
       vim.api.nvim_create_user_command("BuildSln", function(opts)
         local sln = vim.g.roslyn_nvim_selected_solution

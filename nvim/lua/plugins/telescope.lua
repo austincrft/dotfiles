@@ -20,7 +20,7 @@ return {
         },
         mappings = {
           i = {
-            ['<C-p>'] = require('telescope.actions.layout').toggle_preview
+            ['<C-p>'] = require('telescope.actions.layout').toggle_preview,
           }
         },
       }
@@ -51,11 +51,10 @@ return {
       local selection = vim.fn.getreg('z')
       live_grep_filetype(selection)
     end, { desc = "Live grep with file filter" })
-   -- keymap("v", "<leader>ss", '"zy:%s/<C-R>z/', { noremap = true })
     vim.keymap.set("n", "<leader>fb", ":Telescope buffers<cr>", { desc = "Find buffers" })
     vim.keymap.set("n", "<leader>fh", ":Telescope help_tags<cr>", { desc = "Help tags" })
     vim.keymap.set("n", "<leader>fd", function()
-      builtin.lsp_document_symbols({ symbol_width = 500 })
+      require("telescope.builtin").lsp_document_symbols({ symbol_width = 130 })
     end, { desc = "LSP document symbols" })
   end
 }

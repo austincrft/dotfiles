@@ -12,6 +12,10 @@ return {
     local cmp = require('cmp')
     local luasnip = require('luasnip')
 
+    require("luasnip.loaders.from_lua").load({
+      paths = vim.fn.stdpath("config") .. "/lua/snippets"
+    })
+
     cmp.setup({
       snippet = {
         expand = function(args)
@@ -37,7 +41,7 @@ return {
             fallback()
           end
         end, { 'i', 's' }),
-        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        ['<C-y>'] = cmp.mapping.confirm({ select = true }),
       },
       sources = cmp.config.sources({
         { name = 'nvim_lsp' },

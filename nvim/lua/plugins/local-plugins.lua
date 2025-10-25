@@ -19,7 +19,12 @@ return {
     ft = { "cs" }, -- Enable only for C# files
     config = function()
       local dotnet_test = require("dotnet-test")
-      -- dotnet_test.setup({ log_level = vim.log.levels.DEBUG })
+      dotnet_test.setup({
+        -- log_level = vim.log.levels.DEBUG,
+        build = {
+          args = { "--verbosity", "quiet" },
+        },
+      })
 
       vim.keymap.set("n", "<Leader>tt", function()
         dotnet_test.run_test()
