@@ -4,9 +4,6 @@ return {
     config = function()
       local dap = require("dap")
 
-      -- Stop on all breakpoints by default
-      require('dap').set_exception_breakpoints("all")
-
       dap.adapters.coreclr = {
         type = 'executable',
         command = 'netcoredbg',
@@ -55,7 +52,7 @@ return {
       vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})
 
       vim.api.nvim_create_user_command("DapExceptions", function(opts)
-        require('dap').set_exception_breakpoints({opts.args})
+        dap.set_exception_breakpoints({opts.args})
       end, {
         nargs = 1,
         complete = function(arg_lead, _, _)
@@ -126,14 +123,6 @@ return {
         end,
       })
     end
-  },
-  {
-    'daic0r/dap-helper.nvim',
-    dependencies = {
-      "mfussenegger/nvim-dap",
-      "rcarriga/nvim-dap-ui"
-    },
-    opts = {}
   },
 }
 

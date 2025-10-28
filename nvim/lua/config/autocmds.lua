@@ -1,6 +1,6 @@
 -- Strip trailing whitespace on save
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-  pattern = { "*" },
+  pattern = "*",
   callback = function()
     local curpos = vim.api.nvim_win_get_cursor(0) -- Save cursor position
     vim.cmd([[keeppatterns %s/\s\+$//e]])         -- Perform substitution
