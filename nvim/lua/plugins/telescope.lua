@@ -20,7 +20,10 @@ return {
         },
         mappings = {
           i = {
-            ['<C-p>'] = require('telescope.actions.layout').toggle_preview,
+            ["<C-p>"] = require('telescope.actions.layout').toggle_preview,
+            ["<C-v>"] = function()
+              vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-r>+", true, false, true), "n", true)
+            end,
           }
         },
       }
@@ -54,7 +57,16 @@ return {
     vim.keymap.set("n", "<leader>fb", ":Telescope buffers<cr>", { desc = "Find buffers" })
     vim.keymap.set("n", "<leader>fh", ":Telescope help_tags<cr>", { desc = "Help tags" })
     vim.keymap.set("n", "<leader>fd", function()
-      require("telescope.builtin").lsp_document_symbols({ symbol_width = 130 })
+      local width = vim.o.columns
+      local picker_width = math.floor(width * 0.8)
+      -- Calculate dynamic widths based on screen size
+      local symbol_type_width = math.max(12, math.min(20, math.floor(picker_width * 0.15)))
+      local symbol_width = picker_width - symbol_type_width
+
+      require("telescope.builtin").lsp_document_symbols({
+        symbol_width = symbol_width,
+        symbol_type_width = symbol_type_width
+      })
     end, { desc = "LSP document symbols" })
   end
 }

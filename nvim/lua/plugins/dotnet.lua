@@ -36,6 +36,7 @@ return {
   },
   {
     "austincrft/dotnet-test.nvim",
+    -- dir = "/src/dotnet-test.nvim",
     dependencies = {
       "skywind3000/asyncrun.vim",
       "mfussenegger/nvim-dap",
@@ -44,9 +45,8 @@ return {
     config = function()
       local dotnet_test = require("dotnet-test")
 
-      -- This plugin does not require calling setup if you're using defaults.
-      -- I find the `dotnet build` cmd verbose, so I set it to quiet
       dotnet_test.setup({
+        -- log_level = vim.log.levels.DEBUG,
         build = {
           args = { "--verbosity", "quiet" },
         },

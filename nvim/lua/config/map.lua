@@ -14,9 +14,6 @@ keymap("v", "<leader>c", '"+y', { noremap = true, silent = true })
 keymap("n", "<leader>v", '"+p', { noremap = true, silent = true })
 keymap("v", "<leader>v", '"+p', { noremap = true, silent = true })
 
--- Buffer
-keymap("n", "<leader><Tab>", ":b#<CR>", { noremap = true, silent = true })
-
 -- Formatting
 keymap("n", "<leader>fw", function()
   vim.opt.wrap = not vim.opt.wrap:get()
@@ -36,7 +33,8 @@ keymap("n", "<leader>ss", ":%s/", { noremap = true })
 keymap("v", "<leader>ss", '"zy:%s/<C-R>z/', { noremap = true })
 
 -- Terminal
-keymap("n", "<leader>TT", ":OpenTerminal<CR>", { noremap = true })
+keymap("n", "<C-t>", "<Cmd>TermToggle<CR>", { noremap = true })
+keymap("t", "<C-t>", "<C-\\><C-n><Cmd>TermToggle<CR>", { noremap = true })
 
 -- Meta
 keymap("n", "<leader>_d", function ()
