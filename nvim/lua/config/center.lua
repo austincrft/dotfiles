@@ -1,13 +1,7 @@
 local M = {}
 
--- Track center mode state
-M.is_centered = false
-M.left_buf = nil
-M.right_buf = nil
-M.left_win = nil
-M.right_win = nil
-M.center_win = nil
-M.augroup = nil
+-- Track center mode state per-tab
+M.tabs = {}  -- { [tab_id] = { left_win, right_win, center_win, left_buf, right_buf } }
 
 -- Auto-center configuration
 M.auto_width_col_threshold = 160
@@ -23,148 +17,109 @@ local function create_side_buffer()
   return buf
 end
 
+-- Get state for current tab
+local function get_tab_state()
+  local tab = vim.api.nvim_get_current_tabpage()
+  return M.tabs[tab]
+end
+
+-- Set state for current tab
+local function set_tab_state(state)
+  local tab = vim.api.nvim_get_current_tabpage()
+  M.tabs[tab] = state
+end
+
+-- Check if current tab is centered
+local function is_centered()
+  local state = get_tab_state()
+  return state ~= nil
+end
+
 -- Exit center mode
 function M.exit()
-  if not M.is_centered then
+  local state = get_tab_state()
+  if not state then
     return
   end
 
-  -- Delete autocommand group
-  if M.augroup then
-    vim.api.nvim_del_augroup_by_id(M.augroup)
-    M.augroup = nil
-  end
-
   -- Close side windows
-  if M.left_win and vim.api.nvim_win_is_valid(M.left_win) then
-    vim.api.nvim_win_close(M.left_win, true)
+  if state.left_win and vim.api.nvim_win_is_valid(state.left_win) then
+    vim.api.nvim_win_close(state.left_win, true)
   end
-  if M.right_win and vim.api.nvim_win_is_valid(M.right_win) then
-    vim.api.nvim_win_close(M.right_win, true)
+  if state.right_win and vim.api.nvim_win_is_valid(state.right_win) then
+    vim.api.nvim_win_close(state.right_win, true)
   end
 
   -- Focus the center window if it's still valid
-  if M.center_win and vim.api.nvim_win_is_valid(M.center_win) then
-    vim.api.nvim_set_current_win(M.center_win)
+  if state.center_win and vim.api.nvim_win_is_valid(state.center_win) then
+    vim.api.nvim_set_current_win(state.center_win)
   end
 
-  -- Reset state
-  M.is_centered = false
-  M.left_buf = nil
-  M.right_buf = nil
-  M.left_win = nil
-  M.right_win = nil
-  M.center_win = nil
+  -- Clear state for this tab
+  set_tab_state(nil)
 end
 
 -- Enter center mode
 function M.enter()
-  if M.is_centered then
+  if is_centered() then
     return
   end
 
+  local state = {}
+
   -- Get the current window (this will be the center)
-  M.center_win = vim.api.nvim_get_current_win()
+  state.center_win = vim.api.nvim_get_current_win()
 
   -- Calculate side buffer width (20% of screen on each side)
   local side_width = math.floor(vim.o.columns * 0.2)
 
   -- Create left side buffer
-  M.left_buf = create_side_buffer()
+  state.left_buf = create_side_buffer()
   vim.cmd('topleft vsplit')
-  M.left_win = vim.api.nvim_get_current_win()
-  vim.api.nvim_win_set_buf(M.left_win, M.left_buf)
-  vim.api.nvim_win_set_width(M.left_win, side_width)
+  state.left_win = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(state.left_win, state.left_buf)
+  vim.api.nvim_win_set_width(state.left_win, side_width)
 
   -- Disable various UI elements for side buffers
-  vim.wo[M.left_win].number = false
-  vim.wo[M.left_win].relativenumber = false
-  vim.wo[M.left_win].signcolumn = 'no'
-  vim.wo[M.left_win].foldcolumn = '0'
-  vim.wo[M.left_win].cursorline = false
-  vim.wo[M.left_win].statusline = '%#Normal#'  -- Empty statusline (no lualine)
-  vim.wo[M.left_win].fillchars = 'eob: '  -- Hide ~ characters
+  vim.wo[state.left_win].number = false
+  vim.wo[state.left_win].relativenumber = false
+  vim.wo[state.left_win].signcolumn = 'no'
+  vim.wo[state.left_win].foldcolumn = '0'
+  vim.wo[state.left_win].cursorline = false
+  vim.wo[state.left_win].statusline = '%#Normal#'  -- Empty statusline (no lualine)
+  vim.wo[state.left_win].fillchars = 'eob: '  -- Hide ~ characters
   -- Blend into background by hiding visual elements
-  vim.wo[M.left_win].winhl = 'Normal:Normal,EndOfBuffer:Normal'
+  vim.wo[state.left_win].winhl = 'Normal:Normal,EndOfBuffer:Normal'
 
   -- Create right side buffer
-  M.right_buf = create_side_buffer()
-  vim.api.nvim_set_current_win(M.center_win)
+  state.right_buf = create_side_buffer()
+  vim.api.nvim_set_current_win(state.center_win)
   vim.cmd('botright vsplit')
-  M.right_win = vim.api.nvim_get_current_win()
-  vim.api.nvim_win_set_buf(M.right_win, M.right_buf)
-  vim.api.nvim_win_set_width(M.right_win, side_width)
+  state.right_win = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(state.right_win, state.right_buf)
+  vim.api.nvim_win_set_width(state.right_win, side_width)
 
   -- Disable various UI elements for side buffers
-  vim.wo[M.right_win].number = false
-  vim.wo[M.right_win].relativenumber = false
-  vim.wo[M.right_win].signcolumn = 'no'
-  vim.wo[M.right_win].foldcolumn = '0'
-  vim.wo[M.right_win].cursorline = false
-  vim.wo[M.right_win].statusline = '%#Normal#'  -- Empty statusline (no lualine)
-  vim.wo[M.right_win].fillchars = 'eob: '  -- Hide ~ characters
+  vim.wo[state.right_win].number = false
+  vim.wo[state.right_win].relativenumber = false
+  vim.wo[state.right_win].signcolumn = 'no'
+  vim.wo[state.right_win].foldcolumn = '0'
+  vim.wo[state.right_win].cursorline = false
+  vim.wo[state.right_win].statusline = '%#Normal#'  -- Empty statusline (no lualine)
+  vim.wo[state.right_win].fillchars = 'eob: '  -- Hide ~ characters
   -- Blend into background by hiding visual elements
-  vim.wo[M.right_win].winhl = 'Normal:Normal,EndOfBuffer:Normal'
+  vim.wo[state.right_win].winhl = 'Normal:Normal,EndOfBuffer:Normal'
 
   -- Return focus to center window
-  vim.api.nvim_set_current_win(M.center_win)
+  vim.api.nvim_set_current_win(state.center_win)
 
-  M.is_centered = true
-
-  -- Create autocommand to detect splits
-  M.augroup = vim.api.nvim_create_augroup('CenterMode', { clear = true })
-
-  vim.api.nvim_create_autocmd({ 'WinNew', 'WinEnter' }, {
-    group = M.augroup,
-    callback = function()
-      local current_win = vim.api.nvim_get_current_win()
-
-      -- Redirect if user tries to enter a side buffer
-      if current_win == M.left_win or current_win == M.right_win then
-        vim.schedule(function()
-          if M.center_win and vim.api.nvim_win_is_valid(M.center_win) then
-            vim.api.nvim_set_current_win(M.center_win)
-          end
-        end)
-        return
-      end
-
-      -- Check if a new window was created that isn't one of our side buffers
-      -- Ignore floating windows (like terminal toggle, telescope, etc.)
-      local wins = vim.api.nvim_tabpage_list_wins(0)
-      for _, win in ipairs(wins) do
-        if win ~= M.left_win and win ~= M.right_win and win ~= M.center_win then
-          -- Check if this is a floating window
-          local win_config = vim.api.nvim_win_get_config(win)
-          if win_config.relative == '' then
-            -- Not a floating window, so it's a real split - exit center mode
-            vim.schedule(function()
-              M.exit()
-            end)
-            return
-          end
-        end
-      end
-    end
-  })
-
-  -- Also exit if the center window is closed
-  vim.api.nvim_create_autocmd('WinClosed', {
-    group = M.augroup,
-    callback = function(args)
-      local closed_win = tonumber(args.match)
-      if closed_win == M.center_win then
-        vim.schedule(function()
-          M.exit()
-        end)
-      end
-    end
-  })
+  -- Save state for this tab
+  set_tab_state(state)
 end
 
 -- Toggle center mode
 function M.toggle()
-  if M.is_centered then
+  if is_centered() then
     M.exit()
   else
     M.enter()
@@ -173,7 +128,12 @@ end
 
 -- Auto-center check for ultrawide monitors
 local function auto_center_check()
-  -- Count non-floating windows
+  -- Check if UI is initialized
+  if not vim.o.columns or vim.o.columns == 0 then
+    return
+  end
+
+  -- Count non-floating windows in current tab
   local non_floating_wins = 0
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     local win_config = vim.api.nvim_win_get_config(win)
@@ -186,13 +146,75 @@ local function auto_center_check()
   -- 1. Not already centered
   -- 2. Screen is wide enough
   -- 3. Only one non-floating window exists (no splits)
-  if not M.is_centered
+  if not is_centered()
     and vim.o.columns >= M.auto_width_col_threshold
     and non_floating_wins == 1
   then
     M.enter()
   end
 end
+
+-- Create global autocommands for center mode management
+vim.api.nvim_create_augroup('CenterMode', { clear = true })
+
+-- Handle window enter/new events
+vim.api.nvim_create_autocmd({ 'WinNew', 'WinEnter' }, {
+  group = 'CenterMode',
+  callback = function()
+    local state = get_tab_state()
+    if not state then
+      return
+    end
+
+    local current_win = vim.api.nvim_get_current_win()
+
+    -- Redirect if user tries to enter a side buffer
+    if current_win == state.left_win or current_win == state.right_win then
+      vim.schedule(function()
+        if state.center_win and vim.api.nvim_win_is_valid(state.center_win) then
+          vim.api.nvim_set_current_win(state.center_win)
+        end
+      end)
+      return
+    end
+
+    -- Check if a new window was created that isn't one of our side buffers
+    -- Ignore floating windows (like terminal toggle, telescope, etc.)
+    -- Only check windows in the current tab
+    local wins = vim.api.nvim_tabpage_list_wins(0)
+    for _, win in ipairs(wins) do
+      if win ~= state.left_win and win ~= state.right_win and win ~= state.center_win then
+        -- Check if this is a floating window
+        local win_config = vim.api.nvim_win_get_config(win)
+        if win_config.relative == '' then
+          -- Not a floating window, so it's a real split - exit center mode
+          vim.schedule(function()
+            M.exit()
+          end)
+          return
+        end
+      end
+    end
+  end
+})
+
+-- Handle window closed events
+vim.api.nvim_create_autocmd('WinClosed', {
+  group = 'CenterMode',
+  callback = function(args)
+    local state = get_tab_state()
+    if not state then
+      return
+    end
+
+    local closed_win = tonumber(args.match)
+    if closed_win == state.center_win then
+      vim.schedule(function()
+        M.exit()
+      end)
+    end
+  end
+})
 
 -- Set up auto-centering on file open
 vim.api.nvim_create_augroup('CenterModeAutoEnable', { clear = true })
