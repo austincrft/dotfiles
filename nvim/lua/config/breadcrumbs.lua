@@ -34,7 +34,7 @@ end
 
 local function lsp_callback(err, symbols, ctx, config)
     if err or not symbols then
-        vim.o.winbar = ""
+        vim.wo.winbar = ""
         return
     end
 
@@ -44,7 +44,7 @@ local function lsp_callback(err, symbols, ctx, config)
 
     local file_path = vim.fn.bufname(ctx.bufnr)
     if not file_path or file_path == "" then
-        vim.o.winbar = "[No Name]"
+        vim.wo.winbar = "[No Name]"
         return
     end
 
@@ -70,9 +70,9 @@ local function lsp_callback(err, symbols, ctx, config)
     local breadcrumb_string = table.concat(breadcrumbs, " > ")
 
     if breadcrumb_string ~= "" then
-        vim.o.winbar = breadcrumb_string
+        vim.wo.winbar = breadcrumb_string
     else
-        vim.o.winbar = " "
+        vim.wo.winbar = " "
     end
 end
 
@@ -82,7 +82,7 @@ local function breadcrumbs_set()
     -- Check for LSP clients attached to this buffer
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
     if #clients == 0 then
-        vim.o.winbar = ""
+        vim.wo.winbar = ""
         return
     end
 
@@ -95,14 +95,14 @@ local function breadcrumbs_set()
         end
     end
     if not supports_document_symbol then
-        vim.o.winbar = ""
+        vim.wo.winbar = ""
         return
     end
 
     local uri = vim.lsp.util.make_text_document_params(bufnr)["uri"]
     if not uri then
         vim.print("Error: Could not get URI for buffer. Is it saved?")
-        vim.o.winbar = ""
+        vim.wo.winbar = ""
         return
     end
 

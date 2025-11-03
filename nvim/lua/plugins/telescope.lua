@@ -18,7 +18,16 @@ return {
         preview = {
           hide_on_startup = true
         },
+        dynamic_preview_title = true,
+        layout_config = {
+          horizontal = {
+            preview_width = 0.60,
+          }
+        },
         mappings = {
+          n = {
+            ["<C-p>"] = require('telescope.actions.layout').toggle_preview,
+          },
           i = {
             ["<C-p>"] = require('telescope.actions.layout').toggle_preview,
             ["<C-v>"] = function()
