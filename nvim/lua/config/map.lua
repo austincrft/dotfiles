@@ -32,10 +32,6 @@ keymap("n", "<leader>lc", ":lclose<CR>", { noremap = true, silent = true })
 keymap("n", "<leader>ss", ":%s/", { noremap = true })
 keymap("v", "<leader>ss", '"zy:%s/<C-R>z/', { noremap = true })
 
--- Terminal
-keymap("n", "<C-t>", "<Cmd>TermToggle<CR>", { noremap = true })
-keymap("t", "<C-t>", "<C-\\><C-n><Cmd>TermToggle<CR>", { noremap = true })
-
 -- Meta
 keymap("n", "<leader>_d", function ()
   vim.cmd("edit " .. vim.fn.stdpath("config"))
