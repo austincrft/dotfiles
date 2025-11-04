@@ -4,7 +4,7 @@ local M = {}
 M.tabs = {}  -- { [tab_id] = { left_win, right_win, center_win, left_buf, right_buf } }
 
 -- Auto-center configuration
-M.auto_width_col_threshold = 160
+M.auto_width_col_threshold = 180
 
 -- Create uneditable side buffer
 local function create_side_buffer()
@@ -42,17 +42,17 @@ function M.exit()
     return
   end
 
-  -- Close side windows
-  if state.left_win and vim.api.nvim_win_is_valid(state.left_win) then
-    vim.api.nvim_win_close(state.left_win, true)
+  -- Delete side buffers (this will automatically close their windows)
+  if state.left_buf and vim.api.nvim_buf_is_valid(state.left_buf) then
+    vim.api.nvim_buf_delete(state.left_buf, { force = true })
   end
-  if state.right_win and vim.api.nvim_win_is_valid(state.right_win) then
-    vim.api.nvim_win_close(state.right_win, true)
+  if state.right_buf and vim.api.nvim_buf_is_valid(state.right_buf) then
+    vim.api.nvim_buf_delete(state.right_buf, { force = true })
   end
 
   -- Focus the center window if it's still valid
   if state.center_win and vim.api.nvim_win_is_valid(state.center_win) then
-    vim.api.nvim_set_current_win(state.center_win)
+    pcall(vim.api.nvim_set_current_win, state.center_win)
   end
 
   -- Clear state for this tab
@@ -133,11 +133,14 @@ local function auto_center_check()
     return
   end
 
-  -- Count non-floating windows in current tab
+  -- Count non-floating, non-quickfix windows in current tab
   local non_floating_wins = 0
   for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
     local win_config = vim.api.nvim_win_get_config(win)
-    if win_config.relative == '' then
+    local buf = vim.api.nvim_win_get_buf(win)
+    local buftype = vim.bo[buf].buftype
+
+    if win_config.relative == '' and buftype ~= 'quickfix' then
       non_floating_wins = non_floating_wins + 1
     end
   end
@@ -179,15 +182,18 @@ vim.api.nvim_create_autocmd({ 'WinNew', 'WinEnter' }, {
     end
 
     -- Check if a new window was created that isn't one of our side buffers
-    -- Ignore floating windows (like terminal toggle, telescope, etc.)
+    -- Ignore floating windows and quickfix
     -- Only check windows in the current tab
     local wins = vim.api.nvim_tabpage_list_wins(0)
     for _, win in ipairs(wins) do
       if win ~= state.left_win and win ~= state.right_win and win ~= state.center_win then
-        -- Check if this is a floating window
+        -- Check if this is a floating window or quickfix
         local win_config = vim.api.nvim_win_get_config(win)
-        if win_config.relative == '' then
-          -- Not a floating window, so it's a real split - exit center mode
+        local buf = vim.api.nvim_win_get_buf(win)
+        local buftype = vim.bo[buf].buftype
+
+        if win_config.relative == '' and buftype ~= 'quickfix' then
+          -- Not a floating window or quickfix, so it's a real split - exit center mode
           vim.schedule(function()
             M.exit()
           end)
@@ -212,6 +218,28 @@ vim.api.nvim_create_autocmd('WinClosed', {
       vim.schedule(function()
         M.exit()
       end)
+    end
+  end
+})
+
+-- Handle window resizing to maintain proper centering
+vim.api.nvim_create_autocmd('WinResized', {
+  group = 'CenterMode',
+  callback = function()
+    local state = get_tab_state()
+    if not state then
+      return
+    end
+
+    -- Recalculate side buffer widths to maintain centering
+    local side_width = math.floor(vim.o.columns * 0.2)
+
+    if state.left_win and vim.api.nvim_win_is_valid(state.left_win) then
+      vim.api.nvim_win_set_width(state.left_win, side_width)
+    end
+
+    if state.right_win and vim.api.nvim_win_is_valid(state.right_win) then
+      vim.api.nvim_win_set_width(state.right_win, side_width)
     end
   end
 })
