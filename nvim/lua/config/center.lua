@@ -4,7 +4,7 @@ local M = {}
 M.tabs = {}  -- { [tab_id] = { left_win, right_win, center_win, left_buf, right_buf } }
 
 -- Auto-center configuration
-M.auto_width_col_threshold = 180
+M.auto_width_col_threshold = 200
 
 -- Create uneditable side buffer
 local function create_side_buffer()
