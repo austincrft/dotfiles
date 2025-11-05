@@ -264,3 +264,16 @@ function New-GeneratedPassword() {
     return (-join $password)
 }
 
+function Remove-NulFile([string]$Path) {
+    # Convert to absolute path if relative
+    $absolutePath = Resolve-Path $Path -ErrorAction SilentlyContinue
+    if (-not $absolutePath) {
+        $absolutePath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($Path)
+    }
+
+    $extendedPath = "\\?\$absolutePath"
+
+    # Run the delete command
+    cmd /c "Del `"$extendedPath`""
+}
+
