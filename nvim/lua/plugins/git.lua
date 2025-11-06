@@ -1,5 +1,103 @@
 return {
-  { "tpope/vim-fugitive" },
+  {
+    "tpope/vim-fugitive",
+    config = function()
+      -- Always enable auto-orientation for diffs (side-by-side when space allows)
+      vim.g.fugitive_diffsplit_directional_fit = 1
+      -- Command to compare files between two branches
+      vim.api.nvim_create_user_command("GdiffsplitBranch", function(opts)
+        local args = vim.split(opts.args, "%s+")
+        local branch1 = args[1] or vim.fn.system("git branch --show-current"):gsub("%s+", "")
+        local branch2 = args[2] or "main"
+
+        -- Get changed files between branches
+        local cmd = string.format("git diff --name-only %s..%s", branch1, branch2)
+        local files = vim.fn.systemlist(cmd)
+
+        if vim.v.shell_error ~= 0 or #files == 0 then
+          vim.notify("No differences found between " .. branch1 .. " and " .. branch2, vim.log.levels.WARN)
+          return
+        end
+
+        -- Build quickfix list
+        local qf_list = {}
+        for _, file in ipairs(files) do
+          table.insert(qf_list, {
+            filename = file,
+            lnum = 1,
+            text = "Changed in " .. branch1 .. ".." .. branch2
+          })
+        end
+
+        -- Set quickfix with title
+        local title = string.format("Branch diff: %s..%s", branch1, branch2)
+        vim.fn.setqflist({}, 'r', {
+          items = qf_list,
+          title = title
+        })
+
+        -- Store target branch for diffing
+        vim.g.gdiff_target_branch = branch2
+
+        -- Open first diff, then quickfix
+        vim.cmd("cfirst")
+        vim.cmd("Gdiffsplit! " .. branch2)
+        vim.cmd("botright copen")
+      end, { nargs = "*", desc = "Diff files between branches" })
+
+      -- Helper function to open diff for current quickfix entry
+      local function open_branch_diff()
+        local qf_title = vim.fn.getqflist({ title = 1 }).title
+        if qf_title:match("^Branch diff:") and vim.g.gdiff_target_branch then
+          -- Close diff mode if active
+          if vim.wo.diff then
+            vim.cmd("diffoff!")
+          end
+
+          -- Close all windows except current one and quickfix to get clean layout
+          local current_win = vim.api.nvim_get_current_win()
+          for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+            local bufnr = vim.api.nvim_win_get_buf(win)
+            local is_qf = vim.bo[bufnr].buftype == "quickfix"
+            if win ~= current_win and not is_qf and vim.api.nvim_win_get_config(win).relative == "" then
+              pcall(vim.api.nvim_win_close, win, false)
+            end
+          end
+
+          -- Open diff split (respects vim's diffopt setting)
+          vim.cmd("Gdiffsplit! " .. vim.g.gdiff_target_branch)
+        end
+      end
+
+      -- Keymaps for quickfix navigation that auto-open diffs
+      vim.keymap.set("n", "]q", function()
+        pcall(vim.cmd, "cnext")
+        vim.schedule(open_branch_diff)
+      end, { desc = "Next quickfix entry" })
+
+      vim.keymap.set("n", "[q", function()
+        pcall(vim.cmd, "cprev")
+        vim.schedule(open_branch_diff)
+      end, { desc = "Previous quickfix entry" })
+
+      -- Add <CR> mapping in quickfix window for branch diffs
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "qf",
+        callback = function(ev)
+          vim.keymap.set("n", "<CR>", function()
+            local qf_title = vim.fn.getqflist({ title = 1 }).title
+            if qf_title:match("^Branch diff:") then
+              vim.cmd(".cc")
+              open_branch_diff()
+            else
+              -- Normal quickfix behavior
+              vim.cmd("normal! \r")
+            end
+          end, { buffer = ev.buf })
+        end,
+      })
+    end,
+  },
   {
     "lewis6991/gitsigns.nvim",
     config = function()

@@ -245,13 +245,13 @@ vim.api.nvim_create_autocmd('WinResized', {
 })
 
 -- Set up auto-centering on file open
-vim.api.nvim_create_augroup('CenterModeAutoEnable', { clear = true })
-vim.api.nvim_create_autocmd('BufWinEnter', {
-  group = 'CenterModeAutoEnable',
-  callback = function()
-    vim.schedule(auto_center_check)
-  end
-})
+-- vim.api.nvim_create_augroup('CenterModeAutoEnable', { clear = true })
+-- vim.api.nvim_create_autocmd('BufWinEnter', {
+--   group = 'CenterModeAutoEnable',
+--   callback = function()
+--     vim.schedule(auto_center_check)
+--   end
+-- })
 
 -- Create cmd
 vim.api.nvim_create_user_command('Center', function()

@@ -32,19 +32,25 @@ local function find_symbol_path(symbol_list, line, char, path)
     return false
 end
 
-local function lsp_callback(err, symbols, ctx, config)
+local function lsp_callback(err, symbols, ctx, config, winid)
     if err or not symbols then
-        vim.wo.winbar = ""
+        if vim.api.nvim_win_is_valid(winid) then
+            vim.wo[winid].winbar = ""
+        end
         return
     end
 
-    local pos = vim.api.nvim_win_get_cursor(0)
+    if not vim.api.nvim_win_is_valid(winid) then
+        return
+    end
+
+    local pos = vim.api.nvim_win_get_cursor(winid)
     local cursor_line = pos[1] - 1
     local cursor_char = pos[2]
 
     local file_path = vim.fn.bufname(ctx.bufnr)
     if not file_path or file_path == "" then
-        vim.wo.winbar = "[No Name]"
+        vim.wo[winid].winbar = "[No Name]"
         return
     end
 
@@ -70,19 +76,20 @@ local function lsp_callback(err, symbols, ctx, config)
     local breadcrumb_string = table.concat(breadcrumbs, " > ")
 
     if breadcrumb_string ~= "" then
-        vim.wo.winbar = breadcrumb_string
+        vim.wo[winid].winbar = breadcrumb_string
     else
-        vim.wo.winbar = " "
+        vim.wo[winid].winbar = " "
     end
 end
 
 local function breadcrumbs_set()
     local bufnr = vim.api.nvim_get_current_buf()
+    local winid = vim.api.nvim_get_current_win()
 
     -- Check for LSP clients attached to this buffer
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
     if #clients == 0 then
-        vim.wo.winbar = ""
+        vim.wo[winid].winbar = ""
         return
     end
 
@@ -95,14 +102,14 @@ local function breadcrumbs_set()
         end
     end
     if not supports_document_symbol then
-        vim.wo.winbar = ""
+        vim.wo[winid].winbar = ""
         return
     end
 
     local uri = vim.lsp.util.make_text_document_params(bufnr)["uri"]
     if not uri then
         vim.print("Error: Could not get URI for buffer. Is it saved?")
-        vim.wo.winbar = ""
+        vim.wo[winid].winbar = ""
         return
     end
 
@@ -115,7 +122,12 @@ local function breadcrumbs_set()
         bufnr,
         "textDocument/documentSymbol",
         params,
-        lsp_callback
+        function(err, symbols, ctx, config)
+            -- Pass the window ID to the callback
+            if vim.api.nvim_win_is_valid(winid) then
+                lsp_callback(err, symbols, ctx, config, winid)
+            end
+        end
     )
 end
 
