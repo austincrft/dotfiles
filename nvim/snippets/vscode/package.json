@@ -1,0 +1,14 @@
+{
+  "name": "custom-snippets",
+  "engines": {
+    "vscode": "^1.0.0"
+  },
+  "contributes": {
+    "snippets": [
+      {
+        "language": "cs",
+        "path": "./cs.json"
+      }
+    ]
+  }
+}

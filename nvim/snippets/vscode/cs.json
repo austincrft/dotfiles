@@ -1,0 +1,98 @@
+{
+    "Disable Nullable Warnings": {
+        "prefix": "nullabledisable",
+        "body": [
+            "#pragma warning disable CS8618 // Suppressing null warnings"
+        ]
+    },
+    "Restore Nullable Warnings": {
+        "prefix": "nullablerestore",
+        "body": [
+            "#pragma warning restore CS8618 // Suppressing null warnings"
+        ]
+    },
+    "XML <summary>": {
+        "prefix": "xsum",
+        "body": [
+            "/// <summary>",
+            "/// ${0}",
+            "/// </summary>"
+        ]
+    },
+    "XML <see cref=\"\" />": {
+        "prefix": "xsee",
+        "body": [
+            "<see cref=\"${0:Type}\"/>"
+        ]
+    },
+    "XML <inheritdoc />": {
+        "prefix": "xinh",
+        "body": [
+            "/// <inheritdoc />"
+        ]
+    },
+    "FluentAssertion Should().Be": {
+        "prefix": "sb",
+        "body": [
+            "Should().Be"
+        ]
+    },
+    "FluentAssertion Should().NotBe": {
+        "prefix": "snb",
+        "body": [
+            "Should().NotBe"
+        ]
+    },
+    "XUnit Fact": {
+        "prefix": "xunitfact",
+        "body": [
+            "[Fact]",
+            "public void ${0:TestName}()",
+            "{",
+            "    // Arrange",
+            "",
+            "    // Act",
+            "",
+            "    // Assert",
+            "}"
+        ]
+    },
+    "XUnit Fact Skip": {
+        "prefix": "xskip",
+        "body": [
+            "[Fact(Skip = \"WIP\")]"
+        ]
+    },
+    "Assertion Scope": {
+        "prefix": "asscope",
+        "body": [
+            "using (new AssertionScope())",
+            "{",
+            "}"
+        ]
+    },
+    "Class": {
+        "prefix": "class",
+        "body": [
+            "public class $TM_FILENAME_BASE",
+            "{",
+            "    ${0}",
+            "}"
+        ]
+    },
+    "Interface": {
+        "prefix": "interface",
+        "body": [
+            "public interface $TM_FILENAME_BASE",
+            "{",
+            "    ${0}",
+            "}"
+        ]
+    },
+    "Record": {
+        "prefix": "record",
+        "body": [
+            "public record $TM_FILENAME_BASE(${0});"
+        ]
+    }
+}
