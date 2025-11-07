@@ -7,8 +7,16 @@ return {
       -- Command to compare files between two branches
       vim.api.nvim_create_user_command("GdiffsplitBranch", function(opts)
         local args = vim.split(opts.args, "%s+")
-        local branch1 = args[1] or vim.fn.system("git branch --show-current"):gsub("%s+", "")
-        local branch2 = args[2] or "main"
+        local branch1, branch2
+        if #args == 0 then
+          vim.notify("Must provide at least one branch", vim.log.levels.ERROR)
+        elseif #args == 1 then
+          branch1 = "HEAD"
+          branch2 = args[1]
+        elseif #args == 2 then
+          branch1 = args[1]
+          branch2 = args[2]
+        end
 
         -- Get changed files between branches
         local cmd = string.format("git diff --name-only %s..%s", branch1, branch2)
