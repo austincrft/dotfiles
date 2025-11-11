@@ -8,6 +8,10 @@
       {
         "language": "cs",
         "path": "./cs.json"
+      },
+      {
+        "language": "lua",
+        "path": "./lua.json"
       }
     ]
   }

@@ -1,0 +1,8 @@
+{
+    "disable missing fields": {
+        "prefix": "disable-missing-field",
+        "body": [
+            "---@diagnostic disable-next-line: missing-fields"
+        ]
+    }
+}

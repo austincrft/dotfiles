@@ -1,17 +1,17 @@
 {
-    "Disable Nullable Warnings": {
+    "disable nullable warnings": {
         "prefix": "nullabledisable",
         "body": [
             "#pragma warning disable CS8618 // Suppressing null warnings"
         ]
     },
-    "Restore Nullable Warnings": {
+    "restore nullable warnings": {
         "prefix": "nullablerestore",
         "body": [
             "#pragma warning restore CS8618 // Suppressing null warnings"
         ]
     },
-    "XML <summary>": {
+    "xml <summary>": {
         "prefix": "xsum",
         "body": [
             "/// <summary>",
@@ -19,31 +19,19 @@
             "/// </summary>"
         ]
     },
-    "XML <see cref=\"\" />": {
+    "xml <see cref=\"\" />": {
         "prefix": "xsee",
         "body": [
             "<see cref=\"${0:Type}\"/>"
         ]
     },
-    "XML <inheritdoc />": {
+    "xml <inheritdoc />": {
         "prefix": "xinh",
         "body": [
             "/// <inheritdoc />"
         ]
     },
-    "FluentAssertion Should().Be": {
-        "prefix": "sb",
-        "body": [
-            "Should().Be"
-        ]
-    },
-    "FluentAssertion Should().NotBe": {
-        "prefix": "snb",
-        "body": [
-            "Should().NotBe"
-        ]
-    },
-    "XUnit Fact": {
+    "xunit fact": {
         "prefix": "xunitfact",
         "body": [
             "[Fact]",
@@ -57,21 +45,22 @@
             "}"
         ]
     },
-    "XUnit Fact Skip": {
+    "xunit fact skip": {
         "prefix": "xskip",
         "body": [
             "[Fact(Skip = \"WIP\")]"
         ]
     },
-    "Assertion Scope": {
+    "assertion scope": {
         "prefix": "asscope",
         "body": [
             "using (new AssertionScope())",
             "{",
+            "    ${0}",
             "}"
         ]
     },
-    "Class": {
+    "class": {
         "prefix": "class",
         "body": [
             "public class $TM_FILENAME_BASE",
@@ -80,7 +69,7 @@
             "}"
         ]
     },
-    "Interface": {
+    "interface": {
         "prefix": "interface",
         "body": [
             "public interface $TM_FILENAME_BASE",
@@ -89,7 +78,7 @@
             "}"
         ]
     },
-    "Record": {
+    "record": {
         "prefix": "record",
         "body": [
             "public record $TM_FILENAME_BASE(${0});"
