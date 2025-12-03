@@ -126,37 +126,6 @@ function M.toggle()
   end
 end
 
--- Auto-center check for ultrawide monitors
-local function auto_center_check()
-  -- Check if UI is initialized
-  if not vim.o.columns or vim.o.columns == 0 then
-    return
-  end
-
-  -- Count non-floating, non-quickfix windows in current tab
-  local non_floating_wins = 0
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
-    local win_config = vim.api.nvim_win_get_config(win)
-    local buf = vim.api.nvim_win_get_buf(win)
-    local buftype = vim.bo[buf].buftype
-
-    if win_config.relative == '' and buftype ~= 'quickfix' then
-      non_floating_wins = non_floating_wins + 1
-    end
-  end
-
-  -- Only auto-center if:
-  -- 1. Not already centered
-  -- 2. Screen is wide enough
-  -- 3. Only one non-floating window exists (no splits)
-  if not is_centered()
-    and vim.o.columns >= M.auto_width_col_threshold
-    and non_floating_wins == 1
-  then
-    M.enter()
-  end
-end
-
 -- Create global autocommands for center mode management
 vim.api.nvim_create_augroup('CenterMode', { clear = true })
 
@@ -243,15 +212,6 @@ vim.api.nvim_create_autocmd('WinResized', {
     end
   end
 })
-
--- Set up auto-centering on file open
--- vim.api.nvim_create_augroup('CenterModeAutoEnable', { clear = true })
--- vim.api.nvim_create_autocmd('BufWinEnter', {
---   group = 'CenterModeAutoEnable',
---   callback = function()
---     vim.schedule(auto_center_check)
---   end
--- })
 
 -- Create cmd
 vim.api.nvim_create_user_command('Center', function()

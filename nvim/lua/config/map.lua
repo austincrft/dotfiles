@@ -44,3 +44,12 @@ end, { noremap = true, silent = true })
 keymap("n", "<leader>_w", function ()
   vim.cmd("edit ~/work/nvim")
 end, { noremap = true, silent = true })
+
+-- Diagnostic navigation (errors only)
+keymap("n", "]e", function()
+  vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+end, { noremap = true, silent = true, desc = "Next error diagnostic" })
+
+keymap("n", "[e", function()
+  vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+end, { noremap = true, silent = true, desc = "Previous error diagnostic" })

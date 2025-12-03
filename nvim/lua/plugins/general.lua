@@ -11,9 +11,4 @@ return {
       event = "InsertEnter",
       opts = {},
   },
-  {
-    "yutkat/confirm-quit.nvim",
-    event = "CmdlineEnter",
-    opts = {},
-  },
 }

@@ -5,7 +5,7 @@ return {
       -- Always enable auto-orientation for diffs (side-by-side when space allows)
       vim.g.fugitive_diffsplit_directional_fit = 1
 
-      vim.api.nvim_create_user_command("GdiffsplitBranch", function(opts)
+      vim.api.nvim_create_user_command("GdiffsplitRevision", function(opts)
         local args = vim.split(opts.args, "%s+")
         local branch1, branch2
         if #args == 0 then
@@ -107,7 +107,7 @@ return {
   {
     "lewis6991/gitsigns.nvim",
     config = function()
-      require("gitsigns").setup {
+      require("gitsigns").setup({
         on_attach = function(bufnr)
           local gs = package.loaded.gitsigns
           local function map(mode, l, r, opts)
@@ -128,7 +128,37 @@ return {
             return '<Ignore>'
           end, {expr=true, desc="Previous Git hunk"})
         end,
-      }
+      })
+    end,
+  },
+    {
+      "esmuellert/vscode-diff.nvim",
+      dependencies = { "MunifTanjim/nui.nvim" },
+    config = function()
+      require("vscode-diff").setup({
+        -- Diff view behavior
+        diff = {
+          disable_inlay_hints = true,         -- Disable inlay hints in diff windows for cleaner view
+          max_computation_time_ms = 5000,     -- Maximum time for diff computation (VSCode default)
+        },
+
+        -- Keymaps in diff view
+        keymaps = {
+          view = {
+            quit = "q",                    -- Close diff tab
+            toggle_explorer = "<leader>b",  -- Toggle explorer visibility (explorer mode only)
+            next_hunk = "]c",   -- Jump to next change
+            prev_hunk = "[c",   -- Jump to previous change
+            next_file = "]f",   -- Next file in explorer mode
+            prev_file = "[f",   -- Previous file in explorer mode
+          },
+          explorer = {
+            select = "<CR>",    -- Open diff for selected file
+            hover = "K",        -- Show file diff preview
+            refresh = "R",      -- Refresh git status
+          },
+        },
+      })
     end,
   },
 }

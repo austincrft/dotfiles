@@ -15,10 +15,15 @@ return {
           "%.git[/\\]",
           "node_modules[/\\]",
         },
-        preview = {
-          hide_on_startup = true
-        },
         layout_strategy = "vertical",
+        pickers = {
+          buffers = {
+            preview = { hide_on_startup = true }
+          },
+          find_files = {
+            preview = { hide_on_startup = true }
+          },
+        },
         mappings = {
           n = {
             ["<C-p>"] = require('telescope.actions.layout').toggle_preview,
@@ -50,6 +55,8 @@ return {
     end
 
     vim.keymap.set("n", "<leader>ff", ":Telescope find_files<cr>", { desc = "Find files" })
+    vim.keymap.set("n", "<leader>fb", ":Telescope buffers<cr>", { desc = "Find buffers" })
+    vim.keymap.set("n", "<leader>fh", ":Telescope help_tags<cr>", { desc = "Help tags" })
     vim.keymap.set("n", "<leader>fg", ":Telescope live_grep<cr>", { desc = "Live grep" })
     vim.keymap.set("v", "<leader>fg", '"zy:Telescope live_grep<cr><C-R>z', { desc = "Live grep" })
     vim.keymap.set("n", "<leader>fG", live_grep_filetype, { desc = "Live grep with file filter" })
@@ -58,8 +65,6 @@ return {
       local selection = vim.fn.getreg('z')
       live_grep_filetype(selection)
     end, { desc = "Live grep with file filter" })
-    vim.keymap.set("n", "<leader>fb", ":Telescope buffers<cr>", { desc = "Find buffers" })
-    vim.keymap.set("n", "<leader>fh", ":Telescope help_tags<cr>", { desc = "Help tags" })
     vim.keymap.set("n", "<leader>fd", function()
       local width = vim.o.columns
       local picker_width = math.floor(width * 0.8)
@@ -74,4 +79,3 @@ return {
     end, { desc = "LSP document symbols" })
   end
 }
-

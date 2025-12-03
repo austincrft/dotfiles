@@ -4,6 +4,34 @@ return {
     config = function()
       local dap = require("dap")
 
+      vim.cmd("highlight DapStoppedColor guifg=#ffc777")
+      vim.fn.sign_define('DapStopped', {text='🡆', texthl='DapStoppedColor', linehl='DapStoppedColor', numhl=''})
+      vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})
+
+      vim.api.nvim_create_user_command("DapExceptions", function(opts)
+        dap.set_exception_breakpoints({opts.args})
+      end, {
+        nargs = 1,
+        complete = function(arg_lead, _, _)
+          local options = { "all", "user-unhandled", "never" }
+          return vim.tbl_filter(function(option)
+            return option:find("^" .. vim.pesc(arg_lead))
+          end, options)
+        end,
+      })
+
+      vim.keymap.set("n", "<F5>", dap.continue, { desc = "Start/continue debugging" })
+      vim.keymap.set("n", "<F10>", dap.step_over, { desc = "Step over" })
+      vim.keymap.set("n", "<F11>", dap.step_into, { desc = "Step into" })
+      vim.keymap.set("n", "<S-F11>", dap.step_out, { desc = "Step out" })
+      vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
+      vim.keymap.set("n", "<leader>dB", dap.clear_breakpoints, { desc = "Toggle breakpoint" })
+      vim.keymap.set("n", "<leader>de", ":DapExceptions ", { desc = "Exception settings" })
+      vim.keymap.set("n", "<leader>dc", dap.run_to_cursor, { desc = "Run to cursor" })
+      vim.keymap.set("n", "<leader>dr", dap.repl.toggle, { desc = "Toggle DAP REPL" })
+      vim.keymap.set("n", "<leader>dj", dap.down, { desc = "Go down stack frame" })
+      vim.keymap.set("n", "<leader>dk", dap.up, { desc = "Go up stack frame" })
+
       dap.adapters.coreclr = {
         type = 'executable',
         command = 'netcoredbg',
@@ -46,34 +74,6 @@ return {
           end,
         },
       }
-
-      vim.cmd("highlight DapStoppedColor guifg=#ffc777")
-      vim.fn.sign_define('DapStopped', {text='🡆', texthl='DapStoppedColor', linehl='DapStoppedColor', numhl=''})
-      vim.fn.sign_define('DapBreakpoint', {text='🔴', texthl='', linehl='', numhl=''})
-
-      vim.api.nvim_create_user_command("DapExceptions", function(opts)
-        dap.set_exception_breakpoints({opts.args})
-      end, {
-        nargs = 1,
-        complete = function(arg_lead, _, _)
-          local options = { "all", "user-unhandled", "never" }
-          return vim.tbl_filter(function(option)
-            return option:find("^" .. vim.pesc(arg_lead))
-          end, options)
-        end,
-      })
-
-      vim.keymap.set("n", "<F5>", dap.continue, { desc = "Start/continue debugging" })
-      vim.keymap.set("n", "<F10>", dap.step_over, { desc = "Step over" })
-      vim.keymap.set("n", "<F11>", dap.step_into, { desc = "Step into" })
-      vim.keymap.set("n", "<S-F11>", dap.step_out, { desc = "Step out" })
-      vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "Toggle breakpoint" })
-      vim.keymap.set("n", "<leader>dB", dap.clear_breakpoints, { desc = "Toggle breakpoint" })
-      vim.keymap.set("n", "<leader>de", ":DapExceptions ", { desc = "Exception settings" })
-      vim.keymap.set("n", "<leader>dc", dap.run_to_cursor, { desc = "Run to cursor" })
-      vim.keymap.set("n", "<leader>dr", dap.repl.toggle, { desc = "Toggle DAP REPL" })
-      vim.keymap.set("n", "<leader>dj", dap.down, { desc = "Go down stack frame" })
-      vim.keymap.set("n", "<leader>dk", dap.up, { desc = "Go up stack frame" })
     end
   },
   {
@@ -86,9 +86,28 @@ return {
       local dapui = require("dapui")
       local dap = require("dap")
 
-      dapui.setup()
-
-      vim.keymap.set("n", "<leader>du", dapui.toggle, { desc = "Toggle DAP UI" })
+      ---@diagnostic disable: missing-fields
+      dapui.setup({
+        layouts = {
+          {
+            elements = {
+              { id = "breakpoints", size = 0.5 },
+              { id = "scopes", size = 0.5 },
+            },
+            size = 40,
+            position = "left",
+          },
+          {
+            elements = {
+              { id = "repl", size = 0.5 },
+              { id = "stacks", size = 0.5 },
+            },
+            size = 10,
+            position = "bottom",
+          },
+        },
+      })
+      ---@diagnostic enable: missing-fields
 
       -- Automatically open/close dap ui
       dap.listeners.before.attach.dapui_config = function()
@@ -104,7 +123,9 @@ return {
         dapui.close()
       end
 
-      -- Overwrite <leader><leader> during a debug session
+      vim.keymap.set("n", "<leader>du", dapui.toggle, { desc = "Toggle DAP UI" })
+
+      -- Override <leader><leader> during a debug session
       vim.api.nvim_create_autocmd("FileType", {
         group = vim.api.nvim_create_augroup("DapKeymaps", { clear = true }),
         callback = function()

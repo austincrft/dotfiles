@@ -69,6 +69,14 @@
             "}"
         ]
     },
+    "ctor": {
+        "prefix": "ctor",
+        "body": [
+            "public $TM_FILENAME_BASE(${0})",
+            "{",
+            "}"
+        ]
+    },
     "interface": {
         "prefix": "interface",
         "body": [

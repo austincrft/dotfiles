@@ -40,11 +40,11 @@ return {
     dependencies = {
       "skywind3000/asyncrun.vim",
       "mfussenegger/nvim-dap",
-      "seblyng/roslyn.nvim",
     },
     config = function()
       local dotnet_test = require("dotnet-test")
 
+      ---@diagnostic disable-next-line: missing-fields
       dotnet_test.setup({
         -- log_level = vim.log.levels.DEBUG,
         build = {
@@ -94,5 +94,15 @@ return {
         end,
       })
     end,
+  },
+  {
+    "austincrft/dotnet-dap-viewer.nvim",
+    -- dir = "/src/dotnet-dap-viewer.nvim",
+    dependencies = {
+      "mfussenegger/nvim-dap",
+    },
+    opts = {
+      keymap = "<leader><leader>"
+    },
   },
 }
