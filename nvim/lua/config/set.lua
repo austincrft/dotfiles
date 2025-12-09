@@ -29,8 +29,6 @@ vim.g.netrw_banner = 0
 
 vim.g.mapleader = " "
 
-vim.opt.undofile = true
-vim.opt.undodir = vim.fn.stdpath("data") .. "/undo"
 
 vim.filetype.add({
   pattern = {

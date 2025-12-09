@@ -9,6 +9,10 @@ keymap("n", "-", function()
   vim.fn.search(filename, "w")
 end, { noremap = true, silent = true })
 
+-- Disable command-line mode
+vim.keymap.set("n", "q:", "<nop>", { silent = true, desc = "Disable command-line window q:" })
+vim.keymap.set("n", "Q", "<nop>", { silent = true, desc = "Disable Ex mode Q" })
+
 -- System Clipboard
 keymap("v", "<leader>c", '"+y', { noremap = true, silent = true })
 keymap("n", "<leader>v", '"+p', { noremap = true, silent = true })
