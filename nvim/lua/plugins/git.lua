@@ -2,6 +2,29 @@ return {
   {
     "sindrets/diffview.nvim",
     config = function()
+      require("diffview").setup({
+        hooks = {
+          diff_buf_read = function(bufnr)
+            vim.diagnostic.enable(false, { bufnr = bufnr })
+            vim.wo.foldenable = false
+            for _, client in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+              if vim.lsp.buf_is_attached(bufnr, client.id) then
+                vim.lsp.buf_detach_client(bufnr, client.id)
+              end
+            end
+          end,
+          diff_buf_win_enter = function(bufnr)
+            vim.diagnostic.enable(false, { bufnr = bufnr })
+            vim.wo.foldenable = false
+            for _, client in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
+              if vim.lsp.buf_is_attached(bufnr, client.id) then
+                vim.lsp.buf_detach_client(bufnr, client.id)
+              end
+            end
+          end,
+        },
+      })
+
       vim.keymap.set("n", "<leader>gd", function()
         if next(require("diffview.lib").views) == nil then
           vim.cmd("DiffviewOpen")
@@ -44,6 +67,7 @@ return {
   },
   -- {
   --   "esmuellert/vscode-diff.nvim",
+  --   branch = 'next',
   --   dependencies = { "MunifTanjim/nui.nvim" },
   -- },
 }

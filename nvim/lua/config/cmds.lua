@@ -7,63 +7,46 @@ vim.api.nvim_create_user_command("DiagSetQuickFix", function()
   vim.cmd("botright copen")
 end, {})
 
-vim.api.nvim_create_user_command("TermToggle", function()
-  local cur_tab = vim.api.nvim_get_current_tabpage()
-  local terminal_win = nil
+vim.api.nvim_create_user_command("G", function(opts)
+  local cmd = "git " .. opts.args
+  local output = {}
 
-  -- Look for a terminal window in the current tab
-  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(cur_tab)) do
-    local buf = vim.api.nvim_win_get_buf(win)
-    if vim.bo[buf].buftype == "terminal" then
-      terminal_win = win
-      break
-    end
-  end
-
-  if terminal_win then
-    -- Close the terminal window
-    vim.api.nvim_win_close(terminal_win, false)
-    return
-  end
-
-  -- Look for existing terminal buf
-  local terminal_buf = nil
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if vim.bo[buf].buftype == "terminal" and vim.api.nvim_buf_is_valid(buf) then
-      terminal_buf = buf
-      break
-    end
-  end
-
-  -- Calculate floating window size (80% width, 80% height)
-  local max_width = 180  -- Max width for ultrawide monitors
-  local width = math.min(math.floor(vim.o.columns * 0.8), max_width)
-  local height = math.floor((vim.o.lines - 2) * 0.8)  -- Account for cmdline
-  local row = math.floor((vim.o.lines - height - 2) / 2)  -- Centered vertically
-  local col = math.floor((vim.o.columns - width) / 2)  -- Centered horizontally
-
-  -- Create floating window config
-  local opts = {
-    relative = 'editor',
-    width = width,
-    height = height,
-    row = row,
-    col = col,
-    style = 'minimal',
-    border = 'rounded',
-  }
-
-  if terminal_buf then
-    -- Open the existing terminal buf in floating window
-    local win = vim.api.nvim_open_win(terminal_buf, true, opts)
-  else
-    -- Create new terminal buf and open in floating window
-    terminal_buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_open_win(terminal_buf, true, opts)
-    vim.fn.termopen("pwsh -NoLogo")
-    vim.cmd("startinsert")
-  end
-end, { desc = "Toggle floating terminal window" })
+  vim.fn.jobstart(cmd, {
+    stdout_buffered = true,
+    stderr_buffered = true,
+    on_stdout = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          if line ~= "" then
+            table.insert(output, line)
+          end
+        end
+      end
+    end,
+    on_stderr = function(_, data)
+      if data then
+        for _, line in ipairs(data) do
+          if line ~= "" then
+            table.insert(output, line)
+          end
+        end
+      end
+    end,
+    on_exit = function(_, code)
+      vim.schedule(function()
+        if #output > 0 then
+          local level = code == 0 and vim.log.levels.INFO or vim.log.levels.ERROR
+          vim.notify(table.concat(output, "\n"), level)
+        elseif code ~= 0 then
+          vim.notify("git command failed with exit code " .. code, vim.log.levels.ERROR)
+        end
+      end)
+    end,
+  })
+end, {
+  nargs = "*",
+  desc = "Async git command pass-through",
+})
 
 vim.api.nvim_create_user_command("DeleteInactiveBuffers", function()
   -- Collect all visible buffers in all windows of all tabpages
