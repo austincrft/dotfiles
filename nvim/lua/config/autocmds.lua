@@ -136,3 +136,12 @@ vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter" }, {
   end,
   desc = "Disable LSP/diagnostics in diff windows",
 })
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    local shada_dir = vim.fn.stdpath("data") .. "/shada"
+    for _, f in ipairs(vim.fn.glob(shada_dir .. "/main.shada.tmp.*", false, true)) do
+      vim.fn.delete(f)
+    end
+  end
+})

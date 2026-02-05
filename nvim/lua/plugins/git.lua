@@ -1,44 +1,5 @@
 return {
   {
-    "sindrets/diffview.nvim",
-    config = function()
-      require("diffview").setup({
-        hooks = {
-          diff_buf_read = function(bufnr)
-            vim.diagnostic.enable(false, { bufnr = bufnr })
-            vim.wo.foldenable = false
-            for _, client in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-              if vim.lsp.buf_is_attached(bufnr, client.id) then
-                vim.lsp.buf_detach_client(bufnr, client.id)
-              end
-            end
-          end,
-          diff_buf_win_enter = function(bufnr)
-            vim.diagnostic.enable(false, { bufnr = bufnr })
-            vim.wo.foldenable = false
-            for _, client in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-              if vim.lsp.buf_is_attached(bufnr, client.id) then
-                vim.lsp.buf_detach_client(bufnr, client.id)
-              end
-            end
-          end,
-        },
-      })
-
-      vim.keymap.set("n", "<leader>gd", function()
-        if next(require("diffview.lib").views) == nil then
-          vim.cmd("DiffviewOpen")
-        else
-          vim.cmd("DiffviewClose")
-        end
-      end, { desc = "Toggle Diffview window" })
-
-      vim.keymap.set("n", "<leader>gD", ":DiffviewOpen " , { desc = "Open Diffview window for revision" })
-      vim.keymap.set("n", "<leader>gl", "<Cmd>DiffviewFileHistory<CR>" , { desc = "Open Diffview log" })
-      vim.keymap.set("n", "<leader>gf", "<Cmd>DiffviewFileHistory %<CR>" , { desc = "Open Diffview file history" })
-    end
-  },
-  {
     "lewis6991/gitsigns.nvim",
     config = function()
       require("gitsigns").setup({
@@ -65,9 +26,27 @@ return {
       })
     end,
   },
-  -- {
-  --   "esmuellert/vscode-diff.nvim",
-  --   branch = 'next',
-  --   dependencies = { "MunifTanjim/nui.nvim" },
-  -- },
+  {
+    "esmuellert/codediff.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    config = function()
+      require("codediff").setup({
+        explorer = {
+          view_mode = "tree",
+        },
+        keymaps = {
+          conflict = {
+            accept_incoming = "<leader>xt",  -- Accept incoming (theirs/left) change
+            accept_current = "<leader>xo",   -- Accept current (ours/right) change
+            accept_both = "<leader>xb",      -- Accept both changes (incoming first)
+            discard = "<leader>xx",          -- Discard both, keep base
+          },
+        },
+      })
+      vim.keymap.set("n", "<leader>gd", "<Cmd>CodeDiff<CR>", { desc = "Toggle code diff" })
+      vim.keymap.set("n", "<leader>gD", ":CodeDiff " , { desc = "Open code diff window for revision" })
+      vim.keymap.set("n", "<leader>gl", "<Cmd>CodeDiff history<CR>" , { desc = "Open code diff log" })
+      vim.keymap.set("n", "<leader>gf", "<Cmd>CodeDiff history %<CR>" , { desc = "Open code diff file history" })
+    end,
+  }
 }
