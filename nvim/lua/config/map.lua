@@ -20,7 +20,7 @@ keymap("v", "<leader>v", '"+p', { noremap = true, silent = true })
 
 -- Formatting
 keymap("n", "<leader>fw", function()
-  vim.opt.wrap = not vim.opt.wrap:get()
+  vim.opt.wrap = not vim.o.wrap
 end, { desc = "Toggle line wrap" })
 
 -- Quickfix
@@ -49,11 +49,19 @@ keymap("n", "<leader>_w", function ()
   vim.cmd("edit ~/work/nvim")
 end, { noremap = true, silent = true })
 
--- Diagnostic navigation (errors only)
+-- Diagnostic navigation
 keymap("n", "]e", function()
-  vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+  vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.ERROR })
 end, { noremap = true, silent = true, desc = "Next error diagnostic" })
 
 keymap("n", "[e", function()
-  vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
+  vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.ERROR })
 end, { noremap = true, silent = true, desc = "Previous error diagnostic" })
+
+keymap("n", "]w", function()
+  vim.diagnostic.jump({ count = 1, severity = vim.diagnostic.severity.WARN })
+end, { noremap = true, silent = true, desc = "Next warning diagnostic" })
+
+keymap("n", "[w", function()
+  vim.diagnostic.jump({ count = -1, severity = vim.diagnostic.severity.WARN })
+end, { noremap = true, silent = true, desc = "Previous warning diagnostic" })

@@ -91,5 +91,16 @@
         "body": [
             "public record $TM_FILENAME_BASE(${0});"
         ]
+    },
+    "debugger attach": {
+        "prefix": "debug",
+        "body": [
+          "System.Console.WriteLine(\"Waiting for debugger to attach...\");",
+          "while (!System.Diagnostics.Debugger.IsAttached)",
+          "{",
+          "    Thread.Sleep(100);",
+          "}",
+          "System.Console.WriteLine(\"Debugger attached\");"
+        ]
     }
 }

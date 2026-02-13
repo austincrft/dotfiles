@@ -43,6 +43,7 @@ return {
           },
         },
       })
+
       vim.keymap.set("n", "<leader>gd", "<Cmd>CodeDiff<CR>", { desc = "Toggle code diff" })
       vim.keymap.set("n", "<leader>gD", ":CodeDiff " , { desc = "Open code diff window for revision" })
       vim.keymap.set("n", "<leader>gl", "<Cmd>CodeDiff history<CR>" , { desc = "Open code diff log" })

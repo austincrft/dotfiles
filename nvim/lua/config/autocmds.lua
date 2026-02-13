@@ -93,50 +93,6 @@ vim.api.nvim_create_autocmd('FileType', {
     desc = 'Quickfix tweaks',
   })
 
--- Helper to disable LSP/diagnostics/folding for a diff buffer
-local function disable_lsp_for_diff(bufnr)
-  vim.diagnostic.enable(false, { bufnr = bufnr })
-  vim.wo.foldenable = false
-  for _, client in pairs(vim.lsp.get_clients({ bufnr = bufnr })) do
-    if vim.lsp.buf_is_attached(bufnr, client.id) then
-      vim.lsp.buf_detach_client(bufnr, client.id)
-    end
-  end
-end
-
--- Check if buffer is displayed in any diff window
-local function is_buf_in_diff_window(bufnr)
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    if vim.api.nvim_win_get_buf(win) == bufnr and vim.wo[win].diff then
-      return true
-    end
-  end
-  return false
-end
-
--- Detach LSP from diff buffers (check after LSP has time to fully attach)
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-    vim.schedule(function()
-      if is_buf_in_diff_window(args.buf) and vim.lsp.buf_is_attached(args.buf, args.data.client_id) then
-        vim.lsp.buf_detach_client(args.buf, args.data.client_id)
-      end
-    end)
-  end,
-  desc = "Detach LSP from diff buffers",
-})
-
--- Apply diff settings when entering a diff window
-vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter" }, {
-  callback = function()
-    if vim.wo.diff then
-      local bufnr = vim.api.nvim_get_current_buf()
-      disable_lsp_for_diff(bufnr)
-    end
-  end,
-  desc = "Disable LSP/diagnostics in diff windows",
-})
-
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function()
     local shada_dir = vim.fn.stdpath("data") .. "/shada"

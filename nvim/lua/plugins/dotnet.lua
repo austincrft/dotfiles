@@ -24,6 +24,7 @@ return {
       end, { nargs = "*" })
 
       vim.keymap.set("n", "<leader>bb", ":BuildSln<CR>", { noremap = true })
+      vim.keymap.set("n", "<leader>bB", ":BuildSln --no-incremental --verbosity quiet<CR>", { noremap = true })
     end
   },
   {
