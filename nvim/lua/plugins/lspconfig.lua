@@ -1,43 +1,51 @@
 local function set_lsp_autocmds()
-  -- Detach LSP from codediff:// virtual buffers without sending didClose.
-  -- Some LSPs (like roslyn) fail for codediff:// documents (rejects didOpen for unknown URI
-  -- schemes), so a didClose notification crashes the server.
+  -- Roslyn crashes on unpaired didOpen/didClose for codediff:// URIs.
+  -- codediff.nvim sends these through the real file's LSP client for semantic
+  -- tokens, but doesn't always pair them correctly. We track open state and
+  -- ensure every didOpen has a matching didClose and vice versa.
   vim.api.nvim_create_autocmd("LspAttach", {
     callback = function(args)
-      local bufname = vim.api.nvim_buf_get_name(args.buf)
-      if not bufname:match("^codediff://") then
-        return
-      end
-
       local client = vim.lsp.get_client_by_id(args.data.client_id)
-      if not client then
+      if not client or client.name ~= "roslyn" or client._codediff_wrapped then
         return
       end
+      ---@diagnostic disable-next-line: inject-field
+      client._codediff_wrapped = true
 
-      -- Temporarily suppress didClose so LSPs don't crash on the
-      -- untracked codediff:// URI, then detach the client from the buffer.
       local orig_notify = client.notify
-      client.notify = function(method, params)
-        ---@diagnostic disable: undefined-field
-        if method == "textDocument/didClose"
-          and params and params.textDocument
-          and params.textDocument.uri
-          and params.textDocument.uri:match("^codediff://") then
-          return true
-        end
-        ---@diagnostic enable: undefined-field
+      local open_docs = {} ---@type table<string, boolean>
 
-        return orig_notify(method, params)
+      client.notify = function(first, ...)
+        -- method_wrapper means notify can be called as client.notify(method, params)
+        -- or client:notify(method, params). Peek at args to find the method.
+        local method = type(first) == "string" and first or select(1, ...)
+        local params = type(first) == "string" and select(1, ...) or select(2, ...)
+
+        local uri = type(params) == "table" and params.textDocument
+          and type(params.textDocument.uri) == "string"
+          and params.textDocument.uri or nil
+
+        if uri and uri:match("^codediff://") then
+          if method == "textDocument/didOpen" then
+            if open_docs[uri] then
+              -- Already open in Roslyn — close first to avoid duplicate didOpen crash
+              ---@diagnostic disable-next-line: param-type-mismatch
+              orig_notify("textDocument/didClose", { textDocument = { uri = uri } })
+            end
+            open_docs[uri] = true
+          elseif method == "textDocument/didClose" then
+            if not open_docs[uri] then
+              -- Never opened — suppress to avoid orphaned didClose crash
+              return true
+            end
+            open_docs[uri] = nil
+          end
+        end
+
+        return orig_notify(first, ...)
       end
-
-      vim.schedule(function()
-        if vim.api.nvim_buf_is_valid(args.buf) then
-          pcall(vim.lsp.buf_detach_client, args.buf, args.data.client_id)
-        end
-        client.notify = orig_notify
-      end)
     end,
-    desc = "Detach LSP from codediff virtual buffers",
+    desc = "Track codediff:// didOpen/didClose pairing for roslyn",
   })
 end
 

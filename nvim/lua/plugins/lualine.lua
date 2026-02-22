@@ -22,7 +22,8 @@ return {
             {
               function() return "󱐋" end,
               cond = function()
-                return vim.b.lsp_ready == true
+                local lsp_clients = vim.lsp.get_clients({ bufnr = 0 })
+                return #lsp_clients ~= 0 and vim.b.lsp_ready == true
               end,
             },
             {

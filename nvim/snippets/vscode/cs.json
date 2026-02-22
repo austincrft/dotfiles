@@ -95,12 +95,12 @@
     "debugger attach": {
         "prefix": "debug",
         "body": [
-          "System.Console.WriteLine(\"Waiting for debugger to attach...\");",
+          "System.Console.WriteLine(\"!!! DEBUGGER !!! Waiting for debugger to attach...\");",
           "while (!System.Diagnostics.Debugger.IsAttached)",
           "{",
           "    Thread.Sleep(100);",
           "}",
-          "System.Console.WriteLine(\"Debugger attached\");"
+          "System.Console.WriteLine(\"!!! DEBUGGER !!! Debugger attached\");"
         ]
     }
 }
