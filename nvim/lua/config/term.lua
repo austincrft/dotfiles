@@ -5,6 +5,68 @@ local M = {
   float_win = nil,   -- Current floating window ID
 }
 
+-- Quit guard: Neovim 0.11 doesn't warn about running terminal jobs on :qa.
+-- Work around by maintaining a hidden modified file buffer ("sentinel") while
+-- terminals are running. Neovim WILL block :qa for unsaved file buffers.
+-- :qa! skips the check, so force-quit is unaffected.
+local sentinel_buf = nil
+local sentinel_path = vim.fn.tempname() .. "_term_quit_guard"
+
+local function ensure_sentinel()
+  if sentinel_buf and vim.api.nvim_buf_is_valid(sentinel_buf) then return end
+  vim.cmd("badd " .. vim.fn.fnameescape(sentinel_path))
+  sentinel_buf = vim.fn.bufnr(sentinel_path)
+  vim.api.nvim_buf_set_lines(sentinel_buf, 0, -1, false, { "terminal quit guard" })
+  vim.bo[sentinel_buf].swapfile = false
+  vim.bo[sentinel_buf].buflisted = false
+  -- When Neovim focuses the sentinel during a quit warning, switch back
+  -- after check_changed_any finishes (vim.schedule defers past it)
+  vim.api.nvim_create_autocmd("BufWinEnter", {
+    buffer = sentinel_buf,
+    callback = function()
+      vim.schedule(function()
+        if not sentinel_buf or vim.api.nvim_get_current_buf() ~= sentinel_buf then return end
+        local win = vim.api.nvim_get_current_win()
+        local fixbuf = vim.wo[win].winfixbuf
+        if fixbuf then vim.wo[win].winfixbuf = false end
+        if not pcall(function() vim.cmd("b#") end) or vim.api.nvim_get_current_buf() == sentinel_buf then
+          pcall(function() vim.cmd("bn") end)
+        end
+        if fixbuf and vim.api.nvim_win_is_valid(win) then
+          vim.wo[win].winfixbuf = true
+        end
+      end)
+    end,
+  })
+end
+
+local function remove_sentinel()
+  if sentinel_buf and vim.api.nvim_buf_is_valid(sentinel_buf) then
+    vim.api.nvim_buf_delete(sentinel_buf, { force = true })
+  end
+  sentinel_buf = nil
+end
+
+local function has_running_terminals()
+  for _, buf in ipairs(M.terminals) do
+    if vim.api.nvim_buf_is_valid(buf) and vim.bo[buf].buftype == "terminal" then
+      local ok, job_id = pcall(vim.api.nvim_buf_get_var, buf, "terminal_job_id")
+      if ok and job_id and vim.fn.jobwait({ job_id }, 0)[1] == -1 then
+        return true
+      end
+    end
+  end
+  return false
+end
+
+local function update_sentinel()
+  if has_running_terminals() then
+    ensure_sentinel()
+  else
+    remove_sentinel()
+  end
+end
+
 -- Clean up invalid terminal buffers
 local function cleanup_terminals()
   local valid = {}
@@ -77,7 +139,8 @@ local function create_terminal()
     update_title()
   end
 
-  vim.fn.termopen("pwsh -NoLogo")
+  vim.fn.jobstart("pwsh -NoLogo", { term = true })
+  ensure_sentinel()
   setup_keymaps(buf)
   vim.cmd("startinsert")
 end
@@ -135,6 +198,7 @@ local function close_terminal()
       vim.api.nvim_win_close(M.float_win, false)
       M.float_win = nil
     end
+    update_sentinel()
     return
   end
 
@@ -184,7 +248,8 @@ local function term_toggle()
     vim.wo[M.float_win].winfixbuf = true
     setup_keymaps(buf)
 
-    vim.fn.termopen("pwsh -NoLogo")
+    vim.fn.jobstart("pwsh -NoLogo", { term = true })
+    ensure_sentinel()
     vim.cmd("startinsert")
     return
   end
@@ -210,6 +275,13 @@ vim.api.nvim_create_user_command("TermNew", create_terminal, { desc = "Create ne
 vim.api.nvim_create_user_command("TermNext", next_terminal, { desc = "Switch to next terminal" })
 vim.api.nvim_create_user_command("TermPrev", prev_terminal, { desc = "Switch to previous terminal" })
 vim.api.nvim_create_user_command("TermClose", close_terminal, { desc = "Close current terminal" })
+
+-- Remove sentinel when terminal jobs finish
+vim.api.nvim_create_autocmd("TermClose", {
+  callback = function()
+    vim.schedule(update_sentinel)
+  end,
+})
 
 -- Global keymaps
 vim.keymap.set("n", "<C-t>", term_toggle, { noremap = true, desc = "Toggle floating terminal" })
