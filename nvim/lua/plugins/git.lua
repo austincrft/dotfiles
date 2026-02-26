@@ -34,6 +34,10 @@ return {
         explorer = {
           view_mode = "tree",
         },
+        diff = {
+          cycle_next_hunk = false, -- Wrap around when navigating hunks (]c/[c): false to stop at first/last
+          cycle_next_file = false, -- Wrap around when navigating files (]f/[f): false to stop at first/last
+        },
         keymaps = {
           conflict = {
             accept_incoming = "<leader>xt",  -- Accept incoming (theirs/left) change
