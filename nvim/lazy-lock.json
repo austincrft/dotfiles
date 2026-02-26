@@ -7,7 +7,6 @@
   "cmp-path": { "branch": "main", "commit": "c642487086dbd9a93160e1679a1327be111cbc25" },
   "cmp_luasnip": { "branch": "master", "commit": "98d9cb5c2c38532bd9bdb481067b20fea8f32e90" },
   "codediff.nvim": { "branch": "main", "commit": "7e5cda21dab96901cbc4bf3b15828aa8c7b490a7" },
-  "dotnet-dap-viewer.nvim": { "branch": "main", "commit": "cc3726d5f6ede65b98095d18fcc07e0147230475" },
   "dotnet-secrets.nvim": { "branch": "main", "commit": "c25fd6506311d0b4b5e5f59a402c563abf606bf1" },
   "dotnet-test.nvim": { "branch": "main", "commit": "6f6e7c20de8fea596541a67f2175b5fb5b8172d5" },
   "gitsigns.nvim": { "branch": "main", "commit": "abf82a65f185bd54adc0679f74b7d6e1ada690c9" },

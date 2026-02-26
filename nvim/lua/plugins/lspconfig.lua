@@ -1,3 +1,26 @@
+local function suppress_diagnostics()
+  local suppressed_diagnostics = {
+    -- Roslyn
+    ["IDE0001"] = true, -- Name can be simplified
+    ["IDE0003"] = true, -- Remove this or Me qualification
+    ["IDE0028"] = true, -- Collection initialization can be simplified
+    ["IDE0270"] = true, -- Null check can be simplified
+    ["IDE0290"] = true, -- Use primary constructor
+    ["IDE0300"] = true, -- Collection initialization can be simplified
+    ["IDE0305"] = true, -- Collection initialization can be simplified
+  }
+
+  local original_set = vim.diagnostic.set
+
+  ---@diagnostic disable-next-line: duplicate-set-field
+  vim.diagnostic.set = function(ns, bufnr, diagnostics, opts)
+    diagnostics = vim.tbl_filter(function(d)
+      return not suppressed_diagnostics[tostring(d.code)]
+    end, diagnostics)
+    original_set(ns, bufnr, diagnostics, opts)
+  end
+end
+
 local function set_lsp_autocmds()
   -- Roslyn crashes on unpaired didOpen/didClose for codediff:// URIs.
   -- codediff.nvim sends these through the real file's LSP client for semantic
@@ -49,33 +72,11 @@ local function set_lsp_autocmds()
   })
 end
 
-local function suppress_diagnostics()
-  local suppressed_diagnostics = {
-    -- Roslyn
-    ["IDE0001"] = true, -- Name can be simplified
-    ["IDE0003"] = true, -- Remove this or Me qualification
-    ["IDE0028"] = true, -- Collection initialization can be simplified
-    ["IDE0290"] = true, -- Use primary constructor
-    ["IDE0300"] = true, -- Collection initialization can be simplified
-    ["IDE0305"] = true, -- Collection initialization can be simplified
-  }
-
-  local original_set = vim.diagnostic.set
-
-  ---@diagnostic disable-next-line: duplicate-set-field
-  vim.diagnostic.set = function(ns, bufnr, diagnostics, opts)
-    diagnostics = vim.tbl_filter(function(d)
-      return not suppressed_diagnostics[tostring(d.code)]
-    end, diagnostics)
-    original_set(ns, bufnr, diagnostics, opts)
-  end
-end
-
 return {
   "neovim/nvim-lspconfig",
   config = function()
-    set_lsp_autocmds()
     suppress_diagnostics()
+    set_lsp_autocmds()
 
     vim.lsp.config('lua_ls', {
       settings = {
