@@ -60,11 +60,22 @@ vim.api.nvim_create_user_command("DeleteInactiveBuffers", function()
   -- Delete all listed buffers that are not visible, except terminals
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if vim.api.nvim_buf_is_loaded(buf)
-      and vim.api.nvim_buf_get_option(buf, "buflisted")
+      and vim.bo[buf].buflisted
       and not visible[buf]
       and vim.bo[buf].buftype ~= "terminal"
+      and not vim.bo[buf].modified
     then
-      vim.api.nvim_buf_delete(buf, { force = true })
+      pcall(vim.api.nvim_buf_delete, buf, { force = false })
     end
+  end
+end, {})
+
+vim.api.nvim_create_user_command("CopyFilePath", function()
+  local file_path = vim.fn.expand('%:p')
+  if file_path and file_path ~= '' then
+    vim.fn.setreg('+', file_path)
+    vim.notify("Copied absolute path: " .. file_path, vim.log.levels.INFO, { title = "File Path" })
+  else
+    vim.notify("No file path to copy", vim.log.levels.WARN, { title = "File Path" })
   end
 end, {})
