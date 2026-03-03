@@ -9,6 +9,7 @@ Set-PSReadlineOption -BellStyle None
 
 # Aliases
 Set-Alias -Name g -Value git
+Set-Alias -Name lnvim -Value Start-NvimLite
 Set-Alias -Name unzip -Value Expand-Archive
 Set-Alias -Name touch -Value New-Item
 Set-Alias -Name ss -Value Select-String
@@ -275,5 +276,9 @@ function Remove-NulFile([string]$Path) {
 
     # Run the delete command
     cmd /c "Del `"$extendedPath`""
+}
+
+function Start-NvimLite {
+    & nvim --clean -u ~/.nvim-lite.lua $args
 }
 
