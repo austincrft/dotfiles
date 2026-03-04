@@ -98,7 +98,7 @@
           "System.Console.WriteLine(\"!!! DEBUGGER !!! Waiting for debugger to attach...\");",
           "while (!System.Diagnostics.Debugger.IsAttached)",
           "{",
-          "    Thread.Sleep(100);",
+          "    System.Threading.Thread.Sleep(100);",
           "}",
           "System.Console.WriteLine(\"!!! DEBUGGER !!! Debugger attached\");"
         ]

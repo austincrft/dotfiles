@@ -8,6 +8,7 @@ local function suppress_diagnostics()
     ["IDE0290"] = true, -- Use primary constructor
     ["IDE0300"] = true, -- Collection initialization can be simplified
     ["IDE0305"] = true, -- Collection initialization can be simplified
+    ["CA2254"] = true,  -- The logging message template should not vary between calls to ...
   }
 
   local original_set = vim.diagnostic.set
