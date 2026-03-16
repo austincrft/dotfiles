@@ -98,7 +98,7 @@ return {
   },
   {
     "austincrft/dotnet-dap-viewer.nvim",
-    -- dir = "/src/dotnet-dap-viewer.nvim",
+    dir = "/src/dotnet-dap-viewer.nvim",
     dependencies = {
       "mfussenegger/nvim-dap",
     },

@@ -1,14 +1,15 @@
 local function suppress_diagnostics()
   local suppressed_diagnostics = {
     -- Roslyn
+    ["CA2254"] = true,  -- The logging message template should not vary between calls to ...
     ["IDE0001"] = true, -- Name can be simplified
     ["IDE0003"] = true, -- Remove this or Me qualification
     ["IDE0028"] = true, -- Collection initialization can be simplified
     ["IDE0270"] = true, -- Null check can be simplified
     ["IDE0290"] = true, -- Use primary constructor
     ["IDE0300"] = true, -- Collection initialization can be simplified
+    ["IDE0301"] = true, -- Collection initialization can be simplified
     ["IDE0305"] = true, -- Collection initialization can be simplified
-    ["CA2254"] = true,  -- The logging message template should not vary between calls to ...
   }
 
   local original_set = vim.diagnostic.set
