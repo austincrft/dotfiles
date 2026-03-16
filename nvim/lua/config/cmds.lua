@@ -4,7 +4,7 @@ end, { desc = "Open diagnostic float" })
 
 vim.api.nvim_create_user_command("DiagSetQuickFix", function()
   vim.diagnostic.setqflist({ open = false, severity = { min = vim.diagnostic.severity.WARN } })
-  vim.cmd("botright copen")
+  vim.cmd("copen")
 end, {})
 
 vim.api.nvim_create_user_command("G", function(opts)

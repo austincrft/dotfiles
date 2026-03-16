@@ -20,7 +20,7 @@ return {
 
         local args = opts.args or "--verbosity quiet"
         vim.cmd("AsyncRun dotnet build " .. args .. " \"" .. sln .. "\"")
-        vim.cmd("botright copen")
+        vim.cmd("copen")
       end, { nargs = "*" })
 
       vim.keymap.set("n", "<leader>bb", ":BuildSln<CR>", { noremap = true })
@@ -98,7 +98,7 @@ return {
   },
   {
     "austincrft/dotnet-dap-viewer.nvim",
-    dir = "/src/dotnet-dap-viewer.nvim",
+    -- dir = "/src/dotnet-dap-viewer.nvim",
     dependencies = {
       "mfussenegger/nvim-dap",
     },

@@ -133,6 +133,10 @@ vim.api.nvim_create_augroup('CenterMode', { clear = true })
 vim.api.nvim_create_autocmd({ 'WinNew', 'WinEnter' }, {
   group = 'CenterMode',
   callback = function()
+    if vim.v.exiting ~= vim.NIL then
+      return
+    end
+
     local state = get_tab_state()
     if not state then
       return
@@ -150,26 +154,43 @@ vim.api.nvim_create_autocmd({ 'WinNew', 'WinEnter' }, {
       return
     end
 
-    -- Check if a new window was created that isn't one of our side buffers
-    -- Ignore floating windows and quickfix
-    -- Only check windows in the current tab
-    local wins = vim.api.nvim_tabpage_list_wins(0)
-    for _, win in ipairs(wins) do
-      if win ~= state.left_win and win ~= state.right_win and win ~= state.center_win then
-        -- Check if this is a floating window or quickfix
-        local win_config = vim.api.nvim_win_get_config(win)
-        local buf = vim.api.nvim_win_get_buf(win)
-        local buftype = vim.bo[buf].buftype
+    -- Defer the check so quickfix buftype is set by the time we inspect it
+    vim.schedule(function()
+      if vim.v.exiting ~= vim.NIL then
+        return
+      end
+      if not state.center_win or not vim.api.nvim_win_is_valid(state.center_win) then
+        return
+      end
 
-        if win_config.relative == '' and buftype ~= 'quickfix' then
-          -- Not a floating window or quickfix, so it's a real split - exit center mode
-          vim.schedule(function()
+      -- Check if a new window was created that isn't one of our side buffers
+      -- Ignore floating windows; move quickfix below center
+      -- Only check windows in the current tab
+      local wins = vim.api.nvim_tabpage_list_wins(0)
+      for _, win in ipairs(wins) do
+        if win ~= state.left_win and win ~= state.right_win and win ~= state.center_win and win ~= state.qf_win then
+          local win_config = vim.api.nvim_win_get_config(win)
+          if win_config.relative ~= '' then
+            -- Floating window, ignore
+          elseif vim.fn.getwininfo(win)[1].quickfix == 1 then
+            -- Quickfix window: close the full-width one and reopen below center
+            local qfbuf = vim.api.nvim_win_get_buf(win)
+            local height = vim.api.nvim_win_get_height(win)
+            vim.api.nvim_win_close(win, true)
+            vim.api.nvim_set_current_win(state.center_win)
+            vim.cmd('belowright ' .. height .. 'split')
+            state.qf_win = vim.api.nvim_get_current_win()
+            vim.api.nvim_win_set_buf(state.qf_win, qfbuf)
+            vim.api.nvim_set_current_win(state.center_win)
+            return
+          else
+            -- Real split - exit center mode
             M.exit()
-          end)
-          return
+            return
+          end
         end
       end
-    end
+    end)
   end
 })
 
@@ -187,6 +208,8 @@ vim.api.nvim_create_autocmd('WinClosed', {
       vim.schedule(function()
         M.exit()
       end)
+    elseif closed_win == state.qf_win then
+      state.qf_win = nil
     end
   end
 })

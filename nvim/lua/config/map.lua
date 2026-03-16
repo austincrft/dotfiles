@@ -24,12 +24,12 @@ keymap("n", "<leader>fw", function()
 end, { desc = "Toggle line wrap" })
 
 -- Quickfix
-keymap("n", "<leader>qo", ":botright copen<CR>", { noremap = true, silent = true })
+keymap("n", "<leader>qo", ":copen<CR>", { noremap = true, silent = true })
 keymap("n", "<leader>qc", ":cclose<CR>", { noremap = true, silent = true })
 keymap("n", "<leader>qC", ":cexpr []<CR>", { noremap = true, silent = true })
 
 -- Location List
-keymap("n", "<leader>lo", ":botright lopen<CR>", { noremap = true, silent = true })
+keymap("n", "<leader>lo", ":lopen<CR>", { noremap = true, silent = true })
 keymap("n", "<leader>lc", ":lclose<CR>", { noremap = true, silent = true })
 
 -- Substitute
