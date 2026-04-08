@@ -8,11 +8,14 @@
     co = checkout
     ci = commit
 
+    fp = "!git fetch --prune"
+    ft = "!git fetch --tags --force"
+
     # pushes and creates an upstream branch
     psu = "!git push -u origin HEAD"
 
     # deletes all branches except for the current one and master
-    brclean = "!git branch | grep -v 'master\\|main\\|^*' | xargs git branch -D"
+    brclean = "!git branch --format='%(refname:short)' | grep -vE '^(master|main)$' | xargs -r git branch -D"
 
     # undo a local commit
     undo-commit = "!git reset HEAD~1"

@@ -23,6 +23,17 @@ if (Test-Path $WorkProfile) {
     . $WorkProfile
 }
 
+# Forwards g alias to git so posh-git will work
+if (Get-Module -ListAvailable -Name posh-git) {
+    Import-Module posh-git
+    Register-ArgumentCompleter -Native -CommandName 'g' -ScriptBlock {
+        param($wordToComplete, $commandAst, $cursorPosition)
+        $newInput  = 'git' + $commandAst.Extent.Text.Substring(1)  # swap 'g' for 'git'
+        $newCursor = $cursorPosition + 2                           # 'git' is 2 chars longer than 'g'
+        (TabExpansion2 -inputScript $newInput -cursorColumn $newCursor).CompletionMatches
+    }
+}
+
 function prompt {
     # Abbreviated path for window title
     $maxLength = 28
