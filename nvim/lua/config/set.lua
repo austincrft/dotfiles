@@ -29,10 +29,10 @@ vim.g.netrw_banner = 0
 
 vim.g.mapleader = " "
 
-
 vim.filetype.add({
   pattern = {
     ['.*%.json'] = "jsonc",
     ['.*%.xaml'] = "xml",
+    ['.*%.bicepparam'] = 'bicep-params',
   },
 })

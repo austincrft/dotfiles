@@ -5,6 +5,7 @@ local function suppress_diagnostics()
     ["IDE0001"] = true, -- Name can be simplified
     ["IDE0003"] = true, -- Remove this or Me qualification
     ["IDE0028"] = true, -- Collection initialization can be simplified
+    ["IDE0063"] = true, -- 'using' statement can be simplified
     ["IDE0270"] = true, -- Null check can be simplified
     ["IDE0290"] = true, -- Use primary constructor
     ["IDE0300"] = true, -- Collection initialization can be simplified
@@ -80,6 +81,21 @@ return {
     suppress_diagnostics()
     set_lsp_autocmds()
 
+    vim.lsp.config('azure_pipelines_ls', {
+      root_markers = { 'azure-pipelines.yml', 'azure-pipelines.yaml', '.git' },
+      settings = {
+        yaml = {
+          schemas = {
+            ["https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json"] = {
+              "/azure-pipeline*.y*l",
+              "pipeline/**/*.y*l",
+              "pipelines/**/*.y*l",
+            },
+          },
+        },
+      },
+    })
+
     vim.lsp.config('lua_ls', {
       settings = {
         Lua = {
@@ -100,5 +116,6 @@ return {
         },
       },
     })
+
   end,
 }

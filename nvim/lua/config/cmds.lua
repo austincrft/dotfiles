@@ -1,3 +1,11 @@
+vim.api.nvim_create_user_command("StripWhitespace", function()
+  vim.cmd([[keeppatterns %s/\s\+$//e]])
+end, { desc = "Open diagnostic float" })
+
+vim.api.nvim_create_user_command("StripWindowsReturns", function()
+  vim.cmd([[%s/\r//g]])
+end, { desc = "Strip windows carriage returns" })
+
 vim.api.nvim_create_user_command("DiagOpenFloat", function()
   vim.diagnostic.open_float(nil, { focusable = true, border = 'rounded' })
 end, { desc = "Open diagnostic float" })

@@ -1,4 +1,8 @@
 local function range_contains_pos(range, line, char)
+    if not range then
+        return false
+    end
+
     local start = range.start
     local stop = range["end"]
 
@@ -17,19 +21,55 @@ local function range_contains_pos(range, line, char)
     return true
 end
 
+local function range_size(range)
+    return (range["end"].line - range.start.line) * 1e6
+        + (range["end"].character - range.start.character)
+end
+
+local function find_symbol_path_hierarchical(symbol_list, line, char, path)
+    for _, symbol in ipairs(symbol_list) do
+        if range_contains_pos(symbol.range, line, char) then
+            table.insert(path, symbol.name)
+            if symbol.children then
+                find_symbol_path_hierarchical(symbol.children, line, char, path)
+            end
+            return true
+        end
+    end
+    return false
+end
+
+local function find_symbol_path_flat(symbol_list, line, char, path)
+    local matches = {}
+    for _, symbol in ipairs(symbol_list) do
+        local range = symbol.location and symbol.location.range
+        if range_contains_pos(range, line, char) then
+            table.insert(matches, { name = symbol.name, range = range })
+        end
+    end
+
+    table.sort(matches, function(a, b)
+        return range_size(a.range) > range_size(b.range)
+    end)
+
+    for _, m in ipairs(matches) do
+        table.insert(path, m.name)
+    end
+
+    return #matches > 0
+end
+
 local function find_symbol_path(symbol_list, line, char, path)
     if not symbol_list or #symbol_list == 0 then
         return false
     end
 
-    for _, symbol in ipairs(symbol_list) do
-        if range_contains_pos(symbol.range, line, char) then
-            table.insert(path, symbol.name)
-            find_symbol_path(symbol.children, line, char, path)
-            return true
-        end
+    -- DocumentSymbol[] has .range on each symbol; SymbolInformation[] has .location.range and is flat.
+    if symbol_list[1].range then
+        return find_symbol_path_hierarchical(symbol_list, line, char, path)
+    else
+        return find_symbol_path_flat(symbol_list, line, char, path)
     end
-    return false
 end
 
 local function lsp_callback(err, symbols, ctx, config, winid)
@@ -76,7 +116,7 @@ local function lsp_callback(err, symbols, ctx, config, winid)
     local breadcrumb_string = table.concat(breadcrumbs, " > ")
 
     if breadcrumb_string ~= "" then
-        vim.wo[winid].winbar = breadcrumb_string
+        vim.wo[winid].winbar = breadcrumb_string:gsub("%%", "%%%%")
     else
         vim.wo[winid].winbar = " "
     end
