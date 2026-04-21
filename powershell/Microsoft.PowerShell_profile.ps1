@@ -35,6 +35,8 @@ if (Get-Module -ListAvailable -Name posh-git) {
 }
 
 function prompt {
+    $lastExit = $LASTEXITCODE
+
     # Abbreviated path for window title
     $maxLength = 28
     $path = (Get-Location).Path
@@ -93,6 +95,8 @@ function prompt {
         }
         catch {}
     }
+
+    $global:LASTEXITCODE = $lastExit
 
     return "$yellow>> $cyan$cwd$purple$gitInfo $green$time$pink`n$ $reset"
 }
