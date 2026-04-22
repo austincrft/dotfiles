@@ -16,23 +16,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
--- Enable treesitter folding (skip for diff buffers)
-vim.api.nvim_create_autocmd({ "BufReadPost", "BufWinEnter" }, {
-  callback = function()
-    if vim.wo.diff then
-      return
-    end
-    local parsers = require("nvim-treesitter.parsers")
-    local bufnr = vim.api.nvim_get_current_buf()
-    local parser = parsers.has_parser() and parsers.get_parser(bufnr)
-    if parser then
-      parser:parse()
-      vim.opt_local.foldmethod = "expr"
-      vim.opt_local.foldexpr = "nvim_treesitter#foldexpr()"
-    end
-  end,
-})
-
 -- Expand quickfix
 vim.api.nvim_create_autocmd("QuickFixCmdPost", {
   pattern = { "[^l]*" },
