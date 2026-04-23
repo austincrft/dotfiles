@@ -1,6 +1,10 @@
 return {
-  "norcalli/nvim-colorizer.lua",
-  config = function ()
-    require("colorizer").setup({ '*' }, { names = false })
-  end
+  "catgoose/nvim-colorizer.lua",
+  event = "BufReadPre",
+  config = function()
+    require("colorizer").setup({
+      filetypes = { "*" },
+      user_default_options = { names = false },
+    })
+  end,
 }
