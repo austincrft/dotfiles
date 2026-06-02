@@ -78,12 +78,19 @@ vim.api.nvim_create_user_command("DeleteInactiveBuffers", function()
   end
 end, {})
 
-vim.api.nvim_create_user_command("CopyFilePath", function()
-  local file_path = vim.fn.expand('%:p')
+vim.api.nvim_create_user_command("CopyFilePath", function(opts)
+  local mode = opts.args ~= '' and opts.args or 'relative'
+  local modifiers = { relative = ':.', name = ':t' }
+  local file_path = vim.fn.fnamemodify(vim.fn.expand('%:p'), modifiers[mode] or ':p')
   if file_path and file_path ~= '' then
     vim.fn.setreg('+', file_path)
-    vim.notify("Copied absolute path: " .. file_path, vim.log.levels.INFO, { title = "File Path" })
+    vim.notify("Copied " .. mode .. " path: " .. file_path, vim.log.levels.INFO, { title = "File Path" })
   else
     vim.notify("No file path to copy", vim.log.levels.WARN, { title = "File Path" })
   end
-end, {})
+end, {
+  nargs = '?',
+  complete = function()
+    return { 'absolute', 'relative', 'name' }
+  end,
+})

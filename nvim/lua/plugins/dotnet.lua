@@ -53,7 +53,16 @@ return {
         },
       })
 
-      -- Creates buffer-scoped mappings for tests
+      -- Global mappings for tests
+      vim.keymap.set("n", "<Leader>ts", function()
+        dotnet_test.run_target()
+      end, {
+        noremap = true,
+        silent = true,
+        desc = "Run .NET tests in sln or proj"
+      })
+
+      -- Buffer-scoped mappings for tests
       vim.api.nvim_create_autocmd("FileType", {
         pattern = "cs",
         callback = function()
@@ -82,15 +91,6 @@ return {
             silent = true,
             buffer = true,
             desc = "Debug .NET tests in file"
-          })
-
-          vim.keymap.set("n", "<Leader>ts", function()
-            dotnet_test.run_target()
-          end, {
-            noremap = true,
-            silent = true,
-            buffer = true,
-            desc = "Run .NET tests in sln or proj"
           })
         end,
       })
