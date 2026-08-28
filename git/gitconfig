@@ -7,6 +7,7 @@
     pl = pull
     co = checkout
     ci = commit
+    cp = cherry-pick
 
     fp = "!git fetch --prune"
     ft = "!git fetch --tags --force"
