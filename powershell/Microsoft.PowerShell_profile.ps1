@@ -134,6 +134,51 @@ function Test-ModuleInstallation() {
     }
 }
 
+function New-Worktree {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Name,
+
+        [string]$Base
+    )
+
+    if (-not $Base) {
+        $Base = git rev-parse --abbrev-ref HEAD
+    }
+
+    $path = ".worktrees/$Name"
+
+    if (Test-Path $path) {
+        Write-Host "Worktree already exists: $path" -ForegroundColor Yellow
+        return
+    }
+
+    git fetch origin | Out-Null
+
+    git worktree add $path -b $Name $Base
+
+    Write-Host "Created worktree '$Name' from '$Base' at $path" -ForegroundColor Green
+}
+
+function Remove-Worktree {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Name
+    )
+
+    $path = ".worktrees/$Name"
+
+    if (-not (Test-Path $path)) {
+        Write-Host "Worktree not found: $path" -ForegroundColor Yellow
+        return
+    }
+
+    git worktree remove $path --force
+    git branch -D $Name 2>$null
+
+    Write-Host "Removed worktree + branch: $Name" -ForegroundColor Green
+}
+
 function Build-Sln($sln) {
     $pattern = if ($sln) { $sln } else { "*.sln" }
     $slns = @(Get-ChildItem $pattern)
@@ -151,32 +196,6 @@ function Build-Sln($sln) {
         $errorMessage = "`nERROR: These slns failed to build`n`n" + (($failingSlns | ForEach-Object { "• $_" }) -join "`n")
         Write-Host $errorMessage -ForegroundColor Red
     }
-}
-
-function Start-DotnetProject($ProjectDirectory, [switch]$Watch) {
-    if (-not $ProjectDirectory) {
-        $ProjectDirectory = (Get-Location).Path
-    }
-
-    Start-Process dotnet -ArgumentList "run", "--project", "`"$projectDirectory`""
-}
-
-function Start-DotNetProject($ProjectDirectory, $WindowTitle, [switch]$SkipWatch) {
-  $setTitleCmd = if ($WindowTitle) {
-      "-NoProfile -Command `$host.ui.RawUI.WindowTitle = '$WindowTitle';"
-    }
-    else {
-        ""
-    }
-
-  $dotnetRunCmd = if (-not $DotNetWatch -or $SkipWatch) {
-      "dotnet run --project '$ProjectDirectory'"
-    }
-    else {
-      "dotnet watch --project '$projectDirectory' run"
-    }
-
-  Start-Process pwsh -ArgumentList ($setTitleCmd + $dotnetRunCmd)
 }
 
 function Stop-AllDotNetProcesses {
@@ -211,9 +230,9 @@ function Sum {
     }
 }
 
-function New-GeneratedPassword() {
+function New-GeneratedPassword([int]$Length = 16) {
     $digits = "0123456789"
-    $specialChars = "#$%&+-./:<>^_|~"
+    $specialChars = "#%&+-.:<>^_|~"
 
     $validChars = "abcdefghijklmnopqrstuvwxyz" +
                   "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
@@ -258,7 +277,7 @@ function New-GeneratedPassword() {
         return $false
     }
 
-    function New-PasswordAsCharArray([int]$Length) {
+    function New-PasswordAsCharArray() {
         $password = New-Object char[] $Length
         $bytes = new-Object byte[] $Length
 
@@ -276,7 +295,7 @@ function New-GeneratedPassword() {
         return $password
     }
 
-    $password = New-PasswordAsCharArray -Length 16
+    $password = New-PasswordAsCharArray
     return (-join $password)
 }
 
