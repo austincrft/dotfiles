@@ -65,6 +65,15 @@ return {
       local selection = vim.fn.getreg('z')
       live_grep_filetype(selection)
     end, { desc = "Live grep with file filter" })
+    vim.keymap.set("n", "<leader>fn", function()
+      local notes_dir = vim.g.notes_dir
+      if not notes_dir or notes_dir == "" then
+        vim.notify("vim.g.notes_dir is not set", vim.log.levels.WARN)
+        return
+      end
+
+      builtin.find_files({ cwd = vim.fn.expand(notes_dir) })
+    end, { desc = "Find files in notes dir" })
     vim.keymap.set("n", "<leader>fd", function()
       local width = vim.o.columns
       local picker_width = math.floor(width * 0.8)
