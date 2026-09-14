@@ -4,6 +4,12 @@ return {
     ft = "cs",
     dependencies = { "neovim/nvim-lspconfig", "mason-org/mason.nvim" },
     config = function ()
+      -- Daemon mode's named pipe connection times out on this machine, so run the
+      -- server as a direct child process instead.
+      vim.lsp.config("roslyn", {
+        cmd = { require("roslyn.utils").get_roslyn_lsp_path(), "--stdio" },
+      })
+
       local roslyn = require("roslyn")
       roslyn.setup({
         filewatching = "roslyn",
