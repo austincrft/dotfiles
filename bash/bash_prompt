@@ -1,98 +1,44 @@
-# stylized bash_prompt
-# Based on https://github.com/necolas/dotfiles/blob/master/shell/bash_prompt
-
 prompt_git() {
-    local s=""
-    local branchName=""
+    if ! git rev-parse --is-inside-work-tree &>/dev/null; then return; fi
+    if [ "$(git rev-parse --is-inside-git-dir 2>/dev/null)" = "true" ]; then return; fi
 
-    # check if the current directory is in a git repository
-    if [ $(git rev-parse --is-inside-work-tree &>/dev/null; printf "%s" $?) == 0 ]; then
+    local branchName
+    branchName=$(git symbolic-ref --quiet --short HEAD 2>/dev/null)
 
-        # check if the current directory is in .git before running git checks
-        if [ "$(git rev-parse --is-inside-git-dir 2> /dev/null)" == "false" ]; then
-
-            # ensure index is up to date
-            git update-index --really-refresh  -q &>/dev/null
-
-            # check for uncommitted changes in the index
-            if ! $(git diff --quiet --ignore-submodules --cached); then
-                s="$s+";
-            fi
-
-            # check for unstaged changes
-            if ! $(git diff-files --quiet --ignore-submodules --); then
-                s="$s!";
-            fi
-
-            # check for untracked files
-            if [ -n "$(git ls-files --others --exclude-standard)" ]; then
-                s="$s?";
-            fi
-
-            # check for stashed files
-            if $(git rev-parse --verify refs/stash &>/dev/null); then
-                s="$s$";
-            fi
-
-        fi
-
-        # get the short symbolic ref
-        # if HEAD isn't a symbolic ref, get the short SHA
-        # otherwise, just give up
-        branchName="$(git symbolic-ref --quiet --short HEAD 2> /dev/null || \
-                      git rev-parse --short HEAD 2> /dev/null || \
-                      printf "(unknown)")"
-
-        [ -n "$s" ] && s=" [$s]"
-
-        printf "%s" "$1$branchName$s"
+    if [ -n "$branchName" ] && [ "$branchName" != "HEAD" ]; then
+        printf " git:(%s)" "$branchName"
     else
-        return
+        local tag
+        tag=$(git describe --tags --exact-match 2>/dev/null)
+        if [ -n "$tag" ]; then
+            printf " git:(tag: %s)" "$tag"
+        else
+            local commit
+            commit=$(git rev-parse --short HEAD 2>/dev/null)
+            [ -n "$commit" ] && printf " git:(commit: %s)" "$commit"
+        fi
     fi
 }
 
 set_prompts() {
-    local blue=""
-    local cyan=""
-    local green=""
-    local reset=""
-    local yellow=""
+    # Match the exact pwsh colors
+    local yellow="\[\033[33m\]"
+    local cyan="\[\033[36m\]"
+    local purple="\[\033[35m\]"
+    local green="\[\033[32m\]"
+    local pink="\[\033[38;2;252;167;234m\]"
+    local reset="\[\033[0m\]"
 
-
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-        tput sgr0 # reset colors
-
-        reset=$(tput sgr0)
-
-        # Solarized colors
-        # (https://github.com/altercation/solarized/tree/master/iterm2-colors-solarized#the-values)
-        blue=$(tput setaf 4)
-        cyan=$(tput setaf 6)
-        green=$(tput setaf 2)
-        yellow=$(tput setaf 3)
-    fi
-
-    # build the prompt
-
-    # set the terminal title to the current working directory
+    # Set terminal title bar to simply show the current folder path (\w)
     PS1="\[\033]0;\w\007\]"
 
-    PS1+="\[$yellow\]\u" # username
-    PS1+="\[$reset\]@"
-    PS1+="\[$blue\]\h" # host
-    PS1+="\[$reset\]: "
-    PS1+="\[$green\]\w" # working directory
-
-    if [[ -f /proc/sys/kernel/osrelease ]]; then
-        if ! grep -q Microsoft /proc/sys/kernel/osrelease; then
-            PS1+="\$(prompt_git \"$reset on $cyan\")" # git repository details
-        fi
-    else
-        PS1+="\$(prompt_git \"$reset on $cyan\")" # git repository details
-    fi
-
-    PS1+="\n"
-    PS1+="\[$reset\]\$ " # $ (and reset color)
+    # Construct the visible layout
+    PS1+="${yellow}>> "                     # >>
+    PS1+="${cyan}\w"                        # current directory
+    PS1+="${purple}\$(prompt_git)"          # git info
+    PS1+=" ${green}\$(date +%H:%M)"         # time
+    PS1+="${pink}\n"                        # newline
+    PS1+="\$ ${reset}"                      # $ prompt
 
     export PS1
 }
