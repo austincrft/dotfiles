@@ -5,6 +5,8 @@ local M = {
   float_win = nil,   -- Current floating window ID
 }
 
+local term_cmd = vim.fn.has("unix") and "bash" or "pwsh -NoProfile"
+
 -- Quit guard: Neovim 0.11 doesn't warn about running terminal jobs on :qa.
 -- Work around by maintaining a hidden modified file buffer ("sentinel") while
 -- terminals are running. Neovim WILL block :qa for unsaved file buffers.
@@ -139,7 +141,7 @@ local function create_terminal()
     update_title()
   end
 
-  vim.fn.jobstart("pwsh -NoLogo", { term = true })
+  vim.fn.jobstart(term_cmd, { term = true })
   ensure_sentinel()
   setup_keymaps(buf)
   vim.cmd("startinsert")
@@ -248,7 +250,7 @@ local function term_toggle()
     vim.wo[M.float_win].winfixbuf = true
     setup_keymaps(buf)
 
-    vim.fn.jobstart("pwsh -NoLogo", { term = true })
+    vim.fn.jobstart(term_cmd, { term = true })
     ensure_sentinel()
     vim.cmd("startinsert")
     return
