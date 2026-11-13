@@ -1,46 +1,45 @@
 prompt_git() {
-    if ! git rev-parse --is-inside-work-tree &>/dev/null; then return; fi
-    if [ "$(git rev-parse --is-inside-git-dir 2>/dev/null)" = "true" ]; then return; fi
+  if ! git rev-parse --is-inside-work-tree &>/dev/null; then return; fi
+  if [ "$(git rev-parse --is-inside-git-dir 2>/dev/null)" = "true" ]; then return; fi
 
-    local branchName
-    branchName=$(git symbolic-ref --quiet --short HEAD 2>/dev/null)
+  local branchName
+  branchName=$(git symbolic-ref --quiet --short HEAD 2>/dev/null)
 
-    if [ -n "$branchName" ] && [ "$branchName" != "HEAD" ]; then
-        printf " git:(%s)" "$branchName"
+  if [ -n "$branchName" ] && [ "$branchName" != "HEAD" ]; then
+    printf " git:(%s)" "$branchName"
+  else
+    local tag
+    tag=$(git describe --tags --exact-match 2>/dev/null)
+    if [ -n "$tag" ]; then
+      printf " git:(tag: %s)" "$tag"
     else
-        local tag
-        tag=$(git describe --tags --exact-match 2>/dev/null)
-        if [ -n "$tag" ]; then
-            printf " git:(tag: %s)" "$tag"
-        else
-            local commit
-            commit=$(git rev-parse --short HEAD 2>/dev/null)
-            [ -n "$commit" ] && printf " git:(commit: %s)" "$commit"
-        fi
+      local commit
+      commit=$(git rev-parse --short HEAD 2>/dev/null)
+      [ -n "$commit" ] && printf " git:(commit: %s)" "$commit"
     fi
+  fi
 }
 
 set_prompts() {
-    # Match the exact pwsh colors
-    local yellow="\[\033[33m\]"
-    local cyan="\[\033[36m\]"
-    local purple="\[\033[35m\]"
-    local green="\[\033[32m\]"
-    local pink="\[\033[38;2;252;167;234m\]"
-    local reset="\[\033[0m\]"
+  local yellow="\[\033[33m\]"
+  local cyan="\[\033[36m\]"
+  local purple="\[\033[35m\]"
+  local green="\[\033[32m\]"
+  local pink="\[\033[38;2;252;167;234m\]"
+  local reset="\[\033[0m\]"
 
-    # Set terminal title bar to simply show the current folder path (\w)
-    PS1="\[\033]0;\w\007\]"
+  # Set terminal title bar to simply show the current folder path (\w)
+  PS1="\[\033]0;\w\007\]"
 
-    # Construct the visible layout
-    PS1+="${yellow}>> "                     # >>
-    PS1+="${cyan}\w"                        # current directory
-    PS1+="${purple}\$(prompt_git)"          # git info
-    PS1+=" ${green}\$(date +%H:%M)"         # time
-    PS1+="${pink}\n"                        # newline
-    PS1+="\$ ${reset}"                      # $ prompt
+  # Construct the visible layout
+  PS1+="\n${yellow}>> "                     # >>
+  PS1+="${cyan}\w"                        # current directory
+  PS1+="${purple}\$(prompt_git)"          # git info
+  PS1+=" ${green}\$(date +%H:%M)"         # time
+  PS1+="${pink}\n"                        # newline
+  PS1+="\$ ${reset}"                      # $ prompt
 
-    export PS1
+  export PS1
 }
 
 set_prompts
